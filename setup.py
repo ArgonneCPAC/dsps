@@ -12,7 +12,7 @@ setup(
     author_email="ahearin@anl.gov",
     description="Differentiable Stellar Population Synthesis",
     long_description="Differentiable Stellar Population Synthesis",
-    install_requires=["numpy", "jax"],
+    install_requires=["numpy", "jax", "diffmah"],
     packages=find_packages(),
     package_data={"dsps": ["tests/testing_data/*.txt", "tests/testing_data/*.dat"]},
     url="https://github.com/ArgonneCPAC/dsps",
