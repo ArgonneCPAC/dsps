@@ -63,6 +63,18 @@ def _tw_cuml_kern(x, m, h):
 
 
 @jjit
+def _tw_sigmoid(x, x0, tw_h, ymin, ymax):
+    height_diff = ymax - ymin
+    body = _tw_cuml_kern(x, x0, tw_h)
+    return ymin + height_diff * body
+
+
+@jjit
+def _get_tw_h_from_sigmoid_k(k):
+    return 1 / (0.614 * k)
+
+
+@jjit
 def _triweighted_histogram_kernel(x, sig, lo, hi):
     """Triweight kernel integrated across the boundaries of a single bin."""
     a = _tw_cuml_kern(x, lo, sig)
