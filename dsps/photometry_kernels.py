@@ -32,11 +32,26 @@ def _calc_obs_mag_no_dimming(wave_spec_rest, lum_spec, wave_filter, trans_filter
 
 
 @jjit
+def _calc_rest_mag(wave_spec_rest, lum_spec, wave_filter, trans_filter):
+    flux_source = _rest_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter)
+    flux_ab0 = _flux_ab0_at_10pc(wave_filter, trans_filter)
+    return -2.5 * jnp.log10(flux_source / flux_ab0)
+
+
+@jjit
 def _obs_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter, z):
     lum_zshift_phot = jnp.interp(
         wave_filter, wave_spec_rest * (1 + z), lum_spec, left=0, right=0
     )
     integrand = trans_filter * lum_zshift_phot / wave_filter
+    lum_filter = jnp.trapz(integrand, x=wave_filter)
+    return lum_filter
+
+
+@jjit
+def _rest_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter):
+    lum_phot = jnp.interp(wave_filter, wave_spec_rest, lum_spec, left=0, right=0)
+    integrand = trans_filter * lum_phot / wave_filter
     lum_filter = jnp.trapz(integrand, x=wave_filter)
     return lum_filter
 
