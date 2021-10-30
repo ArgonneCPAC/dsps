@@ -1,8 +1,6 @@
 """
 """
 from jax import jit as jjit
-from jax import vmap
-from jax import grad
 from jax import numpy as jnp
 from .sfh_model import diffstar_sfh
 from .mzr import mzr_model
