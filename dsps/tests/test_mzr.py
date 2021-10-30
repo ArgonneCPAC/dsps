@@ -1,7 +1,7 @@
 """
 """
 import numpy as np
-from ..metallicity import _get_met_weights_singlegal
+from ..mzr import _get_met_weights_singlegal
 from ..utils import _get_bin_edges
 
 

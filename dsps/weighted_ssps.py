@@ -5,7 +5,7 @@ from jax import jit as jjit
 from jax import numpy as jnp
 from .stellar_ages import _get_sfh_tables, _get_age_weights_from_tables
 from .stellar_ages import _get_lgt_birth, _get_lg_age_bin_edges
-from .metallicity import calc_lgmet_weights_from_logsm_table_single_t_birth
+from .mzr import calc_lgmet_weights_from_logsm_table_single_t_birth
 
 
 _a = (0, None, None, None, None)

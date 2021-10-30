@@ -3,7 +3,7 @@
 import numpy as np
 from ..weighted_ssps import _calc_weighted_ssp_from_diffstar_params
 from ..sfh_model import DEFAULT_MAH_PARAMS, DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS
-from ..metallicity import DEFAULT_MZR_PARAMS
+from ..mzr import DEFAULT_MZR_PARAMS
 
 
 def test_calc_weighted_ssp_from_diffstar_params():
