@@ -25,17 +25,14 @@ MZR_T0_PARAM_BOUNDS = OrderedDict(
     mzr_t0_slope_hi=(0.0, 0.3),
 )
 
+MZR_EVOL_T0 = 12.5
+MZR_EVOL_K = 1.6
 MZR_VS_T_PARAMS = OrderedDict(
-    mzr_y_at_tc_x0=11.04,
-    mzr_y_at_tc_k=0.52,
-    mzr_y_at_tc_ylo=-0.95,
-    mzr_y_at_tc_yhi=0.07,
-    mzr_tc_x0=10.62,
-    mzr_tc_k=0.23,
-    mzr_tc_ylo=8.32,
-    mzr_tc_yhi=14.93,
-    mzr_early_time_slope=-0.57,
-    mzr_k=0.47,
+    c0_y_at_tlook_c=-1.455,
+    c1_y_at_tlook_c=0.13,
+    tlook_c=8.44,
+    c0_early_time_slope=-0.959,
+    c1_early_time_slope=0.067242,
 )
 
 MZR_SCATTER_PARAMS = OrderedDict(mzr_scatter=0.1)
@@ -80,45 +77,72 @@ def maiolino08_metallicity_evolution(logsm, logm0, k0):
 
 
 @jjit
-def _y_at_tc_vs_logsm(logsm, y_at_tc_x0, y_at_tc_k, y_at_tc_ylo, y_at_tc_yhi):
-    return _sigmoid(logsm, y_at_tc_x0, y_at_tc_k, y_at_tc_ylo, y_at_tc_yhi)
-
-
-@jjit
-def _tc_vs_logsm(logsm, tc_x0, tc_k, tc_ylo, tc_yhi):
-    return _sigmoid(logsm, tc_x0, tc_k, tc_ylo, tc_yhi)
-
-
-@jjit
-def _delta_logz_vs_t(t, y_at_tc, tc, early_time_slope, k):
+def _delta_logz_vs_t_lookback(t_lookback, y_at_tc, tc, early_time_slope, k):
     late_time_slope = y_at_tc / tc
     args = y_at_tc, tc, k, late_time_slope, early_time_slope
-    logZ_reduction = _sig_slope(t, *args)
+    logZ_reduction = _sig_slope(t_lookback, *args)
     return logZ_reduction
+
+
+@jjit
+def _get_p_at_lgmstar(
+    lgmstar,
+    c0_y_at_tlook_c,
+    c1_y_at_tlook_c,
+    tlook_c,
+    c0_early_time_slope,
+    c1_early_time_slope,
+):
+    y_at_tlook_c = c0_y_at_tlook_c + c1_y_at_tlook_c * lgmstar
+    tlook_c = tlook_c + jnp.zeros_like(lgmstar)
+    early_time_slope = c0_early_time_slope + c1_early_time_slope * lgmstar
+    return y_at_tlook_c, tlook_c, early_time_slope
+
+
+@jjit
+def _delta_logz_at_t_lookback(
+    lgmstar,
+    t_lookback,
+    c0_y_at_tlook_c,
+    c1_y_at_tlook_c,
+    tlook_c,
+    c0_early_time_slope,
+    c1_early_time_slope,
+):
+    y_at_tlook_c, tlook_c, early_time_slope = _get_p_at_lgmstar(
+        lgmstar,
+        c0_y_at_tlook_c,
+        c1_y_at_tlook_c,
+        tlook_c,
+        c0_early_time_slope,
+        c1_early_time_slope,
+    )
+    logZ_reduction = _delta_logz_vs_t_lookback(
+        t_lookback, y_at_tlook_c, tlook_c, early_time_slope, MZR_EVOL_K
+    )
+    return jnp.where(logZ_reduction > 0, 0, logZ_reduction)
 
 
 @jjit
 def mzr_evolution_model(
     logsm,
-    t,
-    mzr_y_at_tc_x0,
-    mzr_y_at_tc_k,
-    mzr_y_at_tc_ylo,
-    mzr_y_at_tc_yhi,
-    mzr_tc_x0,
-    mzr_tc_k,
-    mzr_tc_ylo,
-    mzr_tc_yhi,
-    mzr_early_time_slope,
-    mzr_k,
+    cosmic_time,
+    c0_y_at_tlook_c,
+    c1_y_at_tlook_c,
+    tlook_c,
+    c0_early_time_slope,
+    c1_early_time_slope,
 ):
-    t_lookback = TODAY - t
-    mzr_y_at_tc = _y_at_tc_vs_logsm(
-        logsm, mzr_y_at_tc_x0, mzr_y_at_tc_k, mzr_y_at_tc_ylo, mzr_y_at_tc_yhi
-    )
-    mzr_tc = _tc_vs_logsm(logsm, mzr_tc_x0, mzr_tc_k, mzr_tc_ylo, mzr_tc_yhi)
-    logZ_reduction = _delta_logz_vs_t(
-        t_lookback, mzr_y_at_tc, mzr_tc, mzr_early_time_slope, mzr_k
+    t_lookback = MZR_EVOL_T0 - cosmic_time
+    t_lookback = jnp.where(t_lookback < 0, 0, t_lookback)
+    logZ_reduction = _delta_logz_at_t_lookback(
+        logsm,
+        t_lookback,
+        c0_y_at_tlook_c,
+        c1_y_at_tlook_c,
+        tlook_c,
+        c0_early_time_slope,
+        c1_early_time_slope,
     )
     return logZ_reduction
 
@@ -132,16 +156,11 @@ def mzr_model(
     mzr_t0_k,
     mzr_t0_slope_lo,
     mzr_t0_slope_hi,
-    mzr_y_at_tc_x0,
-    mzr_y_at_tc_k,
-    mzr_y_at_tc_ylo,
-    mzr_y_at_tc_yhi,
-    mzr_tc_x0,
-    mzr_tc_k,
-    mzr_tc_ylo,
-    mzr_tc_yhi,
-    mzr_early_time_slope,
-    mzr_k,
+    c0_y_at_tlook_c,
+    c1_y_at_tlook_c,
+    tlook_c,
+    c0_early_time_slope,
+    c1_early_time_slope,
 ):
     lgmet_at_t0 = mzr_model_t0(
         logsm, mzr_t0_y0, mzr_t0_x0, mzr_t0_k, mzr_t0_slope_lo, mzr_t0_slope_hi
@@ -149,16 +168,11 @@ def mzr_model(
     logZ_reduction = mzr_evolution_model(
         logsm,
         t,
-        mzr_y_at_tc_x0,
-        mzr_y_at_tc_k,
-        mzr_y_at_tc_ylo,
-        mzr_y_at_tc_yhi,
-        mzr_tc_x0,
-        mzr_tc_k,
-        mzr_tc_ylo,
-        mzr_tc_yhi,
-        mzr_early_time_slope,
-        mzr_k,
+        c0_y_at_tlook_c,
+        c1_y_at_tlook_c,
+        tlook_c,
+        c0_early_time_slope,
+        c1_early_time_slope,
     )
     return lgmet_at_t0 + logZ_reduction
 
