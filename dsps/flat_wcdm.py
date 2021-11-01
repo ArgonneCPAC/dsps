@@ -4,7 +4,9 @@ from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap
 
-c_speed = 2.99792458e8  # m/s
+PLANCK15 = jnp.array((0.3075, 0.691, -1.0, 0.0, 0.6774))
+
+C_SPEED = 2.99792458e8  # m/s
 
 # rho_crit(z=0) in [Msun * h^2 * kpc^-3]
 RHO_CRIT0_KPC3_UNITY_H = 277.536627  # multiply by h**2 in cosmology conversion
@@ -44,7 +46,7 @@ def _comoving_distance_to_z(z, Om0, Ode0, w0, wa, h):
     integrand = _integrand_oneOverEz(z_table, Om0, Ode0, w0, wa)
     # The 1E-5 factor comes from the conversion between the
     # speed of light in m/s to km/s and H0 = 100 * h.
-    return jnp.trapz(integrand, x=z_table) * c_speed * 1e-5 / h
+    return jnp.trapz(integrand, x=z_table) * C_SPEED * 1e-5 / h
 
 
 @jjit
