@@ -5,6 +5,7 @@ from jax import numpy as jnp
 from jax import vmap
 
 PLANCK15 = jnp.array((0.3075, 0.691, -1.0, 0.0, 0.6774))
+WMAP5 = jnp.array((0.277, 0.723, -1.0, 0.0, 0.702))
 
 C_SPEED = 2.99792458e8  # m/s
 
