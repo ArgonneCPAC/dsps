@@ -90,3 +90,6 @@ _e = [None, None, 0, 0, None, None, None]
 _calc_obs_mag_vmap = jjit(
     jvmap(jvmap(jvmap(_calc_obs_mag, in_axes=_d), in_axes=_c), in_axes=_c)
 )
+
+_a = (*[None] * 4, 0, *[None] * 5)
+_calc_obs_mag_vmap_z = jjit(jvmap(_calc_obs_mag, in_axes=_a))
