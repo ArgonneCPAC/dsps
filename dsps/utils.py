@@ -107,6 +107,14 @@ def triweighted_histogram(x, sig, xbins):
 
 
 @jjit
+def triweight_gaussian(x, m, h):
+    z = (x - m) / h
+    val = 35 / 96 * (1 - (z / 3) ** 2) ** 3 / h
+    msk = (z < -3) | (z > 3)
+    return jnp.where(msk, 0, val)
+
+
+@jjit
 def interpolate_transmission_curve(wave, trans, n_out, pcut_lo=0, pcut_hi=1):
     """ """
     lowest_bin_edge = wave[0] - (wave[1] - wave[0]) / 2
