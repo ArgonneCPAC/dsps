@@ -2,7 +2,6 @@
 """
 from jax import numpy as jnp
 from jax import jit as jjit
-from jax import vmap as jvmap
 from .flat_wcdm import _distance_modulus_to_z
 
 AB0 = 1.13492e-13  # 3631 Jansky placed at 10 pc in units of Lsun/Hz
@@ -68,25 +67,3 @@ def _flux_ab0_at_10pc(wave_filter, trans_filter):
     integrand = trans_filter * AB0 / wave_filter
     lum_ab0_filter = jnp.trapz(integrand, x=wave_filter)
     return lum_ab0_filter
-
-
-_a = [None, 0, None, None, None]
-_b = [None, None, None, None, 0]
-_obs_flux_ssp_vmap = jjit(
-    jvmap(jvmap(jvmap(_obs_flux_ssp, in_axes=_b), in_axes=_a), in_axes=_a)
-)
-_calc_obs_mag_no_dimming_vmap = jjit(
-    jvmap(jvmap(jvmap(_calc_obs_mag_no_dimming, in_axes=_b), in_axes=_a), in_axes=_a)
-)
-
-_calc_obs_mag_no_dimming_vmap_singlemet = jjit(
-    jvmap(jvmap(_calc_obs_mag_no_dimming, in_axes=_b), in_axes=_a)
-)
-
-_c = [None, 0, None, None, None, None, None]
-_d = [None, None, None, None, 0, None, None]
-_e = [None, None, 0, 0, None, None, None]
-
-_calc_obs_mag_vmap = jjit(
-    jvmap(jvmap(jvmap(_calc_obs_mag, in_axes=_d), in_axes=_c), in_axes=_c)
-)

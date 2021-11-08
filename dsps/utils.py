@@ -104,3 +104,30 @@ def triweighted_histogram(x, sig, xbins):
 
     """
     return _triweighted_histogram_vmap(x, sig, xbins[:-1], xbins[1:])
+
+
+@jjit
+def triweight_gaussian(x, m, h):
+    z = (x - m) / h
+    val = 35 / 96 * (1 - (z / 3) ** 2) ** 3 / h
+    msk = (z < -3) | (z > 3)
+    return jnp.where(msk, 0, val)
+
+
+@jjit
+def interpolate_transmission_curve(wave, trans, n_out, pcut_lo=0, pcut_hi=1):
+    """ """
+    lowest_bin_edge = wave[0] - (wave[1] - wave[0]) / 2
+    highest_bin_edge = wave[-1] + (wave[-1] - wave[-2]) / 2
+    dwave = jnp.diff(_get_bin_edges(wave, lowest_bin_edge, highest_bin_edge))
+    cuml = jnp.cumsum(dwave * trans)
+    cuml = cuml / cuml[-1]
+
+    msk = cuml >= pcut_lo
+    msk &= cuml <= pcut_hi
+
+    wave_lo, wave_hi = dwave[msk][0], dwave[msk][-1]
+    wave_out = jnp.linspace(wave_lo, wave_hi, n_out)
+    trans_out = jnp.jnp.interp(wave_out, wave, trans)
+
+    return wave_out, trans_out
