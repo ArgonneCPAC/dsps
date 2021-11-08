@@ -8,7 +8,7 @@ from .sfh_model import diffstar_sfh, TODAY
 
 
 T_BIRTH_MIN = 0.001
-N_T_LGSM_INTEGRATION = 100
+N_T_LGSM_INTEGRATION = 200
 
 
 @jjit
