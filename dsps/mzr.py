@@ -208,8 +208,8 @@ def _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmetbin_edges):
 
 
 @jjit
-def calc_lgmet_weights_from_logsm_table_single_t_birth(
-    lgt_birth,
+def calc_lgmet_weights_from_logsm_table(
+    lgt_obs,
     lgmet_bin_mids,
     lgt_table,
     logsm_table,
@@ -218,7 +218,14 @@ def calc_lgmet_weights_from_logsm_table_single_t_birth(
     lgmet_bin_edges = _get_bin_edges(lgmet_bin_mids, LGMET_LO, LGMET_HI)
     lgmet_scatter = met_params[-1]
 
-    logsm_at_t_birth = jnp.interp(lgt_birth, lgt_table, logsm_table)
-    lgmet = mzr_model(logsm_at_t_birth, 10 ** lgt_birth, *met_params[:-1])
+    logsm_at_t_obs = jnp.interp(lgt_obs, lgt_table, logsm_table)
+    lgmet = mzr_model(logsm_at_t_obs, 10 ** lgt_obs, *met_params[:-1])
+    lgmet_weights = _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmet_bin_edges)
+    return lgmet_weights
+
+
+@jjit
+def calc_const_lgmet_weights(lgmet, lgmet_bin_mids, lgmet_scatter):
+    lgmet_bin_edges = _get_bin_edges(lgmet_bin_mids, LGMET_LO, LGMET_HI)
     lgmet_weights = _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmet_bin_edges)
     return lgmet_weights

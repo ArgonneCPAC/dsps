@@ -1,17 +1,22 @@
 """
 """
-from jax import vmap
 from jax import jit as jjit
 from jax import numpy as jnp
 from .stellar_ages import _get_sfh_tables, _get_age_weights_from_tables
 from .stellar_ages import _get_lgt_birth, _get_lg_age_bin_edges
-from .mzr import calc_lgmet_weights_from_logsm_table_single_t_birth
+from .mzr import calc_lgmet_weights_from_logsm_table
+from .mzr import calc_const_lgmet_weights
 
 
-_a = (0, None, None, None, None)
-calc_lgmet_weights_from_logsm_table = jjit(
-    vmap(calc_lgmet_weights_from_logsm_table_single_t_birth, in_axes=_a)
-)
+@jjit
+def _get_age_weights(t_obs, lg_ages, lgt_table, logsm_table):
+    lg_age_bin_edges = _get_lg_age_bin_edges(lg_ages)
+    lgt_birth_bin_edges = _get_lgt_birth(t_obs, lg_age_bin_edges)
+    lgt_birth_bin_mids = _get_lgt_birth(t_obs, lg_ages)
+    age_weights = _get_age_weights_from_tables(
+        lgt_birth_bin_edges, lgt_table, logsm_table
+    )
+    return lgt_birth_bin_mids, age_weights
 
 
 @jjit
@@ -29,20 +34,18 @@ def _calc_weighted_ssp_from_sfh_table(
 ):
     n_met, n_ages, n_filters = ssp_templates.shape
 
-    lg_age_bin_edges = _get_lg_age_bin_edges(lg_ages)
-    lgt_birth_bin_edges = _get_lgt_birth(t_obs, lg_age_bin_edges)
-    lgt_birth_bin_mids = _get_lgt_birth(t_obs, lg_ages)
-
-    age_weights = _get_age_weights_from_tables(
-        lgt_birth_bin_edges, lgt_table, logsm_table
+    lgt_birth_bin_mids, age_weights = _get_age_weights(
+        t_obs, lg_ages, lgt_table, logsm_table
     )
 
+    lgt_obs = jnp.log10(t_obs)
     lgmet_weights = calc_lgmet_weights_from_logsm_table(
-        lgt_birth_bin_mids, lgZsun_bin_mids, lgt_table, logsm_table, met_params
+        lgt_obs, lgZsun_bin_mids, lgt_table, logsm_table, met_params
     )
-
-    w = lgmet_weights.T * age_weights.reshape((1, n_ages))
-    wmags = w.reshape((n_met, n_ages, 1)) * ssp_templates
+    lgmet_weights = lgmet_weights.reshape((n_met, 1, 1))
+    age_weights = age_weights.reshape((1, n_ages, 1))
+    w = lgmet_weights * age_weights
+    wmags = w * ssp_templates
     return lgmet_weights, age_weights, jnp.sum(wmags, axis=(0, 1))
 
 
