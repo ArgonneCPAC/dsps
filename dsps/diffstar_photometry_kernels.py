@@ -6,7 +6,7 @@ from .weighted_ssps import _calc_weighted_ssp_from_diffstar_params_const_zmet
 
 
 @jjit
-def _calc_weighted_mag_from_diffstar_params_const_zmet(
+def _calc_weighted_rest_mag_from_diffstar_params_const_zmet(
     t_obs,
     lgZsun_bin_mids,
     log_age_gyr,

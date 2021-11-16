@@ -2,14 +2,14 @@
 """
 import numpy as np
 from ..diffstar_photometry_kernels import (
-    _calc_weighted_mag_from_diffstar_params_const_zmet,
+    _calc_weighted_rest_mag_from_diffstar_params_const_zmet,
 )
 from ..sfh_model import DEFAULT_MAH_PARAMS, DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS
 from ..mzr import DEFAULT_MZR_PARAMS
 from .retrieve_fake_fsps_data import load_fake_sps_data
 
 
-def test_calc_weighted_ssp_from_diffstar_params_const_zmet():
+def test_calc_weighted_rest_mag_from_diffstar_params_const_zmet():
 
     res = load_fake_sps_data()
     filter_waves, filter_trans, wave_ssp, spec_ssp, lgZsun_bin_mids, log_age_gyr = res
@@ -36,5 +36,5 @@ def test_calc_weighted_ssp_from_diffstar_params_const_zmet():
         lgmet,
         lgmet_scatter,
     )
-    mag = _calc_weighted_mag_from_diffstar_params_const_zmet(*args)
+    mag = _calc_weighted_rest_mag_from_diffstar_params_const_zmet(*args)
     assert 0 < mag < 10
