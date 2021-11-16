@@ -30,6 +30,6 @@ def test_calc_weighted_ssp_from_diffstar_params():
         met_params,
     )
     lgmet_weights, age_weights, mags = _calc_weighted_ssp_from_diffstar_params(*args)
-    assert lgmet_weights.shape == (n_age, n_met)
-    assert age_weights.shape == (n_age,)
+    assert lgmet_weights.shape == (n_met, 1, 1)
+    assert age_weights.shape == (1, n_age, 1)
     assert mags.shape == (n_filters,)
