@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from copy import deepcopy
 from jax import jit as jjit
-from .utils import _tw_sigmoid, _sigmoid, _sig_slope
+from .utils import _sigmoid, _sig_slope
 
 
 PARAMS = OrderedDict(x0=2, yhi=0.58)
@@ -29,8 +29,22 @@ VAN_DOKKUM_PARAMS.update(a=0.238, d=0.156)
 
 
 @jjit
-def _surviving_mstar(lg_age_myr):
+def _surviving_mstar(
+    lg_age_myr,
+    a=DEFAULT_PARAMS["a"],
+    b=DEFAULT_PARAMS["b"],
+    lgk1=DEFAULT_PARAMS["lgk1"],
+    d=DEFAULT_PARAMS["d"],
+    e=DEFAULT_PARAMS["e"],
+    f=DEFAULT_PARAMS["f"],
+    lgk2=DEFAULT_PARAMS["lgk2"],
+    h=DEFAULT_PARAMS["h"],
+):
     """Calculate the fraction of stellar mass that survives as a population ages.
+
+    Default behavior assumes Chabrier IMF.
+    Calibrations for the following alternative parameters are also available:
+        SALPETER_PARAMS, KROUPA_PARAMS, VAN_DOKKUM_PARAMS
 
     Parameters
     ----------
@@ -43,15 +57,15 @@ def _surviving_mstar(lg_age_myr):
         Surviving fraction
 
     """
-    frac_surviving = _tw_sigmoid(lg_age_myr, PARAMS["x0"], 1, 1, PARAMS["yhi"])
-    return frac_surviving
+    frac_returned = _returned_mass(lg_age_myr, a, b, lgk1, d, e, f, lgk2, h)
+    return 1 - frac_returned
 
 
 @jjit
-def _returned_mass(lg_age_yr, a, b, lgk1, d, e, f, lgk2, h):
+def _returned_mass(lg_age_myr, a, b, lgk1, d, e, f, lgk2, h):
     k1 = 10 ** lgk1
-    z = _sig_slope(lg_age_yr, a, b, k1, d, e)
+    z = _sig_slope(lg_age_myr, a, b, k1, d, e)
 
     k2 = 10 ** lgk2
-    h = _sigmoid(lg_age_yr, f, k2, h, z)
+    h = _sigmoid(lg_age_myr, f, k2, h, z)
     return h
