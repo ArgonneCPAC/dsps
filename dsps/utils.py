@@ -131,3 +131,15 @@ def interpolate_transmission_curve(wave, trans, n_out, pcut_lo=0, pcut_hi=1):
     trans_out = jnp.jnp.interp(wave_out, wave, trans)
 
     return wave_out, trans_out
+
+
+@jjit
+def _sigmoid(x, x0, k, ylo, yhi):
+    height_diff = yhi - ylo
+    return ylo + height_diff / (1 + jnp.exp(-k * (x - x0)))
+
+
+@jjit
+def _sig_slope(x, y0, x0, slope_k, lo, hi):
+    slope = _sigmoid(x, x0, slope_k, lo, hi)
+    return y0 + slope * (x - x0)
