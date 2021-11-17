@@ -2,7 +2,7 @@
 """
 import os
 import numpy as np
-from ..surviving_mstar import _surviving_mstar
+from ..surviving_mstar import surviving_mstar
 from ..surviving_mstar import _returned_mass
 from ..surviving_mstar import SALPETER_PARAMS, CHABRIER_PARAMS
 from ..surviving_mstar import KROUPA_PARAMS, VAN_DOKKUM_PARAMS
@@ -17,7 +17,7 @@ def test_surviving_mstar_default():
     mstar_surviving_fsps = np.loadtxt(
         os.path.join(TEST_DRN, "chabrier_mstar_surviving.txt")
     )
-    mstar_surviving_dsps = _surviving_mstar(log_ages_yr)
+    mstar_surviving_dsps = surviving_mstar(log_ages_yr)
     assert np.allclose(mstar_surviving_fsps, mstar_surviving_dsps, atol=0.02)
 
 

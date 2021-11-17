@@ -29,8 +29,8 @@ VAN_DOKKUM_PARAMS.update(a=0.238, d=0.156)
 
 
 @jjit
-def _surviving_mstar(
-    lg_age_myr,
+def surviving_mstar(
+    lg_age_yr,
     a=DEFAULT_PARAMS["a"],
     b=DEFAULT_PARAMS["b"],
     lgk1=DEFAULT_PARAMS["lgk1"],
@@ -48,8 +48,8 @@ def _surviving_mstar(
 
     Parameters
     ----------
-    lg_age_myr : ndarray of shape (n, )
-        Base-10 log of the age of the stellar population in Myr
+    lg_age_yr : ndarray of shape (n, )
+        Base-10 log of the age of the stellar population in years
 
     Returns
     -------
@@ -57,15 +57,15 @@ def _surviving_mstar(
         Surviving fraction
 
     """
-    frac_returned = _returned_mass(lg_age_myr, a, b, lgk1, d, e, f, lgk2, h)
+    frac_returned = _returned_mass(lg_age_yr, a, b, lgk1, d, e, f, lgk2, h)
     return 1 - frac_returned
 
 
 @jjit
-def _returned_mass(lg_age_myr, a, b, lgk1, d, e, f, lgk2, h):
+def _returned_mass(lg_age_yr, a, b, lgk1, d, e, f, lgk2, h):
     k1 = 10 ** lgk1
-    z = _sig_slope(lg_age_myr, a, b, k1, d, e)
+    z = _sig_slope(lg_age_yr, a, b, k1, d, e)
 
     k2 = 10 ** lgk2
-    h = _sigmoid(lg_age_myr, f, k2, h, z)
+    h = _sigmoid(lg_age_yr, f, k2, h, z)
     return h
