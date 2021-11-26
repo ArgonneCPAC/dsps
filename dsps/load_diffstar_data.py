@@ -12,6 +12,7 @@ from .sfh_model import DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS, DEFAULT_MAH_PARAMS
 from .mzr import DEFAULT_MZR_PARAMS
 
 TASSO_DRN = "/Users/aphearin/work/DATA/diffstar_data"
+BEBOP_DRN = "/lcrc/project/halotools/diffstar_data"
 DIFFSFH_BN = "run2_bpl_small_diffsfh_rejuv_depl_floor_fixed_k_hi_lagprior_minmass7.0"
 DIFFMAH_BN = "run2_bpl_small_diffmah"
 UMACHINE_BN = "um_histories_subsample_dr1_bpl_cens_diffmah.npy"
@@ -46,9 +47,12 @@ get_bounded_q_p_vmap = jjit(vmap(get_bounded_q_p, in_axes=_a))
 
 
 def load_small_bpl_fits(
-    umachine_bn=UMACHINE_BN, diffmah_bn=DIFFMAH_BN, diffsfh_bn=DIFFSFH_BN, drn=TASSO_DRN
+    umachine_bn=UMACHINE_BN,
+    diffmah_bn=DIFFMAH_BN,
+    diffsfh_bn=DIFFSFH_BN,
+    diffstar_drn=TASSO_DRN,
 ):
-    umachine = np.load(os.path.join(TASSO_DRN, umachine_bn))
+    umachine = np.load(os.path.join(diffstar_drn, umachine_bn))
 
     t_bpl_drn = "/Users/aphearin/work/DATA/diffmah_data/PUBLISHED_DATA"
     t_bpl = np.load(os.path.join(t_bpl_drn, "bpl_cosmic_time.npy"))
@@ -58,12 +62,12 @@ def load_small_bpl_fits(
     z_bpl = 1 / a_bpl - 1
 
     diffmah_params = OrderedDict()
-    with h5py.File(os.path.join(TASSO_DRN, diffmah_bn), "r") as hdf:
+    with h5py.File(os.path.join(diffstar_drn, diffmah_bn), "r") as hdf:
         for key in hdf.keys():
             diffmah_params[key] = hdf[key][...]
 
     diffstar_params = OrderedDict()
-    with h5py.File(os.path.join(TASSO_DRN, diffsfh_bn), "r") as hdf:
+    with h5py.File(os.path.join(diffstar_drn, diffsfh_bn), "r") as hdf:
         for key in hdf.keys():
             diffstar_params[key] = hdf[key][...]
 

@@ -5,6 +5,7 @@ import numpy as np
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 TASSO_DRN = "/Users/aphearin/work/DATA/SPS_validation/FSPS_ssp_data"
+BEBOP_DRN = "/lcrc/project/halotools/FSPS_ssp_data"
 
 
 def load_fsps_testing_data(drn, imet=20, iage=5):
