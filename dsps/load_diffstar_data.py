@@ -54,11 +54,8 @@ def load_small_bpl_fits(
 ):
     umachine = np.load(os.path.join(diffstar_drn, umachine_bn))
 
-    t_bpl_drn = "/Users/aphearin/work/DATA/diffmah_data/PUBLISHED_DATA"
-    t_bpl = np.load(os.path.join(t_bpl_drn, "bpl_cosmic_time.npy"))
-
-    z_bpl_drn = "/Users/aphearin/work/DATA/MOCKS/UniverseMachine"
-    a_bpl = np.loadtxt(os.path.join(z_bpl_drn, "scale_list_bpl.dat"))
+    t_bpl = np.load(os.path.join(diffstar_drn, "bpl_cosmic_time.npy"))
+    a_bpl = np.loadtxt(os.path.join(diffstar_drn, "scale_list_bpl.dat"))
     z_bpl = 1 / a_bpl - 1
 
     diffmah_params = OrderedDict()
