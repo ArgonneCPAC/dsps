@@ -30,7 +30,6 @@ def test_calc_obs_mag_history_singlegal():
 def test_calc_obs_mags_galpop():
     res = load_fsps_testing_data(DATA_DRN)
     filter_data, ssp_data, lgZsun_bin_mids, log_age_gyr = res
-    n_obs = 5
     z_obs = 0.5
     n_gals = 10
     flux_galpop = np.tile(ssp_data["flux"], n_gals).reshape((n_gals, -1))

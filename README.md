@@ -1,4 +1,5 @@
 # dsps
+[![tests](https://github.com/ArgonneCPAC/dsps/actions/workflows/tests.yml/badge.svg)](https://github.com/ArgonneCPAC/dsps/actions/workflows/tests.yml)
 
 Differentiable Stellar Population Synthesis
 
