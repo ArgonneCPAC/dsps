@@ -1,0 +1,48 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: null
+
+jobs:
+  tests:
+    name: tests
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.8
+          channels: conda-forge,defaults
+          channel-priority: strict
+          show-channel-urls: true
+          miniforge-version: latest
+          miniforge-variant: Mambaforge          
+
+      - name: configure conda and install code
+        shell: bash -l {0}
+        run: |
+          conda config --set always_yes yes
+          conda install --quiet \
+            numpy \
+            jax \
+            diffmah
+          python -m pip install -e .
+          conda install -y -q \
+            flake8 \
+            pytest \
+            pytest-xdist
+
+      - name: lint
+        shell: bash -l {0}
+        run: |
+          flake8 dsps
+
+      - name: test
+        shell: bash -l {0}
+        run: |
+          pytest -vvs dsps
