@@ -5,7 +5,7 @@ from ..mzr import _get_met_weights_singlegal, MAIOLINO08_PARAMS
 from ..mzr import MZR_VS_T_PARAMS, mzr_evolution_model
 from ..mzr import maiolino08_metallicity_evolution as m08_zevol
 from ..utils import _get_bin_edges
-from astropy.cosmology import Planck15
+from ..flat_wcdm import PLANCK15, _lookback_time
 
 
 def test_get_met_weights():
@@ -29,7 +29,7 @@ def test_get_met_weights():
 
 def test_mzr_fit_agreement_with_maiolino08():
     ztest = np.array(list(MAIOLINO08_PARAMS.keys())[1:-1])
-    cosmic_time = Planck15.age(ztest).value
+    cosmic_time = 13.8 - _lookback_time(ztest, *PLANCK15)
     lgsmarr_fit = np.linspace(9, 11, 50)
     m08_at_z0 = m08_zevol(lgsmarr_fit, *MAIOLINO08_PARAMS[0.07])
 
