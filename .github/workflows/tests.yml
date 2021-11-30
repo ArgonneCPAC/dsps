@@ -28,9 +28,7 @@ jobs:
         run: |
           conda config --set always_yes yes
           mamba install --quiet \
-            numpy \
-            jax \
-            diffmah
+            --file=requirements.txt
           python -m pip install -e .
           mamba install -y -q \
             flake8 \
