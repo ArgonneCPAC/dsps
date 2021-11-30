@@ -1,4 +1,4 @@
-astopy
+astropy
 diffmah
 numpy
 jax
