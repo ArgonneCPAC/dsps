@@ -28,8 +28,15 @@ def test_calc_ew_from_diffstar_params_const_lgu_lgmet():
     lgu = -2.0
     lgu_scatter = 0.2
 
-    ewband1_lo, ewband1_hi = OIIa - 5, OIIa - 20
-    ewband2_lo, ewband2_hi = OIIb + 5, OIIb + 20
+    line_mid = OIIb
+    line_lo = line_mid - 15
+    line_hi = line_mid + 15
+
+    cont_lo_lo = line_mid - 100
+    cont_lo_hi = line_mid - 50
+    cont_hi_lo = line_mid + 50
+    cont_hi_hi = line_mid + 100
+
     args = (
         t_obs,
         lgZsun_bin_mids,
@@ -44,11 +51,13 @@ def test_calc_ew_from_diffstar_params_const_lgu_lgmet():
         lgmet_scatter,
         lgu,
         lgu_scatter,
-        OIIa,
-        ewband1_lo,
-        ewband1_hi,
-        ewband2_lo,
-        ewband2_hi,
+        line_lo,
+        line_mid,
+        line_hi,
+        cont_lo_lo,
+        cont_lo_hi,
+        cont_hi_lo,
+        cont_hi_hi,
     )
     ew, total_line_flux = _calc_ew_from_diffstar_params_const_lgu_lgmet(*args)
 
@@ -66,8 +75,15 @@ def test_calc_ew_from_diffstar_params_const_lgmet():
     lgmet = -1.0
     lgmet_scatter = met_params[-1]
 
-    ewband1_lo, ewband1_hi = OIIa - 5, OIIa - 20
-    ewband2_lo, ewband2_hi = OIIb + 5, OIIb + 20
+    line_mid = OIIb
+    line_lo = line_mid - 15
+    line_hi = line_mid + 15
+
+    cont_lo_lo = line_mid - 100
+    cont_lo_hi = line_mid - 50
+    cont_hi_lo = line_mid + 50
+    cont_hi_hi = line_mid + 100
+
     args = (
         t_obs,
         lgZsun_bin_mids,
@@ -79,10 +95,12 @@ def test_calc_ew_from_diffstar_params_const_lgmet():
         *q_params,
         lgmet,
         lgmet_scatter,
-        OIIa,
-        ewband1_lo,
-        ewband1_hi,
-        ewband2_lo,
-        ewband2_hi,
+        line_lo,
+        line_mid,
+        line_hi,
+        cont_lo_lo,
+        cont_lo_hi,
+        cont_hi_lo,
+        cont_hi_hi,
     )
     ew, total_line_flux = _calc_ew_from_diffstar_params_const_lgmet(*args)

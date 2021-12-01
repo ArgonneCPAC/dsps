@@ -91,11 +91,13 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
     lgmet_scatter,
     lgu,
     lgu_scatter,
-    line_wave,
-    ewband1_lo,
-    ewband1_hi,
-    ewband2_lo,
-    ewband2_hi,
+    line_lo,
+    line_mid,
+    line_hi,
+    cont_lo_lo,
+    cont_lo_hi,
+    cont_hi_lo,
+    cont_hi_hi,
 ):
     n_lgu, n_met, n_ages, n_spec = ssp_flux.shape
 
@@ -133,11 +135,13 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
     ew, total_line_flux = _ew_kernel(
         ssp_wave,
         weighted_ssp,
-        line_wave,
-        ewband1_lo,
-        ewband1_hi,
-        ewband2_lo,
-        ewband2_hi,
+        line_lo,
+        line_mid,
+        line_hi,
+        cont_lo_lo,
+        cont_lo_hi,
+        cont_hi_lo,
+        cont_hi_hi,
     )
     return ew, total_line_flux
 
@@ -168,11 +172,13 @@ def _calc_ew_from_diffstar_params_const_lgmet(
     lg_rejuv,
     lgmet,
     lgmet_scatter,
-    line_wave,
-    ewband1_lo,
-    ewband1_hi,
-    ewband2_lo,
-    ewband2_hi,
+    line_lo,
+    line_mid,
+    line_hi,
+    cont_lo_lo,
+    cont_lo_hi,
+    cont_hi_lo,
+    cont_hi_hi,
 ):
     n_met, n_ages, n_spec = ssp_flux.shape
 
@@ -206,10 +212,12 @@ def _calc_ew_from_diffstar_params_const_lgmet(
     ew, total_line_flux = _ew_kernel(
         ssp_wave,
         weighted_ssp,
-        line_wave,
-        ewband1_lo,
-        ewband1_hi,
-        ewband2_lo,
-        ewband2_hi,
+        line_lo,
+        line_mid,
+        line_hi,
+        cont_lo_lo,
+        cont_lo_hi,
+        cont_hi_lo,
+        cont_hi_hi,
     )
     return ew, total_line_flux
