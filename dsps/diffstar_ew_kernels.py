@@ -68,6 +68,7 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
     lgmet_scatter,
     lgu,
     lgu_scatter,
+    line_wave,
     ewband1_lo,
     ewband1_hi,
     ewband2_lo,
@@ -106,7 +107,13 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
     ssp_weights = age_weights * lgmet_weights * lgu_weights
     weighted_ssp = jnp.sum(ssp_flux * ssp_weights, axis=(0, 1, 2))
 
-    ew, line_area = _ew_kernel(
-        ssp_wave, weighted_ssp, ewband1_lo, ewband1_hi, ewband2_lo, ewband2_hi
+    ew, total_line_flux = _ew_kernel(
+        ssp_wave,
+        weighted_ssp,
+        line_wave,
+        ewband1_lo,
+        ewband1_hi,
+        ewband2_lo,
+        ewband2_hi,
     )
-    return ew
+    return ew, total_line_flux

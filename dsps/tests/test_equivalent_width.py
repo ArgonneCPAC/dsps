@@ -22,5 +22,7 @@ def test_ew_kernel():
     line = get_fake_line(wave, line_mid, line_width, line_area)
     w1, w2 = line_mid - 15 * line_width, line_mid - 6 * line_width
     w3, w4 = line_mid + 6 * line_width, line_mid + 15 * line_width
-    ew, inferred_line_area = _ew_kernel(wave, continuum + line, w1, w2, w3, w4)
-    assert np.allclose(line_area, inferred_line_area, rtol=0.02)
+    ew, inferred_line_flux = _ew_kernel(
+        wave, continuum + line, line_mid, w1, w2, w3, w4
+    )
+    assert np.allclose(line_area, inferred_line_flux, rtol=0.02)

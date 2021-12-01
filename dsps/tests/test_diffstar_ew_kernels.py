@@ -43,9 +43,10 @@ def test_calc_weighted_rest_mag_from_diffstar_params_const_zmet():
         lgmet_scatter,
         lgu,
         lgu_scatter,
+        OIIa,
         ewband1_lo,
         ewband1_hi,
         ewband2_lo,
         ewband2_hi,
     )
-    ew = _calc_ew_from_diffstar_params_const_lgu_lgmet(*args)
+    ew, total_line_flux = _calc_ew_from_diffstar_params_const_lgu_lgmet(*args)

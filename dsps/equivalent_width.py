@@ -38,7 +38,7 @@ def _weighted_quadratic_fit(x, y, w):
 
 
 @jjit
-def _ew_kernel(wave, flux, x1, x2, x3, x4):
+def _ew_kernel(wave, flux, line, x1, x2, x3, x4):
     quadfit_w = _get_quadfit_weights(wave, x1, x2, x3, x4)
     c = _weighted_quadratic_fit(wave, flux, quadfit_w)
     c2, c1, c0 = c
@@ -47,8 +47,9 @@ def _ew_kernel(wave, flux, x1, x2, x3, x4):
     continuum_integrand = int_w * (c0 + c1 * wave + c2 * wave * wave)
     spec_integrand = int_w * flux
 
+    continuum_strength_at_line = c0 + c1 * line
     continuum_flux = jnp.trapz(continuum_integrand, x=wave)
     spec_flux = jnp.trapz(spec_integrand, x=wave)
-    line_area = spec_flux - continuum_flux
-    ew = spec_flux / continuum_flux - 1
-    return ew, line_area
+    total_line_flux = spec_flux - continuum_flux
+    equivalent_width = total_line_flux / continuum_strength_at_line
+    return equivalent_width, total_line_flux
