@@ -12,6 +12,29 @@ LGU_LO, LGU_HI = -10.0, 10.0
 
 
 @jjit
+def _calc_age_met_weights_from_sfh_table(
+    t_obs,
+    lgZsun_bin_mids,
+    lg_ages,
+    ssp_templates,
+    t_table,
+    lgt_table,
+    dt_table,
+    sfh_table,
+    logsm_table,
+    lgmet,
+    lgmet_scatter,
+):
+    lgt_birth_bin_mids, age_weights = _get_age_weights(
+        t_obs, lg_ages, lgt_table, logsm_table
+    )
+    lgmet_bin_edges = _get_bin_edges(lgZsun_bin_mids, LGMET_LO, LGMET_HI)
+    lgmet_weights = _get_triweights_singlepoint(lgmet, lgmet_scatter, lgmet_bin_edges)
+
+    return age_weights, lgmet_weights
+
+
+@jjit
 def _calc_age_met_lgu_weights_from_sfh_table(
     t_obs,
     lgZsun_bin_mids,
@@ -106,6 +129,79 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
     lgu_weights = lgu_weights.reshape((n_lgu, 1, 1, 1))
     ssp_weights = age_weights * lgmet_weights * lgu_weights
     weighted_ssp = jnp.sum(ssp_flux * ssp_weights, axis=(0, 1, 2))
+
+    ew, total_line_flux = _ew_kernel(
+        ssp_wave,
+        weighted_ssp,
+        line_wave,
+        ewband1_lo,
+        ewband1_hi,
+        ewband2_lo,
+        ewband2_hi,
+    )
+    return ew, total_line_flux
+
+
+@jjit
+def _calc_ew_from_diffstar_params_const_lgmet(
+    t_obs,
+    lgZsun_bin_mids,
+    log_age_gyr,
+    ssp_wave,
+    ssp_flux,
+    mah_logt0,
+    mah_logmp,
+    mah_logtc,
+    mah_k,
+    mah_early,
+    mah_late,
+    lgmcrit,
+    lgy_at_mcrit,
+    indx_k,
+    indx_lo,
+    indx_hi,
+    floor_low,
+    tau_dep,
+    lg_qt,
+    lg_qs,
+    lg_drop,
+    lg_rejuv,
+    lgmet,
+    lgmet_scatter,
+    line_wave,
+    ewband1_lo,
+    ewband1_hi,
+    ewband2_lo,
+    ewband2_hi,
+):
+    n_met, n_ages, n_spec = ssp_flux.shape
+
+    mah_params = mah_logt0, mah_logmp, mah_logtc, mah_k, mah_early, mah_late
+    ms_params = lgmcrit, lgy_at_mcrit, indx_k, indx_lo, indx_hi, floor_low, tau_dep
+    q_params = lg_qt, lg_qs, lg_drop, lg_rejuv
+
+    _res = _get_sfh_tables(mah_params, ms_params, q_params)
+    t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
+
+    _res = _calc_age_met_weights_from_sfh_table(
+        t_obs,
+        lgZsun_bin_mids,
+        log_age_gyr,
+        ssp_flux,
+        t_table,
+        lgt_table,
+        dt_table,
+        sfh_table,
+        logsm_table,
+        lgmet,
+        lgmet_scatter,
+    )
+    age_weights, lgmet_weights = _res
+
+    age_weights = age_weights.reshape((1, n_ages, 1))
+    lgmet_weights = lgmet_weights.reshape((n_met, 1, 1))
+    ssp_weights = age_weights * lgmet_weights
+    weighted_ssp = jnp.sum(ssp_flux * ssp_weights, axis=(0, 1))
 
     ew, total_line_flux = _ew_kernel(
         ssp_wave,

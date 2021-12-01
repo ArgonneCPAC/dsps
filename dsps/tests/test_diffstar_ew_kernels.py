@@ -2,6 +2,7 @@
 """
 import numpy as np
 from ..diffstar_ew_kernels import _calc_ew_from_diffstar_params_const_lgu_lgmet
+from ..diffstar_ew_kernels import _calc_ew_from_diffstar_params_const_lgmet
 from ..sfh_model import DEFAULT_MAH_PARAMS, DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS
 from ..mzr import DEFAULT_MZR_PARAMS
 from .retrieve_fake_fsps_data import load_fake_sps_data
@@ -9,7 +10,7 @@ from .retrieve_fake_fsps_data import load_fake_sps_data
 OIIa, OIIb = 4996.0, 5000.0
 
 
-def test_calc_weighted_rest_mag_from_diffstar_params_const_zmet():
+def test_calc_ew_from_diffstar_params_const_lgu_lgmet():
 
     res = load_fake_sps_data()
     filter_waves, filter_trans, wave_ssp, _spec_ssp, lgZsun_bin_mids, log_age_gyr = res
@@ -50,3 +51,38 @@ def test_calc_weighted_rest_mag_from_diffstar_params_const_zmet():
         ewband2_hi,
     )
     ew, total_line_flux = _calc_ew_from_diffstar_params_const_lgu_lgmet(*args)
+
+
+def test_calc_ew_from_diffstar_params_const_lgmet():
+
+    res = load_fake_sps_data()
+    filter_waves, filter_trans, wave_ssp, spec_ssp, lgZsun_bin_mids, log_age_gyr = res
+    t_obs = 11.0
+
+    mah_params = np.array(list(DEFAULT_MAH_PARAMS.values()))
+    ms_params = np.array(list(DEFAULT_MS_PARAMS.values()))
+    q_params = np.array(list(DEFAULT_Q_PARAMS.values()))
+    met_params = np.array(list(DEFAULT_MZR_PARAMS.values()))
+    lgmet = -1.0
+    lgmet_scatter = met_params[-1]
+
+    ewband1_lo, ewband1_hi = OIIa - 5, OIIa - 20
+    ewband2_lo, ewband2_hi = OIIb + 5, OIIb + 20
+    args = (
+        t_obs,
+        lgZsun_bin_mids,
+        log_age_gyr,
+        wave_ssp,
+        spec_ssp,
+        *mah_params,
+        *ms_params,
+        *q_params,
+        lgmet,
+        lgmet_scatter,
+        OIIa,
+        ewband1_lo,
+        ewband1_hi,
+        ewband2_lo,
+        ewband2_hi,
+    )
+    ew, total_line_flux = _calc_ew_from_diffstar_params_const_lgmet(*args)
