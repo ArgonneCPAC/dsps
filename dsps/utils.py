@@ -134,6 +134,36 @@ def interpolate_transmission_curve(wave, trans, n_out, pcut_lo=0, pcut_hi=1):
 
 
 @jjit
+def _fill_empty_weights_singlepoint(x, bin_edges, weights):
+    zmsk = jnp.all(weights == 0, axis=0)
+    lomsk = x < bin_edges[0]
+    himsk = x > bin_edges[-1]
+
+    lores = jnp.zeros(bin_edges.size - 1)
+    hires = jnp.zeros(bin_edges.size - 1)
+
+    lores = jops.index_update(lores, jops.index[0], 1.0)
+    hires = jops.index_update(hires, jops.index[-1], 1.0)
+
+    weights = jnp.where(zmsk & lomsk, lores, weights)
+    weights = jnp.where(zmsk & himsk, hires, weights)
+    return weights
+
+
+@jjit
+def _get_triweights_singlepoint(x, sig, bin_edges):
+    tw_hist_results = triweighted_histogram(x, sig, bin_edges)
+
+    tw_hist_results_sum = jnp.sum(tw_hist_results, axis=0)
+
+    zmsk = tw_hist_results_sum == 0
+    tw_hist_results_sum = jnp.where(zmsk, 1.0, tw_hist_results_sum)
+    weights = tw_hist_results / tw_hist_results_sum
+
+    return _fill_empty_weights_singlepoint(x, bin_edges, weights)
+
+
+@jjit
 def _sigmoid(x, x0, k, ylo, yhi):
     height_diff = yhi - ylo
     return ylo + height_diff / (1 + jnp.exp(-k * (x - x0)))
