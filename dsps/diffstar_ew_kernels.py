@@ -40,7 +40,6 @@ def _calc_age_met_lgu_weights_from_sfh_table(
     lgZsun_bin_mids,
     lg_ages,
     lgU_bin_mids,
-    ssp_templates,
     t_table,
     lgt_table,
     dt_table,
@@ -60,6 +59,71 @@ def _calc_age_met_lgu_weights_from_sfh_table(
     lgu_bin_edges = _get_bin_edges(lgU_bin_mids, LGU_LO, LGU_HI)
     lgu_weights = _get_triweights_singlepoint(lgu, lgu_scatter, lgu_bin_edges)
     return age_weights, lgmet_weights, lgu_weights
+
+
+@jjit
+def _calc_weighted_precomputed_ew_from_diffstar_params_const_lgu_lgmet(
+    t_obs,
+    lgZsun_bin_mids,
+    log_age_gyr,
+    lgU_bin_mids,
+    ssp_wave,
+    ssp_ews,
+    mah_logt0,
+    mah_logmp,
+    mah_logtc,
+    mah_k,
+    mah_early,
+    mah_late,
+    lgmcrit,
+    lgy_at_mcrit,
+    indx_k,
+    indx_lo,
+    indx_hi,
+    floor_low,
+    tau_dep,
+    lg_qt,
+    lg_qs,
+    lg_drop,
+    lg_rejuv,
+    lgmet,
+    lgmet_scatter,
+    lgu,
+    lgu_scatter,
+):
+    n_lgu, n_met, n_ages = ssp_ews.shape
+
+    mah_params = mah_logt0, mah_logmp, mah_logtc, mah_k, mah_early, mah_late
+    ms_params = lgmcrit, lgy_at_mcrit, indx_k, indx_lo, indx_hi, floor_low, tau_dep
+    q_params = lg_qt, lg_qs, lg_drop, lg_rejuv
+
+    _res = _get_sfh_tables(mah_params, ms_params, q_params)
+    t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
+
+    _res = _calc_age_met_lgu_weights_from_sfh_table(
+        t_obs,
+        lgZsun_bin_mids,
+        log_age_gyr,
+        lgU_bin_mids,
+        t_table,
+        lgt_table,
+        dt_table,
+        sfh_table,
+        logsm_table,
+        lgmet,
+        lgmet_scatter,
+        lgu,
+        lgu_scatter,
+    )
+    age_weights, lgmet_weights, lgu_weights = _res
+
+    age_weights = age_weights.reshape((1, 1, n_ages))
+    lgmet_weights = lgmet_weights.reshape((1, n_met, 1))
+    lgu_weights = lgu_weights.reshape((n_lgu, 1, 1))
+    ssp_weights = age_weights * lgmet_weights * lgu_weights
+    weighted_ew = jnp.sum(ssp_ews * ssp_weights, axis=(0, 1, 2))
+
+    return weighted_ew
 
 
 @jjit
@@ -113,7 +177,6 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
         lgZsun_bin_mids,
         log_age_gyr,
         lgU_bin_mids,
-        ssp_flux,
         t_table,
         lgt_table,
         dt_table,
@@ -143,6 +206,8 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
         cont_hi_lo,
         cont_hi_hi,
     )
+    ew = jnp.where(ew < 0, 0, ew)
+    total_line_flux = jnp.where(total_line_flux < 0, 0, total_line_flux)
     return ew, total_line_flux
 
 
