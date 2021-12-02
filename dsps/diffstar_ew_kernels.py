@@ -220,4 +220,6 @@ def _calc_ew_from_diffstar_params_const_lgmet(
         cont_hi_lo,
         cont_hi_hi,
     )
+    ew = jnp.where(ew < 0, 0, ew)
+    total_line_flux = jnp.where(total_line_flux < 0, 0, total_line_flux)
     return ew, total_line_flux
