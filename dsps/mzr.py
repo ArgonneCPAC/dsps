@@ -4,7 +4,8 @@ from collections import OrderedDict
 from jax import jit as jjit
 from jax import numpy as jnp
 from jax import ops as jops
-from .utils import triweighted_histogram, _get_bin_edges
+from jax import vmap
+from .utils import triweighted_histogram, _get_bin_edges, _tw_sigmoid
 
 
 MAIOLINO08_PARAMS = OrderedDict()
@@ -46,6 +47,8 @@ DEFAULT_MZR_PARAMS.update(MZR_SCATTER_PARAMS)
 TODAY = 13.8
 LGMET_LO, LGMET_HI = -10.0, 10.0
 N_T_SMH_INTEGRATION = 100
+
+LGAGE_CRIT_YR, LGAGE_CRIT_H = 8.0, 1.0
 
 
 @jjit
@@ -229,3 +232,17 @@ def calc_const_lgmet_weights(lgmet, lgmet_bin_mids, lgmet_scatter):
     lgmet_bin_edges = _get_bin_edges(lgmet_bin_mids, LGMET_LO, LGMET_HI)
     lgmet_weights = _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmet_bin_edges)
     return lgmet_weights
+
+
+_a = (0, None, None)
+_get_met_weights_singlegal_vmap = jjit(vmap(_get_met_weights_singlegal, in_axes=_a))
+
+
+@jjit
+def _get_age_correlated_met_weights(
+    lg_ages_gyr, lgmet_young, lgmet_old, lgmet_scatter, lgmet_bin_edges
+):
+    lg_ages_yr = lg_ages_gyr + 9
+    lgmet = _tw_sigmoid(lg_ages_yr, LGAGE_CRIT_YR, LGAGE_CRIT_H, lgmet_young, lgmet_old)
+    weights = _get_met_weights_singlegal_vmap(lgmet, lgmet_scatter, lgmet_bin_edges)
+    return weights
