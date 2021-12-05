@@ -101,7 +101,7 @@ def test_calc_weighted_flux_from_diffstar_params_age_correlated_zmet():
     res = _calc_weighted_flux_from_diffstar_age_correlated_zmet(*args)
     lgmet_weights, age_weights, flux = res
     assert lgmet_weights.shape == (n_met, n_age)
-    assert age_weights.shape == (1, n_age)
+    assert age_weights.shape == (n_age,)
     assert flux.shape == ()
 
 

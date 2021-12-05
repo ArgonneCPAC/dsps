@@ -106,7 +106,7 @@ def _calc_weighted_flux_from_sfh_table_age_correlated_zmet(
         lg_ages, lgmet_young, lgmet_old, lgmet_scatter, lgmet_bin_edges
     )
     lgmet_weights = lgmet_weights.T
-    age_weights = age_weights.reshape((1, n_ages))
+    # age_weights = age_weights.reshape((1, n_ages))
     w = lgmet_weights * age_weights
     weighted_flux = w * ssp_flux
     return lgmet_weights, age_weights, jnp.sum(weighted_flux, axis=(0, 1))
