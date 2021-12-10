@@ -290,8 +290,10 @@ def _calc_weighted_obs_mag_from_diffstar_params_const_zmet_agedep_dust(
 
     wave_micron = spec_wave / 10_000
 
-    dust_slope_arr = _tw_sigmoid(log_age_gyr, 8, 1, dust_slope_young, dust_slope_old)
-    dust_Av_arr = _tw_sigmoid(log_age_gyr, 8, 1, dust_Av_young, dust_Av_old)
+    dust_slope_arr = _tw_sigmoid(
+        log_age_gyr + 9, 8, 1, dust_slope_young, dust_slope_old
+    )
+    dust_Av_arr = _tw_sigmoid(log_age_gyr + 9, 8, 1, dust_Av_young, dust_Av_old)
 
     att_curves = _calc_sbl18_attenuation_vmap(
         wave_micron, dust_x0, dust_gamma, dust_ampl, dust_slope_arr, dust_Av_arr
