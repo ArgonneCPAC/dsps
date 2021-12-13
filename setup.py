@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 PACKAGENAME = "dsps"
-VERSION = "0.0.dev"
+VERSION = "0.1.0"
 
 
 setup(
