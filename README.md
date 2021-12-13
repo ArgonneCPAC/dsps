@@ -3,4 +3,6 @@
 
 Differentiable Stellar Population Synthesis
 
-Data for this project can be found here: https://portal.nersc.gov/project/hacc/aphearin/dsps_data/
+## Installation
+
+You can install dsps with either pip or conda-forge. The required dependencies are numpy, jax, and diffmah.
