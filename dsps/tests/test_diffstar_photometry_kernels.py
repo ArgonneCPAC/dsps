@@ -6,6 +6,7 @@ from ..diffstar_photometry_kernels import (
     _calc_weighted_rest_mag_from_diffstar_params_const_zmet_dust,
     _calc_weighted_obs_mag_from_diffstar_params_const_zmet_dust,
     _calc_weighted_rest_mag_from_diffstar_params_age_correlated_zmet,
+    _calc_weighted_obs_mag_from_diffstar_params_const_zmet_agedep_dust,
 )
 from ..sfh_model import DEFAULT_MAH_PARAMS, DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS
 from ..mzr import DEFAULT_MZR_PARAMS
@@ -150,3 +151,52 @@ def test_calc_weighted_rest_mag_from_diffstar_params_age_correlated_zmet():
     )
     mag = _calc_weighted_rest_mag_from_diffstar_params_age_correlated_zmet(*args)
     assert 0 < mag < 10
+
+
+def test_calc_weighted_obs_mag_from_diffstar_params_const_zmet_agedep_dust():
+    res = load_fake_sps_data()
+    filter_waves, filter_trans, wave_ssp, spec_ssp, lgZsun_bin_mids, log_age_gyr = res
+
+    mah_params = np.array(list(DEFAULT_MAH_PARAMS.values()))
+    ms_params = np.array(list(DEFAULT_MS_PARAMS.values()))
+    q_params = np.array(list(DEFAULT_Q_PARAMS.values()))
+    met_params = np.array(list(DEFAULT_MZR_PARAMS.values()))
+    lgmet = -1.0
+    lgmet_scatter = met_params[-1]
+
+    dust_x0, dust_gamma, dust_ampl = 0.25, 0.1, 0.5
+    dust_slope_young, dust_slope_old, dust_Av_young, dust_Av_old = -0.5, -0.1, 2, 0.5
+    dust_params = (
+        dust_x0,
+        dust_gamma,
+        dust_ampl,
+        dust_slope_young,
+        dust_slope_old,
+        dust_Av_young,
+        dust_Av_old,
+    )
+
+    z_obs = 0.5
+    TODAY = 13.8
+    t_obs = TODAY - _lookback_to_z(z_obs, *PLANCK15)
+
+    args = (
+        t_obs,
+        z_obs,
+        *PLANCK15,
+        lgZsun_bin_mids,
+        log_age_gyr,
+        wave_ssp,
+        spec_ssp,
+        filter_waves[0, :],
+        filter_trans[0, :],
+        *mah_params,
+        *ms_params,
+        *q_params,
+        lgmet,
+        lgmet_scatter,
+        *dust_params,
+    )
+
+    res = _calc_weighted_obs_mag_from_diffstar_params_const_zmet_agedep_dust(*args)
+    obs_mag, weighted_ssp, attenuation = res

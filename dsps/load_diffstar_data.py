@@ -6,10 +6,21 @@ import h5py
 import numpy as np
 from jax import vmap, jit as jjit
 from jax import numpy as jnp
-from diffsfh.differential_sfr_floor import _get_bounded_params as _get_bounded_ms_params
-from diffsfh.galaxy_quenching import _get_bounded_params_rejuv as _get_bounded_q_params
 from .sfh_model import DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS, DEFAULT_MAH_PARAMS
 from .mzr import DEFAULT_MZR_PARAMS
+
+
+try:
+    from diffsfh.differential_sfr_floor import (
+        _get_bounded_params as _get_bounded_ms_params,
+    )
+    from diffsfh.galaxy_quenching import (
+        _get_bounded_params_rejuv as _get_bounded_q_params,
+    )
+
+    HAS_DIFFSFH = True
+except ImportError:
+    HAS_DIFFSFH = False
 
 TASSO_DRN = "/Users/aphearin/work/DATA/diffstar_data"
 BEBOP_DRN = "/lcrc/project/halotools/diffstar_data"
@@ -52,6 +63,8 @@ def load_small_bpl_fits(
     diffsfh_bn=DIFFSFH_BN,
     diffstar_drn=TASSO_DRN,
 ):
+    if not HAS_DIFFSFH:
+        raise ImportError("Must have diffsfh installed to use load_small_bpl_fits")
     umachine = np.load(os.path.join(diffstar_drn, umachine_bn))
 
     t_bpl = np.load(os.path.join(diffstar_drn, "bpl_cosmic_time.npy"))
