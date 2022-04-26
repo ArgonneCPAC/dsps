@@ -2,7 +2,6 @@
 """
 from jax import jit as jjit
 from jax import numpy as jnp
-from jax import ops as jops
 from jax import vmap
 
 
@@ -11,13 +10,14 @@ def _jax_get_dt_array(t):
     dt = jnp.zeros_like(t)
     tmids = 0.5 * (t[:-1] + t[1:])
     dtmids = jnp.diff(tmids)
-    dt = jops.index_update(dt, jops.index[1:-1], dtmids)
+
+    dt = dt.at[1:-1].set(dtmids)
 
     t_lo = t[0] - (t[1] - t[0]) / 2
     t_hi = t[-1] + dtmids[-1] / 2
 
-    dt = jops.index_update(dt, jops.index[0], tmids[0] - t_lo)
-    dt = jops.index_update(dt, jops.index[-1], t_hi - tmids[-1])
+    dt = dt.at[0].set(tmids[0] - t_lo)
+    dt = dt.at[-1].set(t_hi - tmids[-1])
     return dt
 
 
@@ -38,10 +38,10 @@ def _get_bin_edges(bin_mids, lowest_bin_edge, highest_bin_edge):
     dbins = _jax_get_dt_array(bin_mids)
 
     bin_edges = jnp.zeros(dbins.size + 1)
-    bin_edges = jops.index_update(bin_edges, jops.index[:-1], bin_mids - dbins / 2)
+    bin_edges = bin_edges.at[:-1].set(bin_mids - dbins / 2)
 
-    bin_edges = jops.index_update(bin_edges, jops.index[0], lowest_bin_edge)
-    bin_edges = jops.index_update(bin_edges, jops.index[-1], highest_bin_edge)
+    bin_edges = bin_edges.at[0].set(lowest_bin_edge)
+    bin_edges = bin_edges.at[-1].set(highest_bin_edge)
 
     return bin_edges
 
@@ -51,9 +51,9 @@ def _tw_cuml_kern(x, m, h):
     """Triweight kernel version of an err function."""
     z = (x - m) / h
     val = (
-        -5 * z ** 7 / 69984
-        + 7 * z ** 5 / 2592
-        - 35 * z ** 3 / 864
+        -5 * z**7 / 69984
+        + 7 * z**5 / 2592
+        - 35 * z**3 / 864
         + 35 * z / 96
         + 1 / 2
     )
@@ -142,8 +142,8 @@ def _fill_empty_weights_singlepoint(x, bin_edges, weights):
     lores = jnp.zeros(bin_edges.size - 1)
     hires = jnp.zeros(bin_edges.size - 1)
 
-    lores = jops.index_update(lores, jops.index[0], 1.0)
-    hires = jops.index_update(hires, jops.index[-1], 1.0)
+    lores = lores.at[0].set(1.0)
+    hires = hires.at[-1].set(1.0)
 
     weights = jnp.where(zmsk & lomsk, lores, weights)
     weights = jnp.where(zmsk & himsk, hires, weights)

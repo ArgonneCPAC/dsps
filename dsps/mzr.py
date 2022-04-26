@@ -3,7 +3,6 @@
 from collections import OrderedDict
 from jax import jit as jjit
 from jax import numpy as jnp
-from jax import ops as jops
 from jax import vmap
 from .utils import triweighted_histogram, _get_bin_edges, _tw_sigmoid
 
@@ -189,8 +188,8 @@ def _fill_empty_weights_singlegal(lgmet, lgmetbin_edges, weights):
     lores = jnp.zeros(lgmetbin_edges.size - 1)
     hires = jnp.zeros(lgmetbin_edges.size - 1)
 
-    lores = jops.index_update(lores, jops.index[0], 1.0)
-    hires = jops.index_update(hires, jops.index[-1], 1.0)
+    lores = lores.at[0].set(1.0)
+    hires = hires.at[-1].set(1.0)
 
     weights = jnp.where(zmsk & lomsk, lores, weights)
     weights = jnp.where(zmsk & himsk, hires, weights)
@@ -222,7 +221,7 @@ def calc_lgmet_weights_from_logsm_table(
     lgmet_scatter = met_params[-1]
 
     logsm_at_t_obs = jnp.interp(lgt_obs, lgt_table, logsm_table)
-    lgmet = mzr_model(logsm_at_t_obs, 10 ** lgt_obs, *met_params[:-1])
+    lgmet = mzr_model(logsm_at_t_obs, 10**lgt_obs, *met_params[:-1])
     lgmet_weights = _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmet_bin_edges)
     return lgmet_weights
 
