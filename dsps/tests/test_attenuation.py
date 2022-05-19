@@ -43,8 +43,8 @@ def test_noll09():
     for kbn, abn in zip(kbnames, abnames):
         kfn = os.path.join(TEST_DRN, kbn)
         k = np.loadtxt(kfn)
-        x0, gamma, ampl, slope, av = _read_noll09_header(kfn)
-        k2 = noll09_k_lambda(x, x0, gamma, ampl, slope)
+        x0, gamma, ampl, delta, av = _read_noll09_header(kfn)
+        k2 = noll09_k_lambda(x, x0, gamma, ampl, delta)
         assert np.allclose(k, k2)
 
         afn = os.path.join(TEST_DRN, abn)
@@ -62,8 +62,8 @@ def test_salim18():
     for kbn, abn in zip(kbnames, abnames):
         kfn = os.path.join(TEST_DRN, kbn)
         k = np.loadtxt(kfn)
-        x0, gamma, ampl, slope, av = _read_noll09_header(kfn)
-        k2 = sbl18_k_lambda(x, x0, gamma, ampl, slope)
+        x0, gamma, ampl, delta, av = _read_noll09_header(kfn)
+        k2 = sbl18_k_lambda(x, x0, gamma, ampl, delta)
         assert np.allclose(k, k2)
 
         afn = os.path.join(TEST_DRN, abn)
@@ -77,6 +77,6 @@ def _read_noll09_header(fn):
         x0 = float(next(f).strip()[2:].split()[1])
         gamma = float(next(f).strip()[2:].split()[1])
         ampl = float(next(f).strip()[2:].split()[1])
-        slope = float(next(f).strip()[2:].split()[1])
+        delta = float(next(f).strip()[2:].split()[1])
         av = float(next(f).strip()[2:].split()[1])
-        return x0, gamma, ampl, slope, av
+        return x0, gamma, ampl, delta, av
