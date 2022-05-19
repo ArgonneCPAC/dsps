@@ -80,3 +80,41 @@ def _read_noll09_header(fn):
         delta = float(next(f).strip()[2:].split()[1])
         av = float(next(f).strip()[2:].split()[1])
         return x0, gamma, ampl, delta, av
+
+
+def test_salim18_fig2_dashed_black():
+    fn = os.path.join(TEST_DRN, "salim18_fig2_dashed_black.txt")
+    with open(fn, "r") as f:
+        raw_header_line1 = next(f).strip()
+        raw_header_line2 = next(f).strip()
+        data_collector = []
+        for data_line in f:
+            data_collector.append(next(f).strip())
+    delta = float(raw_header_line1.split()[-1])
+    Eb = float(raw_header_line2.split()[-1])
+    waves = np.array([float(x.split(",")[0]) for x in data_collector])
+    att_salim18 = np.array([float(x.split(",")[1]) for x in data_collector])
+
+    bump_width = 350
+    bump_center = 2175
+    att_dsps = sbl18_k_lambda(waves / 1e4, bump_center, bump_width, Eb, delta) / RV_C00
+    assert np.allclose(att_salim18, att_dsps, atol=1), "delta={0}".format(delta)
+
+
+def test_salim18_fig2_dashed_red():
+    fn = os.path.join(TEST_DRN, "salim18_fig2_dashed_red.txt")
+    with open(fn, "r") as f:
+        raw_header_line1 = next(f).strip()
+        raw_header_line2 = next(f).strip()
+        data_collector = []
+        for data_line in f:
+            data_collector.append(next(f).strip())
+    delta = float(raw_header_line1.split()[-1])
+    Eb = float(raw_header_line2.split()[-1])
+    waves = np.array([float(x.split(",")[0]) for x in data_collector])
+    att_salim18 = np.array([float(x.split(",")[1]) for x in data_collector])
+
+    bump_width = 350
+    bump_center = 2175
+    att_dsps = sbl18_k_lambda(waves / 1e4, bump_center, bump_width, Eb, delta) / RV_C00
+    assert np.allclose(att_salim18, att_dsps, atol=1), "delta={0}".format(delta)
