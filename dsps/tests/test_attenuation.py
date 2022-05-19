@@ -4,7 +4,6 @@ import os
 import numpy as np
 from ..attenuation_kernels import RV_C00, calzetti00_k_lambda, leitherer02_k_lambda
 from ..attenuation_kernels import noll09_k_lambda, _attenuation_curve, sbl18_k_lambda
-from ..attenuation_kernels import _Rvmod_sbl18
 
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
@@ -81,9 +80,3 @@ def _read_noll09_header(fn):
         delta = float(next(f).strip()[2:].split()[1])
         av = float(next(f).strip()[2:].split()[1])
         return x0, gamma, ampl, delta, av
-
-
-def test_rvmod_salim18():
-    delta = -0.5
-    rvmod = _Rvmod_sbl18(delta)
-    assert rvmod == 2.53748
