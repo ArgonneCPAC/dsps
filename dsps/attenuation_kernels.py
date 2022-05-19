@@ -124,6 +124,13 @@ def noll09_k_lambda(x, x0, bump_width, Eb, delta):
 
 
 @jjit
+def _Rvmod_sbl18(delta):
+    num = RV_C00
+    denom = (RV_C00 + 1) * (4400 / 5500) ** delta - RV_C00
+    return num / denom
+
+
+@jjit
 def sbl18_k_lambda(x, x0, bump_width, Eb, delta):
 
     # Leitherer 2002 below 0.15 microns and Calzetti 2000 above
