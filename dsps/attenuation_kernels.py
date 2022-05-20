@@ -1,14 +1,62 @@
 """
 """
+from collections import OrderedDict
 from jax import jit as jjit
 from jax import numpy as jnp
-
+from jax import random as jran
+from .utils import get_1d_arrays
 
 RV_C00 = 4.05
 N09_X0_MIN = 0.0
 N09_GAMMA_MIN = 0.0
 N09_SLOPE_MIN = -3.0
 N09_SLOPE_MAX = 3.0
+
+TAU_MIN = 1e-3
+DELTA_MIN, DELTA_MAX = -0.6, 0.3
+SIMBA_PARAMS = OrderedDict(
+    tau_mstar=1.27,
+    tau_ssfr=1.28,
+    tau_norm=1.58,
+    delta_mstar=0.07,
+    delta_ssfr=0.13,
+    delta_norm=-0.18,
+)
+
+TNG_PARAMS = OrderedDict(
+    tau_mstar=0.57,
+    tau_ssfr=0.62,
+    tau_norm=1.34,
+    delta_mstar=-0.18,
+    delta_ssfr=-0.19,
+    delta_norm=-0.07,
+)
+
+EAGLE_PARAMS = OrderedDict(
+    tau_mstar=0.59,
+    tau_ssfr=0.18,
+    tau_norm=0.81,
+    delta_mstar=-0.13,
+    delta_ssfr=-0.22,
+    delta_norm=-0.34,
+)
+
+
+def mc_generate_av(ran_key, logsm, logssfr, default_params=TNG_PARAMS, **kwargs):
+    param_dict = OrderedDict(
+        [
+            (key, kwargs.get(key, default_val))
+            for default_val, key in default_params.items()
+        ]
+    )
+    logsm, logssfr = get_1d_arrays(logsm, logssfr)
+    n_gals = logsm.size
+    cosi_ran = jran.uniform(ran_key, shape=(n_gals,))
+
+    av_keys = "tau_mstar", "tau_ssfr", "tau_norm"
+    av_params = [param_dict[key] for key in av_keys]
+    Av = _get_attentuation_amplitude(logsm, logssfr, *av_params, cosi_ran)
+    return Av
 
 
 @jjit
@@ -18,7 +66,9 @@ def _flux_ratio(k, rv, av):
 
 @jjit
 def _get_optical_depth_V(logsm, logssfr, tau_mstar, tau_ssfr, tau_norm):
-    return tau_mstar * (logsm - 10) + tau_ssfr * (logssfr + 10) + tau_norm
+    tau = tau_mstar * (logsm - 10) + tau_ssfr * (logssfr + 10) + tau_norm
+    tau = jnp.where(tau < TAU_MIN, TAU_MIN, tau)
+    return tau
 
 
 @jjit
@@ -37,7 +87,10 @@ def _get_eb_from_delta(delta):
 
 @jjit
 def _get_delta(logsm, logssfr, delta_mstar, delta_ssfr, delta_norm):
-    return delta_mstar * (logsm - 10) + delta_ssfr * (logssfr + 10) + delta_norm
+    delta = delta_mstar * (logsm - 10) + delta_ssfr * (logssfr + 10) + delta_norm
+    delta = jnp.where(delta < DELTA_MIN, DELTA_MIN, delta)
+    delta = jnp.where(delta > DELTA_MAX, DELTA_MAX, delta)
+    return delta
 
 
 @jjit
