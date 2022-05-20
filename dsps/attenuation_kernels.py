@@ -40,6 +40,8 @@ EAGLE_PARAMS = OrderedDict(
     delta_ssfr=-0.22,
     delta_norm=-0.34,
 )
+UV_BUMP_MICRONS = 2175 / 1e4
+UV_BUMP_WIDTH_MICRONS = 350 / 1e4
 
 
 def mc_generate_av(ran_key, logsm, logssfr, default_params=TNG_PARAMS, **kwargs):
