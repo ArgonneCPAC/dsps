@@ -21,7 +21,7 @@ jobs:
           channel-priority: strict
           show-channel-urls: true
           miniforge-version: latest
-          miniforge-variant: Mambaforge          
+          miniforge-variant: Mambaforge
 
       - name: configure conda and install code
         shell: bash -l {0}
@@ -38,7 +38,7 @@ jobs:
       - name: lint
         shell: bash -l {0}
         run: |
-          flake8 dsps
+          flake8 dsps --per-file-ignores="dsps/__init__.py:F401"
 
       - name: test
         shell: bash -l {0}
