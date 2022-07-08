@@ -2,7 +2,6 @@
 """
 from collections import namedtuple
 import numpy as np
-from astropy.cosmology import Planck15
 from ..seds_from_tables import compute_sed_galpop
 from ..load_fsps_data import TASSO_DRN, load_fsps_testing_data
 from ..seds_from_diffstar import compute_diffstarpop_restframe_seds
@@ -59,8 +58,7 @@ def test_compute_sed_galpop_from_table():
     n_pop = 50
     sfh_tables = np.ones(shape=(n_pop, n_t))
 
-    z_obs = 0.2
-    t_obs = Planck15.age(z_obs).value
+    t_obs = 11.3
     lgmet_pop = np.zeros(n_pop)
     lgmet_scatter = 0.2 + np.zeros(n_pop)
     lgmet_params = np.array((lgmet_pop, lgmet_scatter)).T

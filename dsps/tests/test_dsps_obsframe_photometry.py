@@ -1,7 +1,6 @@
 """
 """
 import numpy as np
-from astropy.cosmology import Planck15
 from ..flat_wcdm import PLANCK15
 from .test_dsps_seds import _get_testing_data
 from ..obsmag_from_diffstar import compute_diffstarpop_obsframe_mags
@@ -26,7 +25,7 @@ def test_compute_obsframe_mags_galpop_from_diffstar():
     met_params = np.ones(shape=(n_pop, 2))
 
     z_obs = 0.2
-    t_obs = Planck15.age(z_obs).value
+    t_obs = 11.28773
     obs_args = [
         t_obs,
         z_obs,
