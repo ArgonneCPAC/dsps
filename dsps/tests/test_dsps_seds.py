@@ -1,11 +1,19 @@
 """
 """
+import pytest
+import os
 from collections import namedtuple
 import numpy as np
 from ..seds_from_tables import compute_sed_galpop
 from ..load_fsps_data import TASSO_DRN, load_fsps_testing_data
 from ..seds_from_diffstar import compute_diffstarpop_restframe_seds
 from ..restmag_from_diffstar import compute_diffstarpop_restframe_mags
+
+
+if os.path.isdir(TASSO_DRN):
+    HAS_FSPS_TEST_DATA = True
+else:
+    HAS_FSPS_TEST_DATA = False
 
 
 _testing_data = namedtuple(
@@ -48,6 +56,7 @@ def _get_testing_data(
     )
 
 
+@pytest.mark.skipif("not HAS_FSPS_TEST_DATA")
 def test_compute_sed_galpop_from_table():
     testing_data = _get_testing_data()
     lgZsun_bin_mids = testing_data.lgZsun_bin_mids
@@ -76,6 +85,7 @@ def test_compute_sed_galpop_from_table():
     assert seds.shape == (n_pop, ssp_flux.shape[-1])
 
 
+@pytest.mark.skipif("not HAS_FSPS_TEST_DATA")
 def test_compute_sed_galpop_from_diffstar():
     testing_data = _get_testing_data()
     lgZsun_bin_mids = testing_data.lgZsun_bin_mids
@@ -116,6 +126,7 @@ def test_compute_sed_galpop_from_diffstar():
     assert seds.shape == (n_pop, ssp_flux.shape[-1])
 
 
+@pytest.mark.skipif("not HAS_FSPS_TEST_DATA")
 def test_compute_restframe_mags_galpop_from_diffstar():
     testing_data = _get_testing_data()
     lgZsun_bin_mids = testing_data.lgZsun_bin_mids

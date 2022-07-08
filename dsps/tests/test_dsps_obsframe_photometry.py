@@ -1,11 +1,21 @@
 """
 """
+import pytest
+import os
 import numpy as np
 from ..flat_wcdm import PLANCK15
 from .test_dsps_seds import _get_testing_data
 from ..obsmag_from_diffstar import compute_diffstarpop_obsframe_mags
+from ..load_fsps_data import TASSO_DRN
 
 
+if os.path.isdir(TASSO_DRN):
+    HAS_FSPS_TEST_DATA = True
+else:
+    HAS_FSPS_TEST_DATA = False
+
+
+@pytest.mark.skipif("not HAS_FSPS_TEST_DATA")
 def test_compute_obsframe_mags_galpop_from_diffstar():
     testing_data = _get_testing_data()
     lgZsun_bin_mids = testing_data.lgZsun_bin_mids
