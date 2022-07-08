@@ -10,9 +10,7 @@ from .attenuation_kernels import sbl18_k_lambda, _flux_ratio
 from .attenuation_kernels import RV_C00
 from .seds_from_tables import _calc_sed_kern
 
-__all__ = [
-    "compute_diffstarpop_restframe_seds",
-]
+__all__ = ("compute_diffstarpop_restframe_seds",)
 
 
 @jjit

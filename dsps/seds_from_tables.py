@@ -9,6 +9,9 @@ from .utils import _get_bin_edges, _get_triweights_singlepoint, _jax_get_dt_arra
 from .mzr import LGMET_LO, LGMET_HI
 
 
+__all__ = ("compute_sed_galpop",)
+
+
 @jjit
 def _calc_age_met_weights_from_sfh_table(
     t_obs,

@@ -7,6 +7,9 @@ from .seds_from_diffstar import _calc_diffstar_sed_kern
 from .seds_from_diffstar import _calc_diffstar_attenuated_sed_kern
 
 
+__all__ = ("compute_diffstarpop_obsframe_mags",)
+
+
 @jjit
 def _calc_diffstar_obs_mag_kern(
     t_obs,
