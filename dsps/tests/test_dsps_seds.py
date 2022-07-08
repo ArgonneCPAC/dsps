@@ -6,7 +6,7 @@ from astropy.cosmology import Planck15
 from ..seds_from_tables import compute_sed_galpop
 from ..load_fsps_data import TASSO_DRN, load_fsps_testing_data
 from ..seds_from_diffstar import compute_diffstarpop_restframe_seds
-from ..seds_from_diffstar import compute_diffstarpop_restframe_mags
+from ..restmag_from_diffstar import compute_diffstarpop_restframe_mags
 
 
 _testing_data = namedtuple(
