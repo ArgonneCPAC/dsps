@@ -1,0 +1,7 @@
+[run]
+source= dsps/
+
+omit =
+    dsps/__init__.py
+    dsps/_version.py
+    dsps/tests/*.py

@@ -5,4 +5,13 @@ Differentiable Stellar Population Synthesis
 
 ## Installation
 
-You can install dsps with either pip or conda-forge. The required dependencies are numpy, jax, and diffmah.
+The DSPS package can be installed with conda-forge, which will automatically handle
+installation of the required dependencies: numpy, jax, diffmah, and diffstar:
+```
+$ conda install dsps
+```
+
+To install dsps from source, first clone the GitHub repository, and then:
+```
+$ pip install .
+```
