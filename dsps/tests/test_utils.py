@@ -51,7 +51,7 @@ def test_get_triweights_singlepoint_x_correctly_normalized():
 
 
 def test_get_bin_edges():
-    bin_mids = np.arange(0, 10)
+    bin_mids = np.linspace(0, 9, 10)
     lowest_bin_edge = -5
     highest_bin_edge = 100
     bin_edges = _get_bin_edges(bin_mids, lowest_bin_edge, highest_bin_edge)
