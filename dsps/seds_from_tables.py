@@ -1,6 +1,5 @@
 """
 """
-import numpy as np
 from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap
@@ -10,6 +9,8 @@ from .mzr import LGMET_LO, LGMET_HI
 
 
 __all__ = ("compute_sed_galpop",)
+
+SFR_MIN = 1e-13
 
 
 @jjit
@@ -68,6 +69,7 @@ _a = (*[None] * 5, 0, 0, 0)
 _calc_sed_vmap = jjit(vmap(_calc_sed_kern, in_axes=_a))
 
 
+@jjit
 def compute_sed_galpop(
     t_obs,
     lgZsun_bin_mids,
@@ -75,7 +77,8 @@ def compute_sed_galpop(
     ssp_flux,
     t_table,
     sfh_table,
-    lgmet_params,
+    mdf_params,
+    sfr_min=SFR_MIN,
 ):
     """Calculate the SEDs of a galaxy population.
 
@@ -99,29 +102,35 @@ def compute_sed_galpop(
     sfh_table : ndarray of shape (n_gals, n_times)
         SFR history for each galaxy in Msun/yr
 
-    lgmet_params : ndarray of shape (n_gals, 2)
+    mdf_params : ndarray of shape (n_gals, 2)
         Median metallicity and log-normal scatter for each galaxy
+
+    sfr_min : float, optional
+        Lower bound clip on SFR. Used for log-safe purposes. Default is 0.0001 Msun/yr
 
     Returns
     -------
     sed_galpop : ndarray of shape (n_gals, n_wave)
         SED of each galaxy in in Lsun/Hz
 
+    logsmh_galpop : ndarray of shape (n_gals, n_times)
+        Base-10 log of cumulative history of stellar mass formed
+
     """
     dt_table = _jax_get_dt_array(t_table)
-    smh = 1e9 * np.cumsum(sfh_table * dt_table, axis=1)
-    smh = np.where(smh == 0, 1, smh)
-    logsm_table = np.log10(smh)
-    lgmet = lgmet_params[:, 0]
-    lgmet_scatter = lgmet_params[:, 1]
+    sfh_table = jnp.where(sfh_table < sfr_min, sfr_min, sfh_table)
+    smh = 1e9 * jnp.cumsum(sfh_table * dt_table, axis=1)
+    logsmh_galpop = jnp.log10(smh)
+    lgmet = mdf_params[:, 0]
+    lgmet_scatter = mdf_params[:, 1]
     sed_galpop = _calc_sed_vmap(
         t_obs,
         lgZsun_bin_mids,
         log_age_gyr,
         ssp_flux,
         t_table,
-        logsm_table,
+        logsmh_galpop,
         lgmet,
         lgmet_scatter,
     )
-    return sed_galpop, logsm_table
+    return sed_galpop, logsmh_galpop

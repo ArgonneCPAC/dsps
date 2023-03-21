@@ -80,4 +80,7 @@ def test_compute_sed_galpop_from_table():
         lgmet_params,
     )
     seds, logsm_tables = compute_sed_galpop(*sed_args)
+    assert np.all(np.isfinite(logsm_tables))
     assert seds.shape == (n_pop, ssp_flux.shape[-1])
+    assert np.all(np.isfinite(seds))
+    assert np.all(seds >= 0)
