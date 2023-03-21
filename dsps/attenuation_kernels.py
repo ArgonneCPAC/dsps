@@ -2,6 +2,7 @@
 """
 from jax import jit as jjit
 from jax import numpy as jnp
+from .utils import _tw_sig_slope
 
 
 RV_C00 = 4.05
@@ -64,7 +65,7 @@ def calzetti00_k_lambda(x, rv):
 
     """
     axEbv1 = (
-        2.659 * (-2.156 + 1.509 * 1 / x - 0.198 * 1 / x ** 2 + 0.011 * 1 / x ** 3) + rv
+        2.659 * (-2.156 + 1.509 * 1 / x - 0.198 * 1 / x**2 + 0.011 * 1 / x**3) + rv
     )
     axEbv2 = 2.659 * (-1.857 + 1.040 * 1 / x) + rv
     return jnp.where(x < 0.63, axEbv1, axEbv2)
@@ -87,13 +88,24 @@ def leitherer02_k_lambda(x, rv):
         Reddening curve
 
     """
-    axEbv = 5.472 + (0.671 * 1 / x - 9.218 * 1e-3 / x ** 2 + 2.620 * 1e-3 / x ** 3)
+    axEbv = 5.472 + (0.671 * 1 / x - 9.218 * 1e-3 / x**2 + 2.620 * 1e-3 / x**3)
     return axEbv
 
 
 @jjit
+def triweight_k_lambda(
+    x_micron, xtp=-1.0, ytp=1.15, x0=0.5, tw_h=0.5, lo=-0.65, hi=-1.95
+):
+    """Smooth approximation to Noll+09 k_lambda with well-behaved asymptotics"""
+    lgx = jnp.log10(x_micron)
+    lgk_lambda = _tw_sig_slope(lgx, xtp, ytp, x0, tw_h, lo, hi)
+    k_lambda = 10**lgk_lambda
+    return k_lambda
+
+
+@jjit
 def drude_bump(x, x0, gamma, ampl):
-    bump = x ** 2 * gamma ** 2 / ((x ** 2 - x0 ** 2) ** 2 + x ** 2 * gamma ** 2)
+    bump = x**2 * gamma**2 / ((x**2 - x0**2) ** 2 + x**2 * gamma**2)
     return ampl * bump
 
 
@@ -104,12 +116,18 @@ def power_law_vband_norm(x, slope):
 
 
 @jjit
+def _l02_below_c00_above(x, xc=0.15):
+    axEbv_c00 = calzetti00_k_lambda(x, RV_C00)
+    axEbv_l02 = leitherer02_k_lambda(x, RV_C00)
+    axEbv = jnp.where(x > xc, axEbv_c00, axEbv_l02)
+    return axEbv
+
+
+@jjit
 def noll09_k_lambda(x, x0, gamma, ampl, slope):
 
     # Leitherer 2002 below 0.15 microns and Calzetti 2000 above
-    axEbv_c00 = calzetti00_k_lambda(x, RV_C00)
-    axEbv_l02 = leitherer02_k_lambda(x, RV_C00)
-    axEbv = jnp.where(x > 0.15, axEbv_c00, axEbv_l02)
+    axEbv = _l02_below_c00_above(x, xc=0.15)
 
     # Add the UV bump
     axEbv = axEbv + drude_bump(x, x0, gamma, ampl)
@@ -127,9 +145,7 @@ def noll09_k_lambda(x, x0, gamma, ampl, slope):
 def sbl18_k_lambda(x, x0, gamma, ampl, slope):
 
     # Leitherer 2002 below 0.15 microns and Calzetti 2000 above
-    axEbv_c00 = calzetti00_k_lambda(x, RV_C00)
-    axEbv_l02 = leitherer02_k_lambda(x, RV_C00)
-    axEbv = jnp.where(x > 0.15, axEbv_c00, axEbv_l02)
+    axEbv = _l02_below_c00_above(x, xc=0.15)
 
     # Apply power-law correction
     axEbv = axEbv * power_law_vband_norm(x, slope)

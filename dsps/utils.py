@@ -115,6 +115,12 @@ def triweight_gaussian(x, m, h):
 
 
 @jjit
+def _tw_sig_slope(x, xtp, ytp, x0, tw_h, lo, hi):
+    slope = _tw_sigmoid(x, x0, tw_h, lo, hi)
+    return ytp + slope * (x - xtp)
+
+
+@jjit
 def interpolate_transmission_curve(wave, trans, n_out, pcut_lo=0, pcut_hi=1):
     """ """
     lowest_bin_edge = wave[0] - (wave[1] - wave[0]) / 2

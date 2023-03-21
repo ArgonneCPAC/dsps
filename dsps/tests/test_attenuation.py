@@ -4,7 +4,7 @@ import os
 import numpy as np
 from ..attenuation_kernels import RV_C00, calzetti00_k_lambda, leitherer02_k_lambda
 from ..attenuation_kernels import noll09_k_lambda, _attenuation_curve, sbl18_k_lambda
-
+from ..attenuation_kernels import triweight_k_lambda, _l02_below_c00_above
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 TEST_DRN = os.path.join(_THIS_DRNAME, "testing_data")
@@ -70,6 +70,13 @@ def test_salim18():
         attenuation = np.loadtxt(afn)
         attenuation2 = _attenuation_curve(k2, RV_C00, av)
         assert np.allclose(attenuation, attenuation2)
+
+
+def test_triweight_k_lambda():
+    x_microns_target = np.linspace(0.097, 2.2, 100)
+    noll09_target = _l02_below_c00_above(x_microns_target)
+    tw_approx = triweight_k_lambda(x_microns_target)
+    assert np.allclose(noll09_target, tw_approx, rtol=0.1)
 
 
 def _read_noll09_header(fn):
