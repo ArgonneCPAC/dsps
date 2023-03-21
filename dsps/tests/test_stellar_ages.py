@@ -2,9 +2,7 @@
 """
 import numpy as np
 from ..stellar_ages import _get_lg_age_bin_edges, _get_lgt_birth, T_BIRTH_MIN
-from ..stellar_ages import _get_sfh_tables_from_diffstar_params
 from ..stellar_ages import _get_age_weights_from_tables
-from ..sfh_model import DEFAULT_MAH_PARAMS, DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS
 from ..utils import _jax_get_dt_array
 
 
@@ -27,11 +25,10 @@ def test_age_bin_edges_have_correct_array_shape():
 
 def test_age_weights_are_mathematically_sensible():
     t_obs = 11.0
-    mah_params = np.array(list(DEFAULT_MAH_PARAMS.values()))
-    ms_params = np.array(list(DEFAULT_MS_PARAMS.values()))
-    q_params = np.array(list(DEFAULT_Q_PARAMS.values()))
-    res = _get_sfh_tables_from_diffstar_params(mah_params, ms_params, q_params)
-    t_table, lgt_table, dt_table, sfh_table, logsm_table = res
+
+    t_table = np.linspace(0.05, 13.8, 75)
+    lgt_table = np.log10(t_table)
+    logsm_table = np.linspace(-1, 10, t_table.size)
 
     lgt_ages = np.linspace(5.5, 10.5, 50) - 9.0
     lgt_age_bin_edges = _get_lg_age_bin_edges(lgt_ages)
