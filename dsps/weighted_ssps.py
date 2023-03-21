@@ -2,7 +2,8 @@
 """
 from jax import jit as jjit
 from jax import numpy as jnp
-from .stellar_ages import _get_sfh_tables, _get_age_weights_from_tables
+from .stellar_ages import _get_sfh_tables_from_diffstar_params
+from .stellar_ages import _get_age_weights_from_tables
 from .stellar_ages import _get_lgt_birth, _get_lg_age_bin_edges
 from .mzr import calc_lgmet_weights_from_logsm_table
 from .mzr import _get_met_weights_singlegal, LGMET_LO, LGMET_HI
@@ -122,7 +123,7 @@ def _calc_weighted_ssp_from_diffstar_params(
     q_params,
     met_params,
 ):
-    _res = _get_sfh_tables(mah_params, ms_params, q_params)
+    _res = _get_sfh_tables_from_diffstar_params(mah_params, ms_params, q_params)
     t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
 
     return _calc_weighted_ssp_from_sfh_table(
@@ -151,7 +152,7 @@ def _calc_weighted_ssp_from_diffstar_params_const_zmet(
     lgmet,
     lgmet_scatter,
 ):
-    _res = _get_sfh_tables(mah_params, ms_params, q_params)
+    _res = _get_sfh_tables_from_diffstar_params(mah_params, ms_params, q_params)
     t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
 
     return _calc_weighted_ssp_from_sfh_table_const_zmet(
@@ -182,7 +183,7 @@ def _calc_weighted_flux_from_diffstar_age_correlated_zmet(
     lgmet_old,
     lgmet_scatter,
 ):
-    _res = _get_sfh_tables(mah_params, ms_params, q_params)
+    _res = _get_sfh_tables_from_diffstar_params(mah_params, ms_params, q_params)
     t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
 
     _res = _calc_weighted_flux_from_sfh_table_age_correlated_zmet(

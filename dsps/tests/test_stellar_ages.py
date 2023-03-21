@@ -2,7 +2,8 @@
 """
 import numpy as np
 from ..stellar_ages import _get_lg_age_bin_edges, _get_lgt_birth, T_BIRTH_MIN
-from ..stellar_ages import _get_sfh_tables, _get_age_weights_from_tables
+from ..stellar_ages import _get_sfh_tables_from_diffstar_params
+from ..stellar_ages import _get_age_weights_from_tables
 from ..sfh_model import DEFAULT_MAH_PARAMS, DEFAULT_MS_PARAMS, DEFAULT_Q_PARAMS
 from ..utils import _jax_get_dt_array
 
@@ -15,7 +16,7 @@ def linear_sfr(t_gyr):
 
 
 def linear_smh(t0, t_gyr):
-    return 1e9 * 0.5 * (t_gyr ** 2 - t0 ** 2)
+    return 1e9 * 0.5 * (t_gyr**2 - t0**2)
 
 
 def test_age_bin_edges_have_correct_array_shape():
@@ -29,7 +30,7 @@ def test_age_weights_are_mathematically_sensible():
     mah_params = np.array(list(DEFAULT_MAH_PARAMS.values()))
     ms_params = np.array(list(DEFAULT_MS_PARAMS.values()))
     q_params = np.array(list(DEFAULT_Q_PARAMS.values()))
-    res = _get_sfh_tables(mah_params, ms_params, q_params)
+    res = _get_sfh_tables_from_diffstar_params(mah_params, ms_params, q_params)
     t_table, lgt_table, dt_table, sfh_table, logsm_table = res
 
     lgt_ages = np.linspace(5.5, 10.5, 50) - 9.0
@@ -47,7 +48,7 @@ def test_age_weights_agree_with_analytical_calculation_of_constant_sfr_weights()
 
     # Analytically calculate age distributions for constant SFR (independent of t_obs)
     log_ages_gyr = FSPS_LG_AGES - 9
-    ages_gyr = 10 ** log_ages_gyr
+    ages_gyr = 10**log_ages_gyr
     dt_ages = _jax_get_dt_array(ages_gyr)
     mstar_age_bins = dt_ages * constant_sfr
     correct_weights = mstar_age_bins / mstar_age_bins.sum()
@@ -75,7 +76,7 @@ def test_age_weights_agree_with_analytical_calculation_of_linear_sfr_weights():
     # Analytically calculate age distributions for SFR(t) = t
     log_ages_gyr = FSPS_LG_AGES - 9
     lgt_age_bin_edges = _get_lg_age_bin_edges(log_ages_gyr)
-    t_age_bin_edges_gyr = 10 ** lgt_age_bin_edges
+    t_age_bin_edges_gyr = 10**lgt_age_bin_edges
     t_births_bin_edges = t_obs - t_age_bin_edges_gyr
     mstar_at_age_bins = linear_smh(T_BIRTH_MIN, t_births_bin_edges)
     dmstar_ages = -np.diff(mstar_at_age_bins)

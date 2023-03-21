@@ -19,7 +19,7 @@ def _get_linspace_time_tables():
 
 
 @jjit
-def _get_sfh_tables(mah_params, ms_params, q_params):
+def _get_sfh_tables_from_diffstar_params(mah_params, ms_params, q_params):
     t_table, lgt_table, dt_table = _get_linspace_time_tables()
     sfh_table = diffstar_sfh(t_table, mah_params, ms_params, q_params)
     logsm_table = jnp.log10(jnp.cumsum(sfh_table * dt_table)) + 9
