@@ -6,7 +6,6 @@ from .equivalent_width import _ew_kernel
 from .utils import _get_bin_edges, _get_triweights_singlepoint
 from .weighted_ssps import _get_age_weights
 from .mzr import LGMET_LO, LGMET_HI
-from .stellar_ages import _get_sfh_tables
 
 LGU_LO, LGU_HI = -10.0, 10.0
 
@@ -16,11 +15,7 @@ def _calc_age_met_weights_from_sfh_table(
     t_obs,
     lgZsun_bin_mids,
     lg_ages,
-    ssp_templates,
-    t_table,
     lgt_table,
-    dt_table,
-    sfh_table,
     logsm_table,
     lgmet,
     lgmet_scatter,
@@ -40,10 +35,7 @@ def _calc_age_met_lgu_weights_from_sfh_table(
     lgZsun_bin_mids,
     lg_ages,
     lgU_bin_mids,
-    t_table,
     lgt_table,
-    dt_table,
-    sfh_table,
     logsm_table,
     lgmet,
     lgmet_scatter,
@@ -62,30 +54,17 @@ def _calc_age_met_lgu_weights_from_sfh_table(
 
 
 @jjit
-def _calc_weighted_precomputed_ew_from_diffstar_params_const_lgu_lgmet(
+def _calc_weighted_precomputed_ew_from_sfh_table_const_lgu_lgmet(
     t_obs,
     lgZsun_bin_mids,
     log_age_gyr,
     lgU_bin_mids,
-    ssp_wave,
     ssp_ews,
-    mah_logt0,
-    mah_logmp,
-    mah_logtc,
-    mah_k,
-    mah_early,
-    mah_late,
-    lgmcrit,
-    lgy_at_mcrit,
-    indx_k,
-    indx_lo,
-    indx_hi,
-    floor_low,
-    tau_dep,
-    lg_qt,
-    lg_qs,
-    lg_drop,
-    lg_rejuv,
+    t_table,
+    lgt_table,
+    dt_table,
+    sfh_table,
+    logsm_table,
     lgmet,
     lgmet_scatter,
     lgu,
@@ -93,22 +72,12 @@ def _calc_weighted_precomputed_ew_from_diffstar_params_const_lgu_lgmet(
 ):
     n_lgu, n_met, n_ages = ssp_ews.shape
 
-    mah_params = mah_logt0, mah_logmp, mah_logtc, mah_k, mah_early, mah_late
-    ms_params = lgmcrit, lgy_at_mcrit, indx_k, indx_lo, indx_hi, floor_low, tau_dep
-    q_params = lg_qt, lg_qs, lg_drop, lg_rejuv
-
-    _res = _get_sfh_tables(mah_params, ms_params, q_params)
-    t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
-
     _res = _calc_age_met_lgu_weights_from_sfh_table(
         t_obs,
         lgZsun_bin_mids,
         log_age_gyr,
         lgU_bin_mids,
-        t_table,
         lgt_table,
-        dt_table,
-        sfh_table,
         logsm_table,
         lgmet,
         lgmet_scatter,
@@ -127,30 +96,15 @@ def _calc_weighted_precomputed_ew_from_diffstar_params_const_lgu_lgmet(
 
 
 @jjit
-def _calc_ew_from_diffstar_params_const_lgu_lgmet(
+def _calc_ew_from_sfh_table_const_lgu_lgmet(
     t_obs,
     lgZsun_bin_mids,
     log_age_gyr,
     lgU_bin_mids,
     ssp_wave,
     ssp_flux,
-    mah_logt0,
-    mah_logmp,
-    mah_logtc,
-    mah_k,
-    mah_early,
-    mah_late,
-    lgmcrit,
-    lgy_at_mcrit,
-    indx_k,
-    indx_lo,
-    indx_hi,
-    floor_low,
-    tau_dep,
-    lg_qt,
-    lg_qs,
-    lg_drop,
-    lg_rejuv,
+    lgt_table,
+    logsm_table,
     lgmet,
     lgmet_scatter,
     lgu,
@@ -165,22 +119,12 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
 ):
     n_lgu, n_met, n_ages, n_spec = ssp_flux.shape
 
-    mah_params = mah_logt0, mah_logmp, mah_logtc, mah_k, mah_early, mah_late
-    ms_params = lgmcrit, lgy_at_mcrit, indx_k, indx_lo, indx_hi, floor_low, tau_dep
-    q_params = lg_qt, lg_qs, lg_drop, lg_rejuv
-
-    _res = _get_sfh_tables(mah_params, ms_params, q_params)
-    t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
-
     _res = _calc_age_met_lgu_weights_from_sfh_table(
         t_obs,
         lgZsun_bin_mids,
         log_age_gyr,
         lgU_bin_mids,
-        t_table,
         lgt_table,
-        dt_table,
-        sfh_table,
         logsm_table,
         lgmet,
         lgmet_scatter,
@@ -212,29 +156,14 @@ def _calc_ew_from_diffstar_params_const_lgu_lgmet(
 
 
 @jjit
-def _calc_ew_from_diffstar_params_const_lgmet(
+def _calc_ew_from_sfh_table_const_lgmet(
     t_obs,
     lgZsun_bin_mids,
     log_age_gyr,
     ssp_wave,
     ssp_flux,
-    mah_logt0,
-    mah_logmp,
-    mah_logtc,
-    mah_k,
-    mah_early,
-    mah_late,
-    lgmcrit,
-    lgy_at_mcrit,
-    indx_k,
-    indx_lo,
-    indx_hi,
-    floor_low,
-    tau_dep,
-    lg_qt,
-    lg_qs,
-    lg_drop,
-    lg_rejuv,
+    lgt_table,
+    logsm_table,
     lgmet,
     lgmet_scatter,
     line_lo,
@@ -247,22 +176,11 @@ def _calc_ew_from_diffstar_params_const_lgmet(
 ):
     n_met, n_ages, n_spec = ssp_flux.shape
 
-    mah_params = mah_logt0, mah_logmp, mah_logtc, mah_k, mah_early, mah_late
-    ms_params = lgmcrit, lgy_at_mcrit, indx_k, indx_lo, indx_hi, floor_low, tau_dep
-    q_params = lg_qt, lg_qs, lg_drop, lg_rejuv
-
-    _res = _get_sfh_tables(mah_params, ms_params, q_params)
-    t_table, lgt_table, dt_table, sfh_table, logsm_table = _res
-
     _res = _calc_age_met_weights_from_sfh_table(
         t_obs,
         lgZsun_bin_mids,
         log_age_gyr,
-        ssp_flux,
-        t_table,
         lgt_table,
-        dt_table,
-        sfh_table,
         logsm_table,
         lgmet,
         lgmet_scatter,

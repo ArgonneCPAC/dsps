@@ -3,8 +3,10 @@
 from jax import numpy as jnp
 from jax import jit as jjit
 from .utils import _jax_get_dt_array
-from .sfh_model import diffstar_sfh, TODAY
 
+
+TODAY = 13.8
+LGT0 = jnp.log10(TODAY)
 
 T_BIRTH_MIN = 0.001
 N_T_LGSM_INTEGRATION = 100
@@ -16,14 +18,6 @@ def _get_linspace_time_tables():
     lgt_table = jnp.log10(t_table)
     dt_table = _jax_get_dt_array(t_table)
     return t_table, lgt_table, dt_table
-
-
-@jjit
-def _get_sfh_tables(mah_params, ms_params, q_params):
-    t_table, lgt_table, dt_table = _get_linspace_time_tables()
-    sfh_table = diffstar_sfh(t_table, mah_params, ms_params, q_params)
-    logsm_table = jnp.log10(jnp.cumsum(sfh_table * dt_table)) + 9
-    return t_table, lgt_table, dt_table, sfh_table, logsm_table
 
 
 @jjit
