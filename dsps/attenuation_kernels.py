@@ -13,8 +13,10 @@ N09_SLOPE_MAX = 3.0
 
 
 @jjit
-def _flux_ratio(axEbv, rv, av):
-    return 10 ** (-0.4 * _attenuation_curve(axEbv, rv, av))
+def _flux_ratio(axEbv, rv, av, frac_unobscured=0.0):
+    frac_att_obs = 10 ** (-0.4 * _attenuation_curve(axEbv, rv, av))
+    frac_att = frac_unobscured + (1 - frac_unobscured) * frac_att_obs
+    return frac_att
 
 
 @jjit
