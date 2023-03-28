@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from copy import deepcopy
 from jax import jit as jjit
-from .utils import _sigmoid, _sig_slope
+from ..utils import _sigmoid, _sig_slope
 
 
 PARAMS = OrderedDict(x0=2, yhi=0.58)

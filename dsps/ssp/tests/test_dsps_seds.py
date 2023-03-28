@@ -5,7 +5,7 @@ import os
 from collections import namedtuple
 import numpy as np
 from ..seds_from_tables import compute_sed_galpop
-from ..load_fsps_data import TASSO_DRN, load_fsps_testing_data
+from ...load_fsps_data import TASSO_DRN, load_fsps_testing_data
 
 
 if os.path.isdir(TASSO_DRN):

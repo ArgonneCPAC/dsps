@@ -2,7 +2,7 @@
 """
 import numpy as np
 import pytest
-from ..mzr import DEFAULT_MZR_PARAMS
+from ...metallicity.mzr import DEFAULT_MZR_PARAMS
 from ..weighted_ssps import _calc_weighted_ssp_from_sfh_table
 from ..weighted_ssps import _calc_weighted_ssp_from_sfh_table_const_zmet
 from ..weighted_ssps import _calc_weighted_flux_from_sfh_table_age_correlated_zmet

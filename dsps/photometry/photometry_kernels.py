@@ -2,7 +2,7 @@
 """
 from jax import numpy as jnp
 from jax import jit as jjit
-from .flat_wcdm import _distance_modulus_to_z
+from ..cosmology.flat_wcdm import _distance_modulus_to_z
 
 AB0 = 1.13492e-13  # 3631 Jansky placed at 10 pc in units of Lsun/Hz
 

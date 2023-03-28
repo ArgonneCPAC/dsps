@@ -4,11 +4,11 @@ import numpy as np
 import os
 from jax import jit as jjit, vmap
 from ..photometry_kernels import _calc_obs_mag_no_dimming, _calc_rest_mag, _calc_obs_mag
-from ..flat_wcdm import FSPS_COSMO
+from ...cosmology.flat_wcdm import FSPS_COSMO
 
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
-DATA_DRN = os.path.join(os.path.dirname(_THIS_DRNAME), "data")
+DATA_DRN = os.path.join(os.path.dirname(os.path.dirname(_THIS_DRNAME)), "data")
 LSST_BAND_FNPAT = "lsst_{}_transmission.npy"
 
 _a = (*[None] * 4, 0, *[None] * 5)

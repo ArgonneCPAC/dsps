@@ -3,7 +3,7 @@
 import numpy as np
 from ..stellar_ages import _get_lg_age_bin_edges, _get_lgt_birth, T_BIRTH_MIN
 from ..stellar_ages import _get_age_weights_from_tables
-from ..utils import _jax_get_dt_array
+from ...utils import _jax_get_dt_array
 
 
 FSPS_LG_AGES = np.arange(5.5, 10.2, 0.05)  # log10 ages in years

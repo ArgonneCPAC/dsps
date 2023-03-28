@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from copy import deepcopy
 from jax import jit as jjit
-from .utils import _sig_slope
+from ..utils import _sig_slope
 
 
 DEFAULT_PARAMS = OrderedDict(a=-1.42, b=7, lgk1=1, d=1.3, e=0.2)
@@ -49,5 +49,5 @@ def remnant_mass(
 
 @jjit
 def _log_remnant_mass(lg_age_yr, a, b, lgk1, d, e):
-    k1 = 10 ** lgk1
+    k1 = 10**lgk1
     return 10 ** _sig_slope(lg_age_yr, a, b, k1, d, e)

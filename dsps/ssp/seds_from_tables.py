@@ -4,8 +4,8 @@ from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap
 from .weighted_ssps import _get_age_weights
-from .utils import _get_bin_edges, _get_triweights_singlepoint, _jax_get_dt_array
-from .mzr import LGMET_LO, LGMET_HI
+from ..utils import _get_bin_edges, _get_triweights_singlepoint, _jax_get_dt_array
+from ..metallicity.mzr import LGMET_LO, LGMET_HI
 
 
 __all__ = ("compute_sed_galpop",)

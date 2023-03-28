@@ -3,9 +3,9 @@
 import numpy as np
 from ..ew_kernels import _calc_ew_from_sfh_table_const_lgu_lgmet
 from ..ew_kernels import _calc_ew_from_sfh_table_const_lgmet
-from ..mzr import DEFAULT_MZR_PARAMS
-from .retrieve_fake_fsps_data import load_fake_sps_data
-from ..stellar_ages import _get_linspace_time_tables
+from ...metallicity.mzr import DEFAULT_MZR_PARAMS
+from ...tests.retrieve_fake_fsps_data import load_fake_sps_data
+from ...ssp.stellar_ages import _get_linspace_time_tables
 
 OIIa, OIIb = 4996.0, 5000.0
 

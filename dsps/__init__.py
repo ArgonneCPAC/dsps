@@ -2,4 +2,4 @@
 """
 """
 from ._version import __version__
-from .seds_from_tables import *
+from .ssp.seds_from_tables import *
