@@ -18,7 +18,13 @@ setup(
     install_requires=["numpy", "jax", "diffmah>=0.4.0", "diffstar>=0.1.0"],
     packages=find_packages(),
     package_data={
-        "dsps": ["data/*.npy", "tests/testing_data/*.txt", "tests/testing_data/*.dat"]
+        "dsps": [
+            "data/*.npy",
+            "tests/testing_data/*.txt",
+            "tests/testing_data/*.dat",
+            "*/tests/testing_data/*.txt",
+            "*/tests/testing_data/*.dat",
+        ]
     },
     url="https://github.com/ArgonneCPAC/dsps",
 )

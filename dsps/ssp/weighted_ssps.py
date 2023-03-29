@@ -4,10 +4,10 @@ from jax import jit as jjit
 from jax import numpy as jnp
 from .stellar_ages import _get_age_weights_from_tables
 from .stellar_ages import _get_lgt_birth, _get_lg_age_bin_edges
-from .mzr import calc_lgmet_weights_from_logsm_table
-from .mzr import _get_met_weights_singlegal, LGMET_LO, LGMET_HI
-from .mzr import _get_age_correlated_met_weights
-from .utils import _get_bin_edges
+from ..metallicity.mzr import calc_lgmet_weights_from_logsm_table
+from ..metallicity.mzr import _get_met_weights_singlegal, LGMET_LO, LGMET_HI
+from ..metallicity.mzr import _get_age_correlated_met_weights
+from ..utils import _get_bin_edges
 
 
 @jjit

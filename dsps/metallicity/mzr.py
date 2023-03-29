@@ -4,7 +4,7 @@ from collections import OrderedDict
 from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap
-from .utils import triweighted_histogram, _get_bin_edges, _tw_sigmoid
+from ..utils import triweighted_histogram, _get_bin_edges, _tw_sigmoid
 
 
 MAIOLINO08_PARAMS = OrderedDict()

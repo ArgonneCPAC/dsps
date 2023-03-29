@@ -2,13 +2,13 @@
 """
 import numpy as np
 from ..equivalent_width import _ew_kernel
-from ..utils import triweight_gaussian
+from ...utils import triweight_gaussian
 
 
 def get_fake_exp_continuum(exp_peak):
     lgpeak = np.log10(exp_peak)
     x = np.logspace(lgpeak - 2, lgpeak + 1, 500)
-    y = 3.2 * np.exp(-0.5 * (x - exp_peak) ** 2 / 10 ** 2)
+    y = 3.2 * np.exp(-0.5 * (x - exp_peak) ** 2 / 10**2)
     return x, y
 
 

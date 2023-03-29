@@ -2,7 +2,7 @@
 """
 from jax import numpy as jnp
 from jax import jit as jjit
-from .utils import _jax_get_dt_array
+from ..utils import _jax_get_dt_array
 
 
 TODAY = 13.8

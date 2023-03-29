@@ -2,7 +2,7 @@
 """
 from jax import jit as jjit
 from jax import numpy as jnp
-from .utils import _tw_sig_slope
+from ..utils import _tw_sig_slope
 
 
 RV_C00 = 4.05

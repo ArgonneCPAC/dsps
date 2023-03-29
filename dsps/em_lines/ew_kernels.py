@@ -3,9 +3,9 @@
 from jax import jit as jjit
 from jax import numpy as jnp
 from .equivalent_width import _ew_kernel
-from .utils import _get_bin_edges, _get_triweights_singlepoint
-from .weighted_ssps import _get_age_weights
-from .mzr import LGMET_LO, LGMET_HI
+from ..utils import _get_bin_edges, _get_triweights_singlepoint
+from ..ssp.weighted_ssps import _get_age_weights
+from ..metallicity.mzr import LGMET_LO, LGMET_HI
 
 LGU_LO, LGU_HI = -10.0, 10.0
 

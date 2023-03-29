@@ -3,12 +3,12 @@
 import os
 import numpy as np
 from ..photometry import calc_obs_mag_history_singlegal, calc_obs_mags_galpop
-from ..load_fsps_data import load_fsps_testing_data
-from ..flat_wcdm import FSPS_COSMO
+from ...load_fsps_data import load_fsps_testing_data
+from ...cosmology.flat_wcdm import FSPS_COSMO
 
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
-DATA_DRN = os.path.join(os.path.dirname(_THIS_DRNAME), "data")
+DATA_DRN = os.path.join(os.path.dirname(os.path.dirname(_THIS_DRNAME)), "data")
 
 
 def test_calc_obs_mag_history_singlegal():
