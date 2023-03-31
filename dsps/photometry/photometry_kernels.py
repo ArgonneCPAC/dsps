@@ -67,3 +67,11 @@ def _flux_ab0_at_10pc(wave_filter, trans_filter):
     integrand = trans_filter * AB0 / wave_filter
     lum_ab0_filter = jnp.trapz(integrand, x=wave_filter)
     return lum_ab0_filter
+
+
+@jjit
+def _get_filter_effective_wavelength(filter_wave, filter_trans, redshift):
+    norm = jnp.trapz(filter_trans, x=filter_wave)
+    lambda_eff_rest = jnp.trapz(filter_trans * filter_wave, x=filter_wave) / norm
+    lambda_eff = lambda_eff_rest / (1 + redshift)
+    return lambda_eff
