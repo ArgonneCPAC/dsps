@@ -5,6 +5,7 @@ import numpy as np
 from ..attenuation_kernels import RV_C00, calzetti00_k_lambda, leitherer02_k_lambda
 from ..attenuation_kernels import noll09_k_lambda, _attenuation_curve, sbl18_k_lambda
 from ..attenuation_kernels import triweight_k_lambda, _l02_below_c00_above
+from ..attenuation_kernels import _get_filter_effective_wavelength
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 TEST_DRN = os.path.join(_THIS_DRNAME, "testing_data")
@@ -87,3 +88,13 @@ def _read_noll09_header(fn):
         slope = float(next(f).strip()[2:].split()[1])
         av = float(next(f).strip()[2:].split()[1])
         return x0, gamma, ampl, slope, av
+
+
+def test_get_filter_effective_wavelength():
+    wave = np.linspace(0, 10, 5_000)
+    trans = np.zeros_like(wave)
+    msk = (wave > 4) & (wave < 6)
+    trans[msk] = 1.0
+    redshift = 0.0
+    lambda_eff = _get_filter_effective_wavelength(wave, trans, redshift)
+    assert np.allclose(lambda_eff, 5.0, rtol=0.001)

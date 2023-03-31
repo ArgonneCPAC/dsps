@@ -4,7 +4,6 @@ import numpy as np
 import os
 from jax import jit as jjit, vmap
 from ..photometry_kernels import _calc_obs_mag_no_dimming, _calc_rest_mag, _calc_obs_mag
-from ..photometry_kernels import _get_filter_effective_wavelength
 from ...cosmology.flat_wcdm import FSPS_COSMO
 
 
@@ -66,13 +65,3 @@ def test_obs_mag_agrees_with_fsps_across_redshift():
             )
 
             assert np.allclose(mag_data[band], pred_mags, atol=0.05)
-
-
-def test_get_filter_effective_wavelength():
-    wave = np.linspace(0, 10, 5_000)
-    trans = np.zeros_like(wave)
-    msk = (wave > 4) & (wave < 6)
-    trans[msk] = 1.0
-    redshift = 0.0
-    lambda_eff = _get_filter_effective_wavelength(wave, trans, redshift)
-    assert np.allclose(lambda_eff, 5.0, rtol=0.001)

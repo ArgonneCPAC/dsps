@@ -10,6 +10,8 @@ N09_X0_MIN = 0.0
 N09_GAMMA_MIN = 0.0
 N09_SLOPE_MIN = -3.0
 N09_SLOPE_MAX = 3.0
+UV_BUMP_W0 = 2175
+UV_BUMP_DW = 350
 
 
 @jjit
@@ -159,3 +161,28 @@ def sbl18_k_lambda(x, x0, gamma, ampl, slope):
     axEbv = jnp.where(axEbv < 0, 0, axEbv)
 
     return axEbv
+
+
+@jjit
+def _get_filter_effective_wavelength(filter_wave, filter_trans, redshift):
+    norm = jnp.trapz(filter_trans, x=filter_wave)
+    lambda_eff_rest = jnp.trapz(filter_trans * filter_wave, x=filter_wave) / norm
+    lambda_eff = lambda_eff_rest / (1 + redshift)
+    return lambda_eff
+
+
+@jjit
+def _get_effective_attenuation(filter_wave, filter_trans, redshift, dust_params):
+    """Attenuation factor at the effective wavelength of the filter"""
+
+    lambda_eff = _get_filter_effective_wavelength(filter_wave, filter_trans, redshift)
+    lambda_eff_micron = lambda_eff / 10_000
+
+    dust_Eb, dust_delta, dust_Av = dust_params
+    dust_x0_microns = UV_BUMP_W0 / 10_000
+    bump_width_microns = UV_BUMP_DW / 10_000
+    axEbv = sbl18_k_lambda(
+        lambda_eff_micron, dust_x0_microns, bump_width_microns, dust_Eb, dust_delta
+    )
+    attenuation_factor = _flux_ratio(axEbv, RV_C00, dust_Av)
+    return attenuation_factor
