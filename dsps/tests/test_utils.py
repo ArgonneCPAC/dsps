@@ -3,6 +3,8 @@
 import numpy as np
 from jax import random as jran
 from ..utils import triweighted_histogram, _get_bin_edges, _get_triweights_singlepoint
+from ..utils import _mult_2d_vmap, _get_weight_matrices_2d
+from ..utils import _mult_3d_vmap, _get_weight_matrices_3d
 
 
 def test_triweighted_histogram():
@@ -58,3 +60,42 @@ def test_get_bin_edges():
     assert bin_edges.shape == (bin_mids.size + 1,)
     assert bin_edges[0] == lowest_bin_edge
     assert bin_edges[-1] == highest_bin_edge
+
+
+def test_weight_matrix_kernels_2d():
+
+    ngals = 25
+    n1, n2 = 10, 15
+    w1arr = np.random.uniform(0, 1, n1)
+    w2arr = np.random.uniform(0, 1, n2)
+    w1arr = w1arr / w1arr.sum()
+    w2arr = w2arr / w2arr.sum()
+
+    res = _mult_2d_vmap(w1arr, w2arr)
+    assert res.shape == (n1, n2)
+
+    w1arr_pop = np.random.uniform(0, 1, size=(ngals, n1))
+    w2arr_pop = np.random.uniform(0, 1, size=(ngals, n2))
+    res_vmap = _get_weight_matrices_2d(w1arr_pop, w2arr_pop)
+    assert res_vmap.shape == (ngals, n1, n2)
+
+
+def test_weight_matrix_kernels_3d():
+
+    ngals = 25
+    n1, n2, n3 = 10, 15, 25
+    w1arr = np.random.uniform(0, 1, n1)
+    w2arr = np.random.uniform(0, 1, n2)
+    w3arr = np.random.uniform(0, 1, n3)
+    w1arr = w1arr / w1arr.sum()
+    w2arr = w2arr / w2arr.sum()
+    w3arr = w3arr / w3arr.sum()
+
+    res = _mult_3d_vmap(w1arr, w2arr, w3arr)
+    assert res.shape == (n1, n2, n3)
+
+    w1arr_pop = np.random.uniform(0, 1, size=(ngals, n1))
+    w2arr_pop = np.random.uniform(0, 1, size=(ngals, n2))
+    w3arr_pop = np.random.uniform(0, 1, size=(ngals, n3))
+    res_vmap = _get_weight_matrices_3d(w1arr_pop, w2arr_pop, w3arr_pop)
+    assert res_vmap.shape == (ngals, n1, n2, n3)
