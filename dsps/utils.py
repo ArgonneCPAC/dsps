@@ -179,3 +179,26 @@ def _sigmoid(x, x0, k, ylo, yhi):
 def _sig_slope(x, y0, x0, slope_k, lo, hi):
     slope = _sigmoid(x, x0, slope_k, lo, hi)
     return y0 + slope * (x - x0)
+
+
+@jjit
+def _mult_2d(w1, w2):
+    return w1 * w2
+
+
+@jjit
+def _mult_3d(w1, w2, w3):
+    return w1 * w2 * w3
+
+
+_mult_2d_vmap = jjit(vmap(vmap(_mult_2d, in_axes=[None, 0]), in_axes=[0, None]))
+_get_weight_matrices_2d = jjit(vmap(_mult_2d_vmap, in_axes=[0, 0]))
+
+
+_mult_3d_vmap = jjit(
+    vmap(
+        vmap(vmap(_mult_3d, in_axes=[None, None, 0]), in_axes=[None, 0, None]),
+        in_axes=[0, None, None],
+    )
+)
+_get_weight_matrices_3d = jjit(vmap(_mult_3d_vmap, in_axes=[0, 0, 0]))
