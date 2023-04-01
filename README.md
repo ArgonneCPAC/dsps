@@ -16,6 +16,11 @@ To install dsps from source, first clone the GitHub repository, and then:
 $ pip install .
 ```
 
+## Documentation
+
+Online documentation for DSPS is available at [dsps.readthedocs.io](dsps.readthedocs.io).
+
+
 ## Citing DSPS
 [The DSPS paper](https://arxiv.org/abs/2112.06830) has been published in [Monthly Notices of the Royal Astronomical Society](https://academic.oup.com/mnras/advance-article-abstract/doi/10.1093/mnras/stad456/7034352?utm_source=advanceaccess&utm_campaign=mnras&utm_medium=email). Citation information for the paper can be found at [this ADS link](https://ui.adsabs.harvard.edu/abs/2023MNRAS.521.1741H/abstract), copied below for convenience:
 
