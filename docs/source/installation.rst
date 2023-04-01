@@ -27,5 +27,4 @@ or::
 
        pip install .
 
-If you want to use the latest code on the main branch, 
-you'll need to install from source.
+To use the latest code on the main branch, you'll need to install from source.
