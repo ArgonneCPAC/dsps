@@ -1,3 +1,4 @@
 nbsphinx
 jupyter
 matplotlib
+sphinx-copybutton
