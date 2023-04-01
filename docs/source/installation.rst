@@ -4,7 +4,7 @@ Installation instructions
 Dependencies
 ------------
 
-``dsps`` requires the use of `numpy <https://numpy.org/>`__ 
+``dsps`` requires `numpy <https://numpy.org/>`__ 
 and `jax <https://jax.readthedocs.io/en/latest/>`__. 
 
 Installation

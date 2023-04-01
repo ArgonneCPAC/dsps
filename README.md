@@ -18,7 +18,7 @@ $ pip install .
 
 ## Documentation
 
-Online documentation for DSPS is available at [dsps.readthedocs.io](dsps.readthedocs.io).
+Online documentation for DSPS is available at [dsps.readthedocs.io](https://dsps.readthedocs.io/en/latest/).
 
 
 ## Citing DSPS
