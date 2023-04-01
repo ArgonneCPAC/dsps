@@ -4,7 +4,7 @@ Installation instructions
 Dependencies
 ------------
 
-``dsps`` requires the use of `numpy <https://numpy.org/>`__ 
+``dsps`` requires `numpy <https://numpy.org/>`__ 
 and `jax <https://jax.readthedocs.io/en/latest/>`__. 
 
 Installation
@@ -27,5 +27,4 @@ or::
 
        pip install .
 
-If you want to use the latest code on the main branch, 
-you'll need to install from source.
+To use the latest code on the main branch, you'll need to install from source.
