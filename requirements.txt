@@ -1,4 +1,3 @@
 diffmah
 numpy
 jax
-diffstar

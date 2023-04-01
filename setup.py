@@ -15,7 +15,7 @@ setup(
     author_email="ahearin@anl.gov",
     description="Differentiable Stellar Population Synthesis",
     long_description="Differentiable Stellar Population Synthesis",
-    install_requires=["numpy", "jax", "diffmah>=0.4.0", "diffstar>=0.1.0"],
+    install_requires=["numpy", "jax", "diffmah>=0.4.0"],
     packages=find_packages(),
     package_data={
         "dsps": [
