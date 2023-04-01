@@ -10,11 +10,10 @@ Welcome to the DSPS documentation
    :maxdepth: 2
    :caption: Contents:
 
+   installation.rst
 
+.. toctree::
+    :maxdepth: 1
 
-Indices and tables
-==================
+    citation.rst
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
