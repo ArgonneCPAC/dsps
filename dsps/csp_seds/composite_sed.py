@@ -15,12 +15,18 @@ def _calc_rest_sed_lognormal_mdf(
     ssp_lg_age,
     ssp_lgmet,
     ssp_flux,
-    lgmet,
-    lgmet_scatter,
+    gal_lgmet,
+    gal_lgmet_scatter,
     sfr_min=SFR_MIN,
 ):
     weights, age_weights, lgmet_weights = _calc_ssp_weights_lognormal_mdf(
-        gal_t_table, gal_sfr_table, lgmet, lgmet_scatter, ssp_lg_age, ssp_lgmet, t_obs
+        gal_t_table,
+        gal_sfr_table,
+        gal_lgmet,
+        gal_lgmet_scatter,
+        ssp_lg_age,
+        ssp_lgmet,
+        t_obs,
     )
     n_met, n_ages = weights.shape
     weights = weights.reshape((n_met, n_ages, 1))
@@ -45,7 +51,7 @@ def _calc_rest_sed_met_table(
     ssp_lgmet,
     ssp_flux,
     gal_lgmet_table,
-    lgmet_scatter,
+    gal_lgmet_scatter,
     sfr_min=SFR_MIN,
 ):
     weights, age_weights, lgmet_weights = _calc_ssp_weights_met_table(
@@ -55,7 +61,7 @@ def _calc_rest_sed_met_table(
         ssp_lg_age,
         ssp_lgmet,
         gal_lgmet_table,
-        lgmet_scatter,
+        gal_lgmet_scatter,
     )
     n_met, n_ages = weights.shape
     weights = weights.reshape((n_met, n_ages, 1))
