@@ -1,9 +1,10 @@
 """
 """
 import numpy as np
-from ..stellar_age_weights import _get_lg_age_bin_edges, T_BIRTH_MIN
+from ..stellar_age_weights import _get_lg_age_bin_edges
 from ..stellar_age_weights import _calc_age_weights_from_logsm_table
 from ...utils import _jax_get_dt_array
+from ...constants import T_BIRTH_MIN
 
 
 FSPS_LG_AGES = np.arange(5.5, 10.2, 0.05)  # log10 ages in years
