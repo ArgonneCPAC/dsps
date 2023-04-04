@@ -49,4 +49,5 @@ def remnant_mass(
 @jjit
 def _log_remnant_mass(lg_age_yr, a, b, lgk1, d, e):
     k1 = 10**lgk1
-    return 10 ** _sig_slope(lg_age_yr, a, b, k1, d, e)
+    xtp = b
+    return 10 ** _sig_slope(lg_age_yr, xtp, a, b, k1, d, e)

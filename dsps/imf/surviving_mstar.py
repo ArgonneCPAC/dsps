@@ -63,7 +63,8 @@ def surviving_mstar(
 @jjit
 def _returned_mass(lg_age_yr, a, b, lgk1, d, e, f, lgk2, h):
     k1 = 10**lgk1
-    z = _sig_slope(lg_age_yr, a, b, k1, d, e)
+    xtp = b
+    z = _sig_slope(lg_age_yr, xtp, a, b, k1, d, e)
 
     k2 = 10**lgk2
     h = _sigmoid(lg_age_yr, f, k2, h, z)
