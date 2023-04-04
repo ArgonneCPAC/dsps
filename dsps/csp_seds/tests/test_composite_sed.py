@@ -23,23 +23,23 @@ def test_calc_rest_sed_lognormal_mdf():
     n_met = 15
     ssp_lgmet = np.linspace(-4, 0.5, n_met)
 
-    lgmet = jran.uniform(
+    gal_lgmet = jran.uniform(
         met_key, minval=ssp_lgmet.min(), maxval=ssp_lgmet.max(), shape=()
     )
-    lgmet_scatter = 0.1
+    gal_lgmet_scatter = 0.1
 
     n_wave = 20
     ssp_flux = jran.uniform(sed_key, minval=0, maxval=1, shape=(n_met, n_ages, n_wave))
 
     args = (
-        t_obs,
         gal_t_table,
         gal_sfr_table,
+        gal_lgmet,
+        gal_lgmet_scatter,
         ssp_lg_age,
         ssp_lgmet,
         ssp_flux,
-        lgmet,
-        lgmet_scatter,
+        t_obs,
     )
     sed = _calc_rest_sed_lognormal_mdf(*args)
     assert sed.shape == (n_wave,)
