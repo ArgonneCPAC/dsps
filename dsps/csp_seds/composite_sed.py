@@ -44,14 +44,14 @@ def _calc_rest_sed_lognormal_mdf(
 
 @jjit
 def _calc_rest_sed_met_table(
-    t_obs,
     gal_t_table,
     gal_sfr_table,
+    gal_lgmet_table,
+    gal_lgmet_scatter,
     ssp_lg_age,
     ssp_lgmet,
     ssp_flux,
-    gal_lgmet_table,
-    gal_lgmet_scatter,
+    t_obs,
     sfr_min=SFR_MIN,
 ):
     weights, age_weights, lgmet_weights = _calc_ssp_weights_met_table(

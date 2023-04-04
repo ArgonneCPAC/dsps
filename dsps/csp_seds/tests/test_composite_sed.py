@@ -63,20 +63,20 @@ def test_calc_rest_sed_lgmet_table():
     gal_lgmet_table = jran.uniform(
         met_key, minval=ssp_lgmet.min(), maxval=ssp_lgmet.max(), shape=(n_t,)
     )
-    lgmet_scatter = 0.1
+    gal_lgmet_scatter = 0.1
 
     n_wave = 20
     ssp_flux = jran.uniform(sed_key, minval=0, maxval=1, shape=(n_met, n_ages, n_wave))
 
     args = (
-        t_obs,
         gal_t_table,
         gal_sfr_table,
+        gal_lgmet_table,
+        gal_lgmet_scatter,
         ssp_lg_age,
         ssp_lgmet,
         ssp_flux,
-        gal_lgmet_table,
-        lgmet_scatter,
+        t_obs,
     )
     sed = _calc_rest_sed_met_table(*args)
     assert sed.shape == (n_wave,)
