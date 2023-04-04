@@ -68,7 +68,7 @@ def maiolino08_metallicity_evolution(logsm, logm0, k0):
 @jjit
 def _delta_logz_vs_t_lookback(t_lookback, y_at_tc, tc, early_time_slope, k):
     late_time_slope = y_at_tc / tc
-    xtp = tc 
+    xtp = tc
     args = xtp, y_at_tc, tc, k, late_time_slope, early_time_slope
     logZ_reduction = _sig_slope(t_lookback, *args)
     return logZ_reduction
