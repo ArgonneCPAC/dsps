@@ -1,5 +1,4 @@
-"""
-"""
+"""Convenience functions commonly encountered in photometry calculations"""
 import numpy as np
 
 

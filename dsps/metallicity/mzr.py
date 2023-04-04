@@ -1,5 +1,4 @@
-"""
-"""
+"""Model for the mass-metallicity relation"""
 from collections import OrderedDict
 from jax import jit as jjit
 from jax import numpy as jnp

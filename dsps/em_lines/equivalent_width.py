@@ -1,5 +1,4 @@
-"""
-"""
+"""Kernels used to calculate equivalent width of spectral lines"""
 from jax import jit as jjit
 from jax import numpy as jnp
 
@@ -55,7 +54,7 @@ def _ew_kernel(
     c = _weighted_quadratic_fit(wave, flux, quadfit_w)
     c2, c1, c0 = c
 
-    continuum_strength_at_line = c0 + c1 * line_mid + c2 * line_mid ** 2
+    continuum_strength_at_line = c0 + c1 * line_mid + c2 * line_mid**2
 
     int_w = _get_integration_weights(wave, line_lo, line_hi)
     continuum_integrand = int_w * (c0 + c1 * wave + c2 * wave * wave)

@@ -1,5 +1,4 @@
-"""
-"""
+"""Functions calculating the SED of a composite stellar population"""
 from jax import jit as jjit
 from jax import numpy as jnp
 from .ssp_weights import _calc_ssp_weights_lognormal_mdf, _calc_ssp_weights_met_table

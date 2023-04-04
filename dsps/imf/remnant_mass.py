@@ -1,5 +1,4 @@
-"""
-"""
+"""Functions calculating the stellar mass locked in remnants as a function of time"""
 from collections import OrderedDict
 from copy import deepcopy
 from jax import jit as jjit

@@ -1,5 +1,4 @@
-"""
-"""
+"""Functions calculating the surviving stellar mass as a function of time"""
 from collections import OrderedDict
 from copy import deepcopy
 from jax import jit as jjit
@@ -63,9 +62,9 @@ def surviving_mstar(
 
 @jjit
 def _returned_mass(lg_age_yr, a, b, lgk1, d, e, f, lgk2, h):
-    k1 = 10 ** lgk1
+    k1 = 10**lgk1
     z = _sig_slope(lg_age_yr, a, b, k1, d, e)
 
-    k2 = 10 ** lgk2
+    k2 = 10**lgk2
     h = _sigmoid(lg_age_yr, f, k2, h, z)
     return h

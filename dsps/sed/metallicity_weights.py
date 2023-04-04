@@ -1,5 +1,4 @@
-"""
-"""
+"""Kernels calculating metallicity PDF-weighting of SSP tempates"""
 from jax import numpy as jnp
 from jax import jit as jjit
 from jax import vmap
