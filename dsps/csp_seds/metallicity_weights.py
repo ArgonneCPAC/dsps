@@ -33,6 +33,8 @@ def _calc_lgmet_weights_from_lgmet_table(
     lgmet_weight_matrix = _get_lgmet_weights_singlegal_zh(
         lgmet_at_ssp_lgages, lgmet_scatter, lgmetbin_edges
     )
+    # Normalize so that sum of all matrix elements is unity
+    lgmet_weight_matrix = lgmet_weight_matrix / ssp_lg_age.size
 
     lgmet_weight_matrix = jnp.swapaxes(lgmet_weight_matrix, 1, 0)
 
