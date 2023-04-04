@@ -4,7 +4,7 @@ from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap
 
-PLANCK15 = jnp.array((0.3075, 0.691, -1.0, 0.0, 0.6774))
+PLANCK15 = jnp.array((0.3075, 0.6925, -1.0, 0.0, 0.6774))
 WMAP5 = jnp.array((0.277, 0.723, -1.0, 0.0, 0.702))
 FSPS_COSMO = jnp.array((0.27, 0.73, -1.0, 0.0, 0.72))
 
@@ -27,7 +27,7 @@ def _rho_de_z(z, w0, wa):
 @jjit
 def _Ez(z, Om0, Ode0, w0, wa):
     zp1 = 1.0 + z
-    t = Om0 * zp1 ** 3 + Ode0 * _rho_de_z(z, w0, wa)
+    t = Om0 * zp1**3 + Ode0 * _rho_de_z(z, w0, wa)
     E = jnp.sqrt(t)
     return E
 
@@ -108,7 +108,7 @@ _Om = jjit(vmap(_Om_at_z, in_axes=_A[:-1]))
 @jjit
 def _delta_vir(z, Om0, Ode0, w0, wa):
     x = _Om(z, Om0, Ode0, w0, wa) - 1.0
-    Delta = 18 * jnp.pi ** 2 + 82.0 * x - 39.0 * x ** 2
+    Delta = 18 * jnp.pi**2 + 82.0 * x - 39.0 * x**2
     return Delta
 
 
@@ -118,5 +118,5 @@ def _virial_dynamical_time(z, Om0, Ode0, w0, wa, h):
     The pericentric passage time is half this time.
     The orbital time is PI times this time."""
     delta = _delta_vir(z, Om0, Ode0, w0, wa)
-    t_cross = 2 ** 1.5 * _hubble_time(z, Om0, Ode0, w0, wa, h) * delta ** -0.5
+    t_cross = 2**1.5 * _hubble_time(z, Om0, Ode0, w0, wa, h) * delta**-0.5
     return t_cross
