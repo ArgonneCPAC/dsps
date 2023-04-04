@@ -152,9 +152,9 @@ def _sigmoid(x, x0, k, ylo, yhi):
 
 
 @jjit
-def _sig_slope(x, y0, x0, slope_k, lo, hi):
+def _sig_slope(x, xtp, ytp, x0, slope_k, lo, hi):
     slope = _sigmoid(x, x0, slope_k, lo, hi)
-    return y0 + slope * (x - x0)
+    return ytp + slope * (x - xtp)
 
 
 @jjit

@@ -46,8 +46,15 @@ DEFAULT_MZR_PARAMS.update(MZR_SCATTER_PARAMS)
 def mzr_model_t0(
     logsm, mzr_t0_y0, mzr_t0_x0, mzr_t0_k, mzr_t0_slope_lo, mzr_t0_slope_hi
 ):
+    mzr_t0_xtp = mzr_t0_x0
     return _sig_slope(
-        logsm, mzr_t0_y0, mzr_t0_x0, mzr_t0_k, mzr_t0_slope_lo, mzr_t0_slope_hi
+        logsm,
+        mzr_t0_xtp,
+        mzr_t0_y0,
+        mzr_t0_x0,
+        mzr_t0_k,
+        mzr_t0_slope_lo,
+        mzr_t0_slope_hi,
     )
 
 
@@ -61,7 +68,8 @@ def maiolino08_metallicity_evolution(logsm, logm0, k0):
 @jjit
 def _delta_logz_vs_t_lookback(t_lookback, y_at_tc, tc, early_time_slope, k):
     late_time_slope = y_at_tc / tc
-    args = y_at_tc, tc, k, late_time_slope, early_time_slope
+    xtp = tc 
+    args = xtp, y_at_tc, tc, k, late_time_slope, early_time_slope
     logZ_reduction = _sig_slope(t_lookback, *args)
     return logZ_reduction
 
