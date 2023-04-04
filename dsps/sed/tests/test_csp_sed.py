@@ -2,7 +2,7 @@
 """
 import numpy as np
 from jax import random as jran
-from ..composite_sed import calc_rest_sed_lognormal_mdf, calc_rest_sed_met_table
+from ..csp_sed import calc_rest_sed_lognormal_mdf, calc_rest_sed_met_table
 from ...constants import T_BIRTH_MIN
 
 
