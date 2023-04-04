@@ -2,7 +2,7 @@
 """
 import numpy as np
 from jax import random as jran
-from ..composite_sed import _calc_rest_sed_lognormal_mdf, _calc_rest_sed_met_table
+from ..composite_sed import calc_rest_sed_lognormal_mdf, calc_rest_sed_met_table
 from ...constants import T_BIRTH_MIN
 
 SEED = 43
@@ -41,7 +41,7 @@ def test_calc_rest_sed_lognormal_mdf():
         ssp_flux,
         t_obs,
     )
-    sed = _calc_rest_sed_lognormal_mdf(*args)
+    sed = calc_rest_sed_lognormal_mdf(*args)
     assert sed.shape == (n_wave,)
     assert np.any(sed > 0)
 
@@ -78,6 +78,6 @@ def test_calc_rest_sed_lgmet_table():
         ssp_flux,
         t_obs,
     )
-    sed = _calc_rest_sed_met_table(*args)
+    sed = calc_rest_sed_met_table(*args)
     assert sed.shape == (n_wave,)
     assert np.any(sed > 0)

@@ -8,7 +8,7 @@ from ..constants import SFR_MIN
 
 
 @jjit
-def _calc_rest_sed_lognormal_mdf(
+def calc_rest_sed_lognormal_mdf(
     gal_t_table,
     gal_sfr_table,
     gal_lgmet,
@@ -79,7 +79,7 @@ def _calc_rest_sed_lognormal_mdf(
 
 
 @jjit
-def _calc_rest_sed_met_table(
+def calc_rest_sed_met_table(
     gal_t_table,
     gal_sfr_table,
     gal_lgmet_table,
