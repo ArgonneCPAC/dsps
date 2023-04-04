@@ -1,5 +1,4 @@
-"""
-"""
+"""Kernels calculating distances in flat FLRW cosmologies"""
 from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap

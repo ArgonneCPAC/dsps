@@ -1,5 +1,4 @@
-"""
-"""
+"""Kernels calculating SSP weights of a composite stellar population"""
 from jax import jit as jjit
 from .stellar_age_weights import _calc_age_weights_from_sfh_table
 from .metallicity_weights import _calc_lgmet_weights_from_lognormal_mdf

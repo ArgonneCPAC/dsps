@@ -1,5 +1,4 @@
-"""
-"""
+"""Kernels used in calculations of dust attenuation curves"""
 from jax import jit as jjit
 from jax import numpy as jnp
 from ..utils import _tw_sig_slope
@@ -129,7 +128,6 @@ def _l02_below_c00_above(x, xc=0.15):
 
 @jjit
 def noll09_k_lambda(x, x0, gamma, ampl, slope):
-
     # Leitherer 2002 below 0.15 microns and Calzetti 2000 above
     axEbv = _l02_below_c00_above(x, xc=0.15)
 
@@ -147,7 +145,6 @@ def noll09_k_lambda(x, x0, gamma, ampl, slope):
 
 @jjit
 def sbl18_k_lambda(x, x0, gamma, ampl, slope):
-
     # Leitherer 2002 below 0.15 microns and Calzetti 2000 above
     axEbv = _l02_below_c00_above(x, xc=0.15)
 
