@@ -12,7 +12,9 @@ from ..constants import LGMET_LO, LGMET_HI
 @jjit
 def _calc_lgmet_weights_from_lognormal_mdf(gal_lgmet, gal_lgmet_scatter, ssp_lgmet):
     lgmetbin_edges = _get_bin_edges(ssp_lgmet, LGMET_LO, LGMET_HI)
-    lgmet_weights = _get_lgmet_weights_singlegal(gal_lgmet, gal_lgmet_scatter, lgmetbin_edges)
+    lgmet_weights = _get_lgmet_weights_singlegal(
+        gal_lgmet, gal_lgmet_scatter, lgmetbin_edges
+    )
     return lgmet_weights
 
 
@@ -43,7 +45,9 @@ def _calc_lgmet_weights_from_lgmet_table(
 
 @jjit
 def _get_lgmet_weights_singlegal(gal_lgmet, gal_lgmet_scatter, lgmetbin_edges):
-    tw_hist_results = triweighted_histogram(gal_lgmet, gal_lgmet_scatter, lgmetbin_edges)
+    tw_hist_results = triweighted_histogram(
+        gal_lgmet, gal_lgmet_scatter, lgmetbin_edges
+    )
 
     tw_hist_results_sum = jnp.sum(tw_hist_results, axis=0)
 
