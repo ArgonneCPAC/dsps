@@ -20,7 +20,8 @@ def calc_rest_sed_lognormal_mdf(
     sfr_min=SFR_MIN,
 ):
     """
-    Calculate the SED of a galaxy defined by input tables of SFH and metallicity
+    Calculate the SED of a galaxy defined by input tables of SFH and
+    a lognormal metallicity distribution function
 
     Parameters
     ----------
