@@ -10,15 +10,11 @@ from ..constants import SFR_MIN, T_BIRTH_MIN, TODAY, N_T_LGSM_INTEGRATION
 def _calc_age_weights_from_sfh_table(
     gal_t_table, gal_sfr_table, ssp_lg_age, t_obs, sfr_min=SFR_MIN
 ):
-    dt_table = _jax_get_dt_array(gal_t_table)
+    logsm_table = _calc_logsm_table_from_sfh_table(gal_t_table, gal_sfr_table, sfr_min)
 
-    gal_sfr_table = jnp.where(gal_sfr_table < sfr_min, sfr_min, gal_sfr_table)
-    gal_mstar_table = jnp.cumsum(gal_sfr_table * dt_table)
-    logsm_table = jnp.log10(gal_mstar_table)
-
-    lgt_birth_bin_mids, age_weights = _calc_age_weights_from_logsm_table(
+    age_weights = _calc_age_weights_from_logsm_table(
         t_obs, ssp_lg_age, gal_t_table, logsm_table
-    )
+    )[1]
     return age_weights
 
 
@@ -88,3 +84,13 @@ def _get_lg_age_bin_edges(lg_ages):
     lg_age_bin_edges = lg_age_bin_edges.at[-1].set(highest)
 
     return lg_age_bin_edges
+
+
+@jjit
+def _calc_logsm_table_from_sfh_table(gal_t_table, gal_sfr_table, sfr_min):
+    dt_table = _jax_get_dt_array(gal_t_table)
+
+    gal_sfr_table = jnp.where(gal_sfr_table < sfr_min, sfr_min, gal_sfr_table)
+    gal_mstar_table = jnp.cumsum(gal_sfr_table * dt_table) * 1e9
+    logsm_table = jnp.log10(gal_mstar_table)
+    return logsm_table
