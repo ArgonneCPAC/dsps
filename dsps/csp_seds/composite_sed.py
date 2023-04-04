@@ -20,7 +20,7 @@ def _calc_rest_sed_lognormal_mdf(
     sfr_min=SFR_MIN,
 ):
     weights, age_weights, lgmet_weights = _calc_ssp_weights_lognormal_mdf(
-        t_obs, gal_t_table, gal_sfr_table, ssp_lg_age, ssp_lgmet, lgmet, lgmet_scatter
+        gal_t_table, gal_sfr_table, lgmet, lgmet_scatter, ssp_lg_age, ssp_lgmet, t_obs
     )
     n_met, n_ages = weights.shape
     weights = weights.reshape((n_met, n_ages, 1))

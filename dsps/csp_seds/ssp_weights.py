@@ -8,7 +8,7 @@ from .metallicity_weights import _calc_lgmet_weights_from_lgmet_table
 
 @jjit
 def _calc_ssp_weights_lognormal_mdf(
-    t_obs, gal_t_table, gal_sfr_table, ssp_lg_age, ssp_lgmet, lgmet, lgmet_scatter
+    gal_t_table, gal_sfr_table, lgmet, lgmet_scatter, ssp_lg_age, ssp_lgmet, t_obs
 ):
     age_weights = _calc_age_weights_from_sfh_table(
         gal_t_table, gal_sfr_table, ssp_lg_age, t_obs

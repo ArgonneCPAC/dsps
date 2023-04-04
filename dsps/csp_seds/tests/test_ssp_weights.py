@@ -31,13 +31,13 @@ def test_calc_ssp_weights_lognormal_mdf():
     lgmet_scatter = 0.1
 
     args = (
-        t_obs,
         gal_t_table,
         gal_sfr_table,
-        ssp_lg_age,
-        ssp_lgmet,
         lgmet,
         lgmet_scatter,
+        ssp_lg_age,
+        ssp_lgmet,
+        t_obs,
     )
     weights, age_weights, lgmet_weights = _calc_ssp_weights_lognormal_mdf(*args)
     assert weights.shape == (n_met, n_ages)
