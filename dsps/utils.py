@@ -70,11 +70,6 @@ def _tw_sigmoid(x, x0, tw_h, ymin, ymax):
 
 
 @jjit
-def _get_tw_h_from_sigmoid_k(k):
-    return 1 / (0.614 * k)
-
-
-@jjit
 def _triweighted_histogram_kernel(x, sig, lo, hi):
     """Triweight kernel integrated across the boundaries of a single bin."""
     a = _tw_cuml_kern(x, lo, sig)
@@ -118,25 +113,6 @@ def triweight_gaussian(x, m, h):
 def _tw_sig_slope(x, xtp, ytp, x0, tw_h, lo, hi):
     slope = _tw_sigmoid(x, x0, tw_h, lo, hi)
     return ytp + slope * (x - xtp)
-
-
-@jjit
-def interpolate_transmission_curve(wave, trans, n_out, pcut_lo=0, pcut_hi=1):
-    """ """
-    lowest_bin_edge = wave[0] - (wave[1] - wave[0]) / 2
-    highest_bin_edge = wave[-1] + (wave[-1] - wave[-2]) / 2
-    dwave = jnp.diff(_get_bin_edges(wave, lowest_bin_edge, highest_bin_edge))
-    cuml = jnp.cumsum(dwave * trans)
-    cuml = cuml / cuml[-1]
-
-    msk = cuml >= pcut_lo
-    msk &= cuml <= pcut_hi
-
-    wave_lo, wave_hi = dwave[msk][0], dwave[msk][-1]
-    wave_out = jnp.linspace(wave_lo, wave_hi, n_out)
-    trans_out = jnp.jnp.interp(wave_out, wave, trans)
-
-    return wave_out, trans_out
 
 
 @jjit
