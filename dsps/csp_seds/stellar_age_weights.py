@@ -13,16 +13,16 @@ def _calc_age_weights_from_sfh_table(
     logsm_table = _calc_logsm_table_from_sfh_table(gal_t_table, gal_sfr_table, sfr_min)
 
     age_weights = _calc_age_weights_from_logsm_table(
-        t_obs, ssp_lg_age, gal_t_table, logsm_table
+        gal_t_table, logsm_table, ssp_lg_age, t_obs
     )[1]
     return age_weights
 
 
 @jjit
-def _calc_age_weights_from_logsm_table(t_obs, lg_ages, gal_t_table, logsm_table):
-    lg_age_bin_edges = _get_lg_age_bin_edges(lg_ages)
+def _calc_age_weights_from_logsm_table(gal_t_table, logsm_table, ssp_lg_age, t_obs):
+    lg_age_bin_edges = _get_lg_age_bin_edges(ssp_lg_age)
     lgt_birth_bin_edges = _get_lgt_birth(t_obs, lg_age_bin_edges)
-    lgt_birth_bin_mids = _get_lgt_birth(t_obs, lg_ages)
+    lgt_birth_bin_mids = _get_lgt_birth(t_obs, ssp_lg_age)
 
     lgt_table = jnp.log10(gal_t_table)
     logsm_at_t_birth_bin_edges = jnp.interp(lgt_birth_bin_edges, lgt_table, logsm_table)
