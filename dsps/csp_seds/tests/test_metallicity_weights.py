@@ -67,10 +67,10 @@ def test_calc_lgmet_weights_from_lgmet_table():
     lgmet_weights = _calc_lgmet_weights_from_lgmet_table(
         gal_t_table,
         gal_lgmet_table,
+        lgmet_scatter,
         ssp_lgmet,
         ssp_lg_age,
         t_obs,
-        lgmet_scatter,
     )
     assert lgmet_weights.shape == (n_met, n_ages)
     assert np.allclose(lgmet_weights.sum(), 1.0, rtol=1e-4)

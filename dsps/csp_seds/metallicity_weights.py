@@ -20,10 +20,10 @@ def _calc_lgmet_weights_from_lognormal_mdf(lgmet, lgmet_scatter, ssp_lgmet):
 def _calc_lgmet_weights_from_lgmet_table(
     gal_t_table,
     gal_lgmet_table,
+    lgmet_scatter,
     ssp_lgmet,
     ssp_lg_age,
     t_obs,
-    lgmet_scatter,
 ):
     lgmet_at_ssp_lgages = _calc_lgmet_at_ssp_lgage_table(
         gal_t_table, gal_lgmet_table, ssp_lg_age, t_obs

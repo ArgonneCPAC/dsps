@@ -37,7 +37,7 @@ def _calc_ssp_weights_met_table(
         gal_t_table, gal_sfr_table, ssp_lg_age, t_obs
     )
     lgmet_weights = _calc_lgmet_weights_from_lgmet_table(
-        gal_t_table, gal_lgmet_table, ssp_lgmet, ssp_lg_age, t_obs, lgmet_scatter
+        gal_t_table, gal_lgmet_table, lgmet_scatter, ssp_lgmet, ssp_lg_age, t_obs
     )
 
     weights = lgmet_weights * age_weights.reshape((1, -1))
