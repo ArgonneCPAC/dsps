@@ -66,16 +66,16 @@ def test_calc_ssp_weights_met_table():
     gal_lgmet_table = jran.uniform(
         met_key, minval=ssp_lgmet.min(), maxval=ssp_lgmet.max(), shape=(n_t,)
     )
-    lgmet_scatter = 0.1
+    gal_lgmet_scatter = 0.1
 
     args = (
-        t_obs,
         gal_t_table,
         gal_sfr_table,
+        gal_lgmet_table,
+        gal_lgmet_scatter,
         ssp_lg_age,
         ssp_lgmet,
-        gal_lgmet_table,
-        lgmet_scatter,
+        t_obs,
     )
     weights, age_weights, lgmet_weights = _calc_ssp_weights_met_table(*args)
     assert weights.shape == (n_met, n_ages)
