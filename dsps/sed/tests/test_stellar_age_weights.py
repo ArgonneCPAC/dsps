@@ -28,11 +28,12 @@ def test_age_weights_are_mathematically_sensible():
     t_obs = 11.0
 
     gal_t_table = np.linspace(0.05, 13.8, 75)
+    gal_lgt_table = np.log10(gal_t_table)
     logsm_table = np.linspace(-1, 10, gal_t_table.size)
 
     ssp_lg_ages_gyr = FSPS_LG_AGES - 9.0
     lgt_birth_bin_mids, age_weights = _calc_age_weights_from_logsm_table(
-        gal_t_table, logsm_table, ssp_lg_ages_gyr, t_obs
+        gal_lgt_table, logsm_table, ssp_lg_ages_gyr, t_obs
     )
     assert age_weights.shape == lgt_birth_bin_mids.shape
     assert age_weights.shape == ssp_lg_ages_gyr.shape
@@ -51,11 +52,12 @@ def test_age_weights_agree_with_analytical_calculation_of_constant_sfr_weights()
     # Calculate age distributions with DSPS
     t_obs = 16.0
     gal_t_table = np.linspace(T_BIRTH_MIN, t_obs, 50_000)
+    gal_lgt_table = np.log10(gal_t_table)
     mstar_table = constant_sfr * gal_t_table
     logsm_table = np.log10(mstar_table)
 
     dsps_age_weights = _calc_age_weights_from_logsm_table(
-        gal_t_table, logsm_table, ssp_lg_ages_gyr, t_obs
+        gal_lgt_table, logsm_table, ssp_lg_ages_gyr, t_obs
     )[1]
     assert np.allclose(dsps_age_weights, correct_weights, atol=0.01)
 
@@ -74,9 +76,10 @@ def test_age_weights_agree_with_analytical_calculation_of_linear_sfr_weights():
 
     # Calculate age distributions with DSPS
     gal_t_table = np.linspace(T_BIRTH_MIN, t_obs, 50_000)
+    gal_lgt_table = np.log10(gal_t_table)
 
     logsm_table = np.log10(linear_smh(T_BIRTH_MIN, gal_t_table[1:]))
     dsps_age_weights = _calc_age_weights_from_logsm_table(
-        gal_t_table[1:], logsm_table, ssp_lg_ages_gyr, t_obs
+        gal_lgt_table[1:], logsm_table, ssp_lg_ages_gyr, t_obs
     )[1]
     assert np.allclose(dsps_age_weights, correct_weights, atol=0.001)
