@@ -1,8 +1,8 @@
 """
 """
 import numpy as np
-from ..photometry_interpolation import precompute_ssp_restmags
-from ..photometry_interpolation import precompute_ssp_obsmags_on_z_table
+from ..photpop import precompute_ssp_restmags
+from ..photpop import precompute_ssp_obsmags_on_z_table
 
 
 def test_precompute_ssp_restmags():

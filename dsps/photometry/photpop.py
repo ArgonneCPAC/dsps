@@ -1,3 +1,4 @@
+"""Functions used to compute photometry for collections of SEDs"""
 from jax import jit as jjit
 from jax import vmap
 from .photometry_kernels import _calc_obs_mag, _calc_rest_mag
