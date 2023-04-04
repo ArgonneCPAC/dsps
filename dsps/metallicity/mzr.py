@@ -2,8 +2,7 @@
 from collections import OrderedDict
 from jax import jit as jjit
 from jax import numpy as jnp
-from jax import vmap
-from ..utils import triweighted_histogram, _get_bin_edges, _tw_sigmoid
+from ..utils import _sig_slope
 
 
 MAIOLINO08_PARAMS = OrderedDict()
@@ -41,24 +40,6 @@ DEFAULT_MZR_PARAMS = OrderedDict()
 DEFAULT_MZR_PARAMS.update(MZR_T0_PARAMS)
 DEFAULT_MZR_PARAMS.update(MZR_VS_T_PARAMS)
 DEFAULT_MZR_PARAMS.update(MZR_SCATTER_PARAMS)
-
-TODAY = 13.8
-LGMET_LO, LGMET_HI = -10.0, 10.0
-N_T_SMH_INTEGRATION = 100
-
-LGAGE_CRIT_YR, LGAGE_CRIT_H = 8.0, 1.0
-
-
-@jjit
-def _sigmoid(x, logtc, k, ymin, ymax):
-    height_diff = ymax - ymin
-    return ymin + height_diff / (1.0 + jnp.exp(-k * (x - logtc)))
-
-
-@jjit
-def _sig_slope(x, y0, x0, slope_k, lo, hi):
-    slope = _sigmoid(x, x0, slope_k, lo, hi)
-    return y0 + slope * (x - x0)
 
 
 @jjit
@@ -176,71 +157,3 @@ def mzr_model(
         c1_early_time_slope,
     )
     return lgmet_at_t0 + logZ_reduction
-
-
-@jjit
-def _fill_empty_weights_singlegal(lgmet, lgmetbin_edges, weights):
-    zmsk = jnp.all(weights == 0, axis=0)
-    lomsk = lgmet < lgmetbin_edges[0]
-    himsk = lgmet > lgmetbin_edges[-1]
-
-    lores = jnp.zeros(lgmetbin_edges.size - 1)
-    hires = jnp.zeros(lgmetbin_edges.size - 1)
-
-    lores = lores.at[0].set(1.0)
-    hires = hires.at[-1].set(1.0)
-
-    weights = jnp.where(zmsk & lomsk, lores, weights)
-    weights = jnp.where(zmsk & himsk, hires, weights)
-    return weights
-
-
-@jjit
-def _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmetbin_edges):
-    tw_hist_results = triweighted_histogram(lgmet, lgmet_scatter, lgmetbin_edges)
-
-    tw_hist_results_sum = jnp.sum(tw_hist_results, axis=0)
-
-    zmsk = tw_hist_results_sum == 0
-    tw_hist_results_sum = jnp.where(zmsk, 1.0, tw_hist_results_sum)
-    weights = tw_hist_results / tw_hist_results_sum
-
-    return _fill_empty_weights_singlegal(lgmet, lgmetbin_edges, weights)
-
-
-@jjit
-def calc_lgmet_weights_from_logsm_table(
-    lgt_obs,
-    lgmet_bin_mids,
-    lgt_table,
-    logsm_table,
-    met_params,
-):
-    lgmet_bin_edges = _get_bin_edges(lgmet_bin_mids, LGMET_LO, LGMET_HI)
-    lgmet_scatter = met_params[-1]
-
-    logsm_at_t_obs = jnp.interp(lgt_obs, lgt_table, logsm_table)
-    lgmet = mzr_model(logsm_at_t_obs, 10**lgt_obs, *met_params[:-1])
-    lgmet_weights = _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmet_bin_edges)
-    return lgmet_weights
-
-
-@jjit
-def calc_const_lgmet_weights(lgmet, lgmet_bin_mids, lgmet_scatter):
-    lgmet_bin_edges = _get_bin_edges(lgmet_bin_mids, LGMET_LO, LGMET_HI)
-    lgmet_weights = _get_met_weights_singlegal(lgmet, lgmet_scatter, lgmet_bin_edges)
-    return lgmet_weights
-
-
-_a = (0, None, None)
-_get_met_weights_singlegal_vmap = jjit(vmap(_get_met_weights_singlegal, in_axes=_a))
-
-
-@jjit
-def _get_age_correlated_met_weights(
-    lg_ages_gyr, lgmet_young, lgmet_old, lgmet_scatter, lgmet_bin_edges
-):
-    lg_ages_yr = lg_ages_gyr + 9
-    lgmet = _tw_sigmoid(lg_ages_yr, LGAGE_CRIT_YR, LGAGE_CRIT_H, lgmet_young, lgmet_old)
-    weights = _get_met_weights_singlegal_vmap(lgmet, lgmet_scatter, lgmet_bin_edges)
-    return weights
