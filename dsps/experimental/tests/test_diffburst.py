@@ -40,3 +40,16 @@ def test_burst_age_weights_sum_to_unity():
     for dburst in dburst_arr:
         res = db._burst_age_weights(log_age_yr, dburst)
         assert np.allclose(np.sum(res), 1.0)
+
+
+def test_compute_bursty_age_weights():
+    n_ages = 25
+    lgyr_since_burst = np.linspace(5, 10, n_ages)
+    age_weights = np.ones_like(lgyr_since_burst) / n_ages
+    fburst = 0.01
+    age_weights = db._compute_bursty_age_weights(
+        lgyr_since_burst, age_weights, fburst, db.DEFAULT_DBURST
+    )
+    assert age_weights.shape == (n_ages,)
+    assert np.allclose(age_weights.sum(), 1.0, rtol=1e-3)
+    assert np.all(np.isfinite(age_weights))
