@@ -169,7 +169,9 @@ def _get_filter_effective_wavelength(filter_wave, filter_trans, redshift):
 
 
 @jjit
-def _get_effective_attenuation(filter_wave, filter_trans, redshift, dust_params):
+def _get_effective_attenuation(
+    filter_wave, filter_trans, redshift, dust_params, frac_unobscured=0.0
+):
     """Attenuation factor at the effective wavelength of the filter"""
 
     lambda_eff = _get_filter_effective_wavelength(filter_wave, filter_trans, redshift)
@@ -181,5 +183,5 @@ def _get_effective_attenuation(filter_wave, filter_trans, redshift, dust_params)
     axEbv = sbl18_k_lambda(
         lambda_eff_micron, dust_x0_microns, bump_width_microns, dust_Eb, dust_delta
     )
-    attenuation_factor = _flux_ratio(axEbv, RV_C00, dust_Av)
+    attenuation_factor = _flux_ratio(axEbv, RV_C00, dust_Av, frac_unobscured)
     return attenuation_factor
