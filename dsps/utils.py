@@ -152,6 +152,12 @@ def _sigmoid(x, x0, k, ylo, yhi):
 
 
 @jjit
+def _inverse_sigmoid(y, x0, k, ylo, yhi):
+    lnarg = (yhi - ylo) / (y - ylo) - 1
+    return x0 - jnp.log(lnarg) / k
+
+
+@jjit
 def _sig_slope(x, xtp, ytp, x0, slope_k, lo, hi):
     slope = _sigmoid(x, x0, slope_k, lo, hi)
     return ytp + slope * (x - xtp)

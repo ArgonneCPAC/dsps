@@ -5,6 +5,16 @@ from jax import random as jran
 from ..utils import triweighted_histogram, _get_bin_edges, _get_triweights_singlepoint
 from ..utils import _mult_2d_vmap, _get_weight_matrices_2d
 from ..utils import _mult_3d_vmap, _get_weight_matrices_3d
+from ..utils import _sigmoid, _inverse_sigmoid
+
+
+def test_sigmoid_inversion():
+    xarr = np.linspace(-10, 10, 500)
+
+    x0, k, ylo, yhi = 0, 0.1, -5, 5
+    y = _sigmoid(xarr, x0, k, ylo, yhi)
+    x2 = _inverse_sigmoid(y, x0, k, ylo, yhi)
+    assert np.allclose(xarr, x2, rtol=1e-4)
 
 
 def test_triweighted_histogram():
@@ -63,7 +73,6 @@ def test_get_bin_edges():
 
 
 def test_weight_matrix_kernels_2d():
-
     ngals = 25
     n1, n2 = 10, 15
     w1arr = np.random.uniform(0, 1, n1)
@@ -81,7 +90,6 @@ def test_weight_matrix_kernels_2d():
 
 
 def test_weight_matrix_kernels_3d():
-
     ngals = 25
     n1, n2, n3 = 10, 15, 25
     w1arr = np.random.uniform(0, 1, n1)
