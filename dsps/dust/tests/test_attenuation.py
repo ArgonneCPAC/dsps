@@ -6,6 +6,7 @@ from ..attenuation_kernels import RV_C00, calzetti00_k_lambda, leitherer02_k_lam
 from ..attenuation_kernels import noll09_k_lambda, _attenuation_curve, sbl18_k_lambda
 from ..attenuation_kernels import triweight_k_lambda, _l02_below_c00_above
 from ..attenuation_kernels import _get_filter_effective_wavelength
+from ..attenuation_kernels import _get_effective_attenuation, _get_eb_from_delta
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 TEST_DRN = os.path.join(_THIS_DRNAME, "testing_data")
@@ -98,3 +99,27 @@ def test_get_filter_effective_wavelength():
     redshift = 0.0
     lambda_eff = _get_filter_effective_wavelength(wave, trans, redshift)
     assert np.allclose(lambda_eff, 5.0, rtol=0.001)
+
+
+def test_get_effective_attenuation():
+    filter_wave = np.logspace(2, 5, 5_000)
+    filter_trans = np.ones_like(filter_wave)
+    redshift = 0.0
+
+    dust_delta = -0.3
+    dust_eb = _get_eb_from_delta(dust_delta)
+    dust_Av = 0.5
+    att_curve_params = np.array((dust_eb, dust_delta, dust_Av))
+
+    # No unobscured sightlines
+    args = filter_wave, filter_trans, redshift, att_curve_params
+    res = _get_effective_attenuation(*args)
+    assert np.all(np.isfinite(res))
+    assert res.shape == ()
+
+    # With obscured sightlines
+    frac_unobscured = 0.5
+    args = filter_wave, filter_trans, redshift, att_curve_params, frac_unobscured
+    res = _get_effective_attenuation(*args)
+    assert np.all(np.isfinite(res))
+    assert res.shape == ()
