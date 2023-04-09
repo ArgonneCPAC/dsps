@@ -1,19 +1,19 @@
 """Kernels of common photometry integrals"""
 from jax import numpy as jnp
 from jax import jit as jjit
-from ..cosmology.flat_wcdm import _distance_modulus_to_z
+from ..cosmology.flat_wcdm import distance_modulus_to_z
 
 AB0 = 1.13492e-13  # 3631 Jansky placed at 10 pc in units of Lsun/Hz
 
 
 @jjit
 def _calc_obs_mag(
-    wave_spec_rest, lum_spec, wave_filter, trans_filter, z, Om0, Ode0, w0, wa, h
+    wave_spec_rest, lum_spec, wave_filter, trans_filter, z, Om0, w0, wa, h
 ):
     flux_source = _obs_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter, z)
     flux_ab0 = _flux_ab0_at_10pc(wave_filter, trans_filter)
     mag_no_dimming = -2.5 * jnp.log10(flux_source / flux_ab0)
-    dimming = _cosmological_dimming(z, Om0, Ode0, w0, wa, h)
+    dimming = _cosmological_dimming(z, Om0, w0, wa, h)
     return mag_no_dimming + dimming
 
 
@@ -24,8 +24,8 @@ def _cosmological_dimming_from_table(z, z_table, distance_modulus_table):
 
 
 @jjit
-def _cosmological_dimming(z, Om0, Ode0, w0, wa, h):
-    dmod = _distance_modulus_to_z(z, Om0, Ode0, w0, wa, h)
+def _cosmological_dimming(z, Om0, w0, wa, h):
+    dmod = distance_modulus_to_z(z, Om0, w0, wa, h)
     return dmod - 2.5 * jnp.log10(1 + z)
 
 
