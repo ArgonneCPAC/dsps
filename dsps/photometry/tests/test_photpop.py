@@ -23,7 +23,7 @@ def test_precompute_ssp_restmags():
 
 
 def test_precompute_ssp_obsmags_on_z_table():
-    cosmology = 0.3, 0.7, -1.0, 0.0, 0.67
+    cosmology = 0.3, -1.0, 0.0, 0.67
     n_met, n_age, n_filters, n_wave = 12, 50, 3, 1_000
     ssp_wave = np.linspace(500, 10_000, n_wave)
     ssp_fluxes = np.random.uniform(0, 1, size=(n_met, n_age, n_wave))

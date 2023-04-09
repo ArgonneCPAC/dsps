@@ -11,7 +11,7 @@ _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 DATA_DRN = os.path.join(os.path.dirname(os.path.dirname(_THIS_DRNAME)), "data")
 LSST_BAND_FNPAT = "lsst_{}_transmission.npy"
 
-_a = (*[None] * 4, 0, *[None] * 5)
+_a = (*[None] * 4, 0, *[None] * 4)
 _calc_obs_mag_vmap_z = jjit(vmap(_calc_obs_mag, in_axes=_a))
 
 

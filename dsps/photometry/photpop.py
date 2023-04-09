@@ -4,9 +4,9 @@ from jax import vmap
 from .photometry_kernels import _calc_obs_mag, _calc_rest_mag
 
 
-_z = [*[None] * 4, 0, *[None] * 5]
-_f = [None, None, 0, 0, None, *[None] * 5]
-_ssp = [None, 0, *[None] * 8]
+_z = [*[None] * 4, 0, *[None] * 4]
+_f = [None, None, 0, 0, None, *[None] * 4]
+_ssp = [None, 0, *[None] * 7]
 _calc_obs_mag_vmap_f = jjit(vmap(_calc_obs_mag, in_axes=_f))
 _calc_obs_mag_vmap_f_ssp = jjit(
     vmap(vmap(_calc_obs_mag_vmap_f, in_axes=_ssp), in_axes=_ssp)
@@ -22,7 +22,6 @@ def precompute_ssp_obsmags_on_z_table(
     filter_trans,
     z_table,
     Om0,
-    Ode0,
     w0,
     wa,
     h,
@@ -47,12 +46,7 @@ def precompute_ssp_obsmags_on_z_table(
         Array of redshifts at which the magnitudes will be computed
 
     Om0 : float
-        Cosmological matter density at z=0.
-        Only flat LCDM is supported, so Om0+Ode0 should sum to 1.0
-
-    Ode0 : float
-        Dark energy density at z=0.
-        Only flat LCDM is supported, so Om0+Ode0 should sum to 1.0
+        Cosmological matter density at z=0
 
     w0 : float
         Dark energy equation of state parameter
@@ -69,7 +63,7 @@ def precompute_ssp_obsmags_on_z_table(
 
     """
     ssp_obsmag_table = _calc_obs_mag_vmap_f_ssp_z(
-        ssp_wave, ssp_fluxes, filter_waves, filter_trans, z_table, Om0, Ode0, w0, wa, h
+        ssp_wave, ssp_fluxes, filter_waves, filter_trans, z_table, Om0, w0, wa, h
     )
     return ssp_obsmag_table
 
