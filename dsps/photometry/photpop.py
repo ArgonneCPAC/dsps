@@ -1,13 +1,13 @@
 """Functions used to compute photometry for collections of SEDs"""
 from jax import jit as jjit
 from jax import vmap
-from .photometry_kernels import _calc_obs_mag, _calc_rest_mag
+from .photometry_kernels import calc_obs_mag, calc_rest_mag
 
 
 _z = [*[None] * 4, 0, *[None] * 4]
 _f = [None, None, 0, 0, None, *[None] * 4]
 _ssp = [None, 0, *[None] * 7]
-_calc_obs_mag_vmap_f = jjit(vmap(_calc_obs_mag, in_axes=_f))
+_calc_obs_mag_vmap_f = jjit(vmap(calc_obs_mag, in_axes=_f))
 _calc_obs_mag_vmap_f_ssp = jjit(
     vmap(vmap(_calc_obs_mag_vmap_f, in_axes=_ssp), in_axes=_ssp)
 )
@@ -68,7 +68,7 @@ def precompute_ssp_obsmags_on_z_table(
     return ssp_obsmag_table
 
 
-_calc_rest_mag_vmap_f = jjit(vmap(_calc_rest_mag, in_axes=[None, None, 0, 0]))
+_calc_rest_mag_vmap_f = jjit(vmap(calc_rest_mag, in_axes=[None, None, 0, 0]))
 _calc_rest_mag_vmap_f_ssp = jjit(
     vmap(
         vmap(_calc_rest_mag_vmap_f, in_axes=[None, 0, None, None]),

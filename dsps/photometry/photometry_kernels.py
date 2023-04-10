@@ -7,14 +7,44 @@ AB0 = 1.13492e-13  # 3631 Jansky placed at 10 pc in units of Lsun/Hz
 
 
 @jjit
-def _calc_obs_mag(
-    wave_spec_rest, lum_spec, wave_filter, trans_filter, z, Om0, w0, wa, h
+def calc_obs_mag(
+    wave_spec_rest, lum_spec, wave_filter, trans_filter, redshift, Om0, w0, wa, h
 ):
-    flux_source = _obs_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter, z)
+    """Calculate the apparent magnitude of an SED observed through a filter
+
+    Parameters
+    ----------
+    wave_spec_rest : ndarray of shape (n_wave, )
+
+    lum_spec : ndarray of shape (n_wave, )
+
+    wave_filter : ndarray of shape (n_filter_wave, )
+
+    trans_filter : ndarray of shape (n_filter_wave, )
+
+    redshift : float
+
+    Om0 : float
+
+    w0 : float
+
+    wa : float
+
+    h : float
+
+    Returns
+    -------
+    obs_mag : float
+
+    """
+    flux_source = _obs_flux_ssp(
+        wave_spec_rest, lum_spec, wave_filter, trans_filter, redshift
+    )
     flux_ab0 = _flux_ab0_at_10pc(wave_filter, trans_filter)
     mag_no_dimming = -2.5 * jnp.log10(flux_source / flux_ab0)
-    dimming = _cosmological_dimming(z, Om0, w0, wa, h)
-    return mag_no_dimming + dimming
+    dimming = _cosmological_dimming(redshift, Om0, w0, wa, h)
+    obs_mag = mag_no_dimming + dimming
+    return obs_mag
 
 
 @jjit
@@ -37,10 +67,28 @@ def _calc_obs_mag_no_dimming(wave_spec_rest, lum_spec, wave_filter, trans_filter
 
 
 @jjit
-def _calc_rest_mag(wave_spec_rest, lum_spec, wave_filter, trans_filter):
+def calc_rest_mag(wave_spec_rest, lum_spec, wave_filter, trans_filter):
+    """Calculate the restframe magnitude of an SED observed through a filter
+
+    Parameters
+    ----------
+    wave_spec_rest : ndarray of shape (n_wave, )
+
+    lum_spec : ndarray of shape (n_wave, )
+
+    wave_filter : ndarray of shape (n_filter_wave, )
+
+    trans_filter : ndarray of shape (n_filter_wave, )
+
+    Returns
+    -------
+    rest_mag : float
+
+    """
     flux_source = _rest_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter)
     flux_ab0 = _flux_ab0_at_10pc(wave_filter, trans_filter)
-    return -2.5 * jnp.log10(flux_source / flux_ab0)
+    rest_mag = -2.5 * jnp.log10(flux_source / flux_ab0)
+    return rest_mag
 
 
 @jjit
