@@ -2,7 +2,8 @@
 """
 import numpy as np
 from jax import random as jran
-from ..csp_sed import calc_rest_sed_lognormal_mdf, calc_rest_sed_met_table
+from ..csp_sed import calc_rest_sed_sfh_table_lognormal_mdf
+from ..csp_sed import calc_rest_sed_sfh_table_met_table
 from ...constants import T_BIRTH_MIN
 
 
@@ -37,14 +38,25 @@ def test_calc_rest_sed_lognormal_mdf():
         gal_sfr_table,
         gal_lgmet,
         gal_lgmet_scatter,
-        ssp_lg_age,
         ssp_lgmet,
+        ssp_lg_age,
         ssp_flux,
         t_obs,
     )
-    sed = calc_rest_sed_lognormal_mdf(*args)
-    assert sed.shape == (n_wave,)
-    assert np.any(sed > 0)
+    sed_info = calc_rest_sed_sfh_table_lognormal_mdf(*args)
+    rest_sed, weights, lgmet_weights, age_weights = sed_info
+    assert rest_sed.shape == (n_wave,)
+    assert np.any(rest_sed > 0)
+    assert weights.shape == (n_met, n_ages)
+    assert lgmet_weights.shape == (n_met,)
+    assert age_weights.shape == (n_ages,)
+
+    # Test namedtuple fields
+    assert sed_info.rest_sed.shape == (n_wave,)
+    assert np.any(sed_info.rest_sed > 0)
+    assert sed_info.weights.shape == (n_met, n_ages)
+    assert sed_info.lgmet_weights.shape == (n_met,)
+    assert sed_info.age_weights.shape == (n_ages,)
 
 
 def test_calc_rest_sed_lgmet_table():
@@ -74,11 +86,22 @@ def test_calc_rest_sed_lgmet_table():
         gal_sfr_table,
         gal_lgmet_table,
         gal_lgmet_scatter,
-        ssp_lg_age,
         ssp_lgmet,
+        ssp_lg_age,
         ssp_flux,
         t_obs,
     )
-    sed = calc_rest_sed_met_table(*args)
-    assert sed.shape == (n_wave,)
-    assert np.any(sed > 0)
+    sed_info = calc_rest_sed_sfh_table_met_table(*args)
+    rest_sed, weights, lgmet_weights, age_weights = sed_info
+    assert rest_sed.shape == (n_wave,)
+    assert np.any(rest_sed > 0)
+    assert weights.shape == (n_met, n_ages)
+    assert lgmet_weights.shape == (n_met, n_ages)
+    assert age_weights.shape == (n_ages,)
+
+    # Test namedtuple fields
+    assert sed_info.rest_sed.shape == (n_wave,)
+    assert np.any(sed_info.rest_sed > 0)
+    assert sed_info.weights.shape == (n_met, n_ages)
+    assert sed_info.lgmet_weights.shape == (n_met, n_ages)
+    assert sed_info.age_weights.shape == (n_ages,)

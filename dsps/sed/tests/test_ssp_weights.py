@@ -2,8 +2,8 @@
 """
 import numpy as np
 from jax import random as jran
-from ..ssp_weights import _calc_ssp_weights_lognormal_mdf
-from ..ssp_weights import _calc_ssp_weights_met_table
+from ..ssp_weights import calc_ssp_weights_sfh_table_lognormal_mdf
+from ..ssp_weights import calc_ssp_weights_sfh_table_met_table
 from ...constants import T_BIRTH_MIN
 
 
@@ -35,11 +35,12 @@ def test_calc_ssp_weights_lognormal_mdf():
         gal_sfr_table,
         lgmet,
         lgmet_scatter,
-        ssp_lg_age,
         ssp_lgmet,
+        ssp_lg_age,
         t_obs,
     )
-    weights, age_weights, lgmet_weights = _calc_ssp_weights_lognormal_mdf(*args)
+    weight_info = calc_ssp_weights_sfh_table_lognormal_mdf(*args)
+    weights, lgmet_weights, age_weights = weight_info
     assert weights.shape == (n_met, n_ages)
     assert lgmet_weights.shape == (n_met,)
     assert age_weights.shape == (n_ages,)
@@ -47,6 +48,11 @@ def test_calc_ssp_weights_lognormal_mdf():
     assert np.allclose(age_weights.sum(), 1.0, rtol=1e-4)
     assert np.allclose(lgmet_weights.sum(), 1.0, rtol=1e-4)
     assert np.allclose(weights.sum(), 1.0, rtol=1e-4)
+
+    # Test namedtuple fields
+    assert weight_info.weights.shape == (n_met, n_ages)
+    assert weight_info.lgmet_weights.shape == (n_met,)
+    assert weight_info.age_weights.shape == (n_ages,)
 
 
 def test_calc_ssp_weights_met_table():
@@ -73,11 +79,12 @@ def test_calc_ssp_weights_met_table():
         gal_sfr_table,
         gal_lgmet_table,
         gal_lgmet_scatter,
-        ssp_lg_age,
         ssp_lgmet,
+        ssp_lg_age,
         t_obs,
     )
-    weights, age_weights, lgmet_weights = _calc_ssp_weights_met_table(*args)
+    weight_info = calc_ssp_weights_sfh_table_met_table(*args)
+    weights, lgmet_weights, age_weights = weight_info
     assert weights.shape == (n_met, n_ages)
     assert lgmet_weights.shape == (n_met, n_ages)
     assert age_weights.shape == (n_ages,)
@@ -85,3 +92,8 @@ def test_calc_ssp_weights_met_table():
     assert np.allclose(age_weights.sum(), 1.0, rtol=1e-4)
     assert np.allclose(lgmet_weights.sum(), 1.0, rtol=1e-4)
     assert np.allclose(weights.sum(), 1.0, rtol=1e-4)
+
+    # Test namedtuple fields
+    assert weight_info.weights.shape == (n_met, n_ages)
+    assert weight_info.lgmet_weights.shape == (n_met, n_ages)
+    assert weight_info.age_weights.shape == (n_ages,)

@@ -4,8 +4,8 @@ from jax import random as jran
 import numpy as np
 from ...utils import _get_bin_edges
 from ..metallicity_weights import _get_lgmet_weights_singlegal
-from ..metallicity_weights import _calc_lgmet_weights_from_lognormal_mdf
-from ..metallicity_weights import _calc_lgmet_weights_from_lgmet_table
+from ..metallicity_weights import calc_lgmet_weights_from_lognormal_mdf
+from ..metallicity_weights import calc_lgmet_weights_from_lgmet_table
 from ...constants import T_BIRTH_MIN
 
 
@@ -42,7 +42,7 @@ def test_calc_lgmet_weights_from_lognormal_mdf():
     )
 
     lgmet_scatter = 0.1
-    lgmet_weights = _calc_lgmet_weights_from_lognormal_mdf(
+    lgmet_weights = calc_lgmet_weights_from_lognormal_mdf(
         lgmet, lgmet_scatter, ssp_lgmet
     )
     assert lgmet_weights.shape == (n_met,)
@@ -64,7 +64,7 @@ def test_calc_lgmet_weights_from_lgmet_table():
     n_ages = ssp_lg_age.size
 
     lgmet_scatter = 0.1
-    lgmet_weights = _calc_lgmet_weights_from_lgmet_table(
+    lgmet_weights = calc_lgmet_weights_from_lgmet_table(
         gal_t_table,
         gal_lgmet_table,
         lgmet_scatter,
