@@ -3,7 +3,7 @@
 import numpy as np
 import os
 from jax import jit as jjit, vmap
-from ..photometry_kernels import _calc_obs_mag_no_dimming, _calc_rest_mag, _calc_obs_mag
+from ..photometry_kernels import _calc_obs_mag_no_dimming, calc_rest_mag, calc_obs_mag
 from ...cosmology.flat_wcdm import FSPS_COSMO
 
 
@@ -12,7 +12,7 @@ DATA_DRN = os.path.join(os.path.dirname(os.path.dirname(_THIS_DRNAME)), "data")
 LSST_BAND_FNPAT = "lsst_{}_transmission.npy"
 
 _a = (*[None] * 4, 0, *[None] * 4)
-_calc_obs_mag_vmap_z = jjit(vmap(_calc_obs_mag, in_axes=_a))
+_calc_obs_mag_vmap_z = jjit(vmap(calc_obs_mag, in_axes=_a))
 
 
 def test_obs_mag_no_dimming_agrees_with_rest_mag_at_z0():
@@ -33,7 +33,7 @@ def test_obs_mag_no_dimming_agrees_with_rest_mag_at_z0():
             mags_obs = _calc_obs_mag_no_dimming(
                 wave_spec, lum_spec, band_wave, band_trans, z_obs
             )
-            mags_rest = _calc_rest_mag(wave_spec, lum_spec, band_wave, band_trans)
+            mags_rest = calc_rest_mag(wave_spec, lum_spec, band_wave, band_trans)
             assert np.allclose(mags_obs, mags_rest)
 
 
