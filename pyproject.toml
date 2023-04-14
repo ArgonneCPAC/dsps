@@ -18,6 +18,9 @@ dsps = [
     "*/tests/testing_data/*.dat",
 ]
 
+[project.urls]
+home = "https://github.com/ArgonneCPAC/dsps"
+
 [project]
 name = "dsps"
 authors = [
