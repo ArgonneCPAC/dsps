@@ -1,6 +1,21 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = [
+    "setuptools>=45",
+    "setuptools_scm>=6.2", # Gets release version from git. Makes it available programmatically
+]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "dsps/_version.py"
+
+[tool.setuptools.package-data]
+dsps = [
+    "data/*.npy",
+    "tests/testing_data/*.txt",
+    "tests/testing_data/*.dat",
+    "*/tests/testing_data/*.txt",
+    "*/tests/testing_data/*.dat",
+]
 
 [project]
 name = "dsps"
