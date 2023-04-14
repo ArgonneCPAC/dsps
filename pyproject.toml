@@ -8,6 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 write_to = "dsps/_version.py"
+write_to_template = "__version__ = '{version}'\n"
 
 [tool.setuptools.package-data]
 dsps = [
@@ -38,3 +39,6 @@ dynamic = ["version"]
 
 [tool.black]
 line-length = 88
+
+[tool.isort]
+profile = "black"
