@@ -34,7 +34,8 @@ jobs:
             flake8 \
             pytest \
             pytest-xdist \
-            pytest-cov
+            pytest-cov \
+            flake8-pyproject
 
       - name: lint
         shell: bash -l {0}

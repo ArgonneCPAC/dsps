@@ -1,3 +1,6 @@
+# Using dynamic versioning and writing here
+dsps/_version.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
