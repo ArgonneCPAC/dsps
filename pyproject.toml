@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dsps"
+authors = [
+    {name = "Andrew Hearin", email = "ahearin@anl.gov"},
+]
+description = "Differentiable Stellar Population Synthesis"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE.rst"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = ["numpy", "jax", "h5py"]
+dynamic = ["version"]
+
+[tool.black]
+line-length = 88
