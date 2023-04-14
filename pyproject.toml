@@ -41,7 +41,7 @@ line-length = 88
 profile = "black"
 
 [tool.flake8]
-ignore = ["E231", "E241"]
+ignore = ["E231", "E241", "E501"]
 per-file-ignores = [
     "__init__.py:F401",
 ]
