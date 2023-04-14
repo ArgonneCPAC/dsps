@@ -10,18 +10,6 @@ build-backend = "setuptools.build_meta"
 write_to = "dsps/_version.py"
 write_to_template = "__version__ = '{version}'\n"
 
-[tool.setuptools.package-data]
-dsps = [
-    "data/*.npy",
-    "tests/testing_data/*.txt",
-    "tests/testing_data/*.dat",
-    "*/tests/testing_data/*.txt",
-    "*/tests/testing_data/*.dat",
-]
-
-[project.urls]
-home = "https://github.com/ArgonneCPAC/dsps"
-
 [project]
 name = "dsps"
 authors = [
@@ -36,6 +24,21 @@ classifiers = [
 ]
 dependencies = ["numpy", "jax", "h5py"]
 dynamic = ["version"]
+
+[options]
+zip_safe = False
+packages = find:
+
+[options.package_data]
+dsps =
+    data/*.npy
+    tests/testing_data/*.txt
+    tests/testing_data/*.dat
+    */tests/testing_data/*.txt
+    */tests/testing_data/*.dat
+
+[project.urls]
+home = "https://github.com/ArgonneCPAC/dsps"
 
 [tool.black]
 line-length = 88
