@@ -40,7 +40,7 @@ line-length = 88
 [tool.isort]
 profile = "black"
 
-[flake8]
+[tool.flake8]
 ignore = ["E231", "E241"]
 per-file-ignores = [
     "__init__.py:F401",
