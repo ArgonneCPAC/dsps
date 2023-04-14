@@ -13,13 +13,7 @@ write_to_template = "__version__ = '{version}'\n"
 [tool.setuptools]
 include-package-data = true
 packages = {find = {exclude=["tests*", "scripts*", "docs*", "notebooks*"]}}
-package-data = {dsps = [
-    "data/*.npy",
-    "tests/testing_data/*.txt",
-    "tests/testing_data/*.dat",
-    "*/tests/testing_data/*.txt",
-    "*/tests/testing_data/*.dat",
-]}
+package-data = {dsps = ["data/*.npy", "tests/testing_data/*.txt", "tests/testing_data/*.dat", "*/tests/testing_data/*.txt", "*/tests/testing_data/*.dat"]}
 package-dir = {dsps = "dsps"}
 
 [project.urls]
