@@ -10,14 +10,11 @@ build-backend = "setuptools.build_meta"
 write_to = "dsps/_version.py"
 write_to_template = "__version__ = '{version}'\n"
 
-[tool.setuptools.package-data]
-dsps = [
-    "data/*.npy",
-    "tests/testing_data/*.txt",
-    "tests/testing_data/*.dat",
-    "*/tests/testing_data/*.txt",
-    "*/tests/testing_data/*.dat",
-]
+[tool.setuptools]
+include-package-data = true
+packages = {find = {exclude=["tests*", "scripts*", "docs*", "notebooks*"]}}
+package-data = {dsps = ["*.dat", "*.txt"]}
+package-dir = {dsps = "dsps"}
 
 [project.urls]
 home = "https://github.com/ArgonneCPAC/dsps"
