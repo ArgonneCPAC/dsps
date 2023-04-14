@@ -1,2 +1,3 @@
 numpy
 jax
+h5py
