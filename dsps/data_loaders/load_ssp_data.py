@@ -60,7 +60,14 @@ def load_default_ssp_templates(
     """
     if fn is None:
         if drn is None:
-            drn = os.environ["DSPS_DRN"]
+            try:
+                drn = os.environ["DSPS_DRN"]
+            except KeyError:
+                msg = (
+                    "Since you did not pass the fn or drn argument\n"
+                    "then you must have the DSPS_DRN environment variable set"
+                )
+                raise ValueError(msg)
         fn = os.path.join(drn, bn)
     assert os.path.isfile(fn), "{0} does not exist".format(fn)
 
