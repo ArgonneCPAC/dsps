@@ -9,6 +9,22 @@ from ..constants import SFR_MIN
 
 
 class RestSED(typing.NamedTuple):
+    """namedtuple with 4 entries storing SED and information about the SSPs
+
+    rest_sed : ndarray of shape (n_wave, )
+        Restframe SED of the galaxy in units of Lsun/Hz
+
+    weights : ndarray of shape (n_met, n_ages, 1)
+        SSP weights of the joint distribution of stellar age and metallicity
+
+    lgmet_weights : ndarray of shape (n_met, )
+        SSP weights of the distribution of stellar metallicity
+
+    age_weights : ndarray of shape (n_ages, )
+        SSP weights of the distribution of stellar age
+
+    """
+
     rest_sed: jnp.ndarray
     weights: jnp.ndarray
     lgmet_weights: jnp.ndarray
