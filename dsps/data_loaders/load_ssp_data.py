@@ -32,6 +32,22 @@ def load_default_ssp_templates(
         Basename of hdf5 file storing the SSP data
         This argument is only used if fn is not supplied
 
+    Returns
+    -------
+    NamedTuple with 4 entries storing info about SSP templates
+
+        ssp_lgmet : ndarray of shape (n_met, )
+            Array of log10(Z) of the SSP templates
+            where dimensionless Z is the mass fraction of elements heavier than He
+
+        ssp_lg_age : ndarray of shape (n_ages, )
+            Array of log10(age/Gyr) of the SSP templates
+
+        ssp_wave : ndarray of shape (n_wave, )
+
+        ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
+            SED of the SSP in units of Lsun/Hz/Msun
+
     """
     if fn is None:
         if drn is None:

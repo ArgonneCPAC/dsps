@@ -7,7 +7,7 @@ DEFAULT_SSP_BNAME = "ssp_data_fsps_v3.2_lgmet_age.h5"
 
 
 class SSPData(typing.NamedTuple):
-    """NamedTuple with info about SSP templates
+    """NamedTuple with 4 entries storing info about SSP templates
 
     ssp_lgmet : ndarray of shape (n_met, )
         Array of log10(Z) of the SSP templates
