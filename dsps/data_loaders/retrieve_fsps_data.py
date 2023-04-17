@@ -8,6 +8,8 @@ try:
 except ImportError:
     HAS_FSPS = False
 
+from .load_ssp_data import SSPData
+
 
 def retrieve_ssp_data_from_fsps():
     """Use python-fsps to populate arrays and matrices of data
@@ -57,4 +59,4 @@ def retrieve_ssp_data_from_fsps():
     ssp_wave = np.array(_wave)
     ssp_flux = np.array(spectrum_collector)
 
-    return ssp_lgmet, ssp_lg_age, ssp_wave, ssp_flux
+    return SSPData(ssp_lgmet, ssp_lg_age, ssp_wave, ssp_flux)
