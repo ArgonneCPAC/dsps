@@ -47,10 +47,10 @@ def calc_rest_sed_sfh_table_lognormal_mdf(
         Lognormal scatter in metallicity
 
     ssp_lgmet : ndarray of shape (n_met, )
-        Metallicity of stellar populations of the input SSP table ssp_flux
+        Array of log10(Z) of the SSP templates
 
     ssp_lg_age : ndarray of shape (n_ages, )
-        Age of stellar populations of the input SSP table ssp_flux
+        Array of log10(age/Gyr) of the SSP templates
 
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
