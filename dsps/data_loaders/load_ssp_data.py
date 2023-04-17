@@ -61,8 +61,6 @@ def load_default_ssp_templates(
     if fn is None:
         if drn is None:
             drn = os.environ["DSPS_DRN"]
-        if bn is None:
-            raise NotImplementedError("WIP")
         fn = os.path.join(drn, bn)
     assert os.path.isfile(fn), "{0} does not exist".format(fn)
 
