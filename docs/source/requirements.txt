@@ -4,3 +4,4 @@ matplotlib
 sphinx-copybutton
 numpy
 jax
+jaxlib
