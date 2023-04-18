@@ -5,13 +5,11 @@ import os
 import h5py
 
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
+from .retrieve_fake_fsps_data import load_fake_ssp_data
 
 
 def load_ssp_templates(
-    fn=None,
-    drn=None,
-    bn=DEFAULT_SSP_BNAME,
-    ssp_keys=DEFAULT_SSP_KEYS,
+    fn=None, drn=None, bn=DEFAULT_SSP_BNAME, ssp_keys=DEFAULT_SSP_KEYS, dummy=False
 ):
     """Load SSP templates from disk, defaulting to DSPS package data location
 
@@ -32,6 +30,10 @@ def load_ssp_templates(
         Basename of hdf5 file storing the SSP data
         This argument is only used if fn is not supplied
 
+    dummy : bool, optional
+        If True, function will return dummy data instead of real SSP data
+        Default is False. This option is only for unit-testing purposes.
+
     Returns
     -------
     NamedTuple with 4 entries storing info about SSP templates
@@ -49,6 +51,9 @@ def load_ssp_templates(
             SED of the SSP in units of Lsun/Hz/Msun
 
     """
+    if dummy:
+        return load_fake_ssp_data()
+
     if fn is None:
         if drn is None:
             try:

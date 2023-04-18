@@ -13,3 +13,8 @@ ENV_VAR_MSG = "load_ssp_templates can only be tested if DSPS_DRN is in the env"
 def test_load_ssp_templates():
     ssp_data = load_ssp_templates(drn=DSPS_DATA_DRN)
     assert len(ssp_data) == len(SSPData._fields)
+
+
+def test_load_dummy_ssp_templates():
+    ssp_data = load_ssp_templates(dummy=True)
+    assert len(ssp_data) == len(SSPData._fields)
