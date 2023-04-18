@@ -9,12 +9,24 @@ from .defaults import SSPData
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_fake_sps_data():
+def load_fake_ssp_data():
     ssp_lgmet = _get_lgzlegend()
     ssp_lg_age = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
     ssp_flux = _get_spec_ssp()
     return SSPData(ssp_lgmet, ssp_lg_age, ssp_wave, ssp_flux)
+
+
+def load_fake_filter_transmission_curves():
+    wave = _get_ssp_wave()
+    lgwave = np.log10(wave)
+    u = _lsst_u_trans(lgwave)
+    g = _lsst_g_trans(lgwave)
+    r = _lsst_r_trans(lgwave)
+    i = _lsst_i_trans(lgwave)
+    z = _lsst_z_trans(lgwave)
+    y = _lsst_y_trans(lgwave)
+    return wave, u, g, r, i, z, y
 
 
 def _get_log_age_gyr():
