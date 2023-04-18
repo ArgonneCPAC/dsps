@@ -7,7 +7,7 @@ import h5py
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
 
 
-def load_default_ssp_templates(
+def load_ssp_templates(
     fn=None,
     drn=None,
     bn=DEFAULT_SSP_BNAME,
@@ -59,7 +59,9 @@ def load_default_ssp_templates(
                     "then you must have the DSPS_DRN environment variable set"
                 )
                 raise ValueError(msg)
+
         fn = os.path.join(drn, bn)
+
     assert os.path.isfile(fn), "{0} does not exist".format(fn)
 
     ssp_data = OrderedDict()
