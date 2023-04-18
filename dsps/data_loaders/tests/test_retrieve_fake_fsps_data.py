@@ -1,6 +1,6 @@
 """
 """
-from .retrieve_fake_fsps_data import load_fake_sps_data
+from ..retrieve_fake_fsps_data import load_fake_sps_data
 
 
 def test_load_fake_sps_data():

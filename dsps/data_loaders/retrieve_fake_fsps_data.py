@@ -34,12 +34,12 @@ def _get_wave_ssp():
     x = np.arange(n_wave_ssp)
     c0, c1 = 2.358, 0.00257
     lg_wave_ssp = c0 + c1 * x
-    wave_ssp = 10 ** lg_wave_ssp
+    wave_ssp = 10**lg_wave_ssp
     return wave_ssp
 
 
 def _get_spec_ssp():
-    drn = os.path.join(_THIS_DRNAME, "testing_data")
+    drn = os.path.join(_THIS_DRNAME, "tests", "testing_data")
     wave_ssp = _get_wave_ssp()
     n_wave_ssp = wave_ssp.size
     ssp_plaw_data_c0 = np.loadtxt(os.path.join(drn, "ssp_plaw_data_c0.txt"))
