@@ -9,9 +9,7 @@ Downloading the default SED Library
 -----------------------------------
 The basis of DSPS predictions for the SED of a galaxy
 is an underlying spectral library of simple stellar populations (SSPs).
-The code in the quickstart guide is written using dummy spectra,
-but in a scientific application you'll need to select a real spectral library. 
-To quickly get up and running, you can download the default SEDs used by DSPS at
+You can download the default SEDs used by DSPS at
 `this URL <https://portal.nersc.gov/project/hacc/aphearin/DSPS\_data/>`__.
 
 DSPS includes a convenience function for using 
@@ -23,6 +21,18 @@ your science application.
 
 Whichever SED libraries you choose, you can optionally set an environment variable
 DSPS_DRN with the default location of the data you use with DSPS.
+To do that in bash:
+
+.. code-block:: bash
+
+    export DSPS_DRN="/path/to/dsps/data"
+
+
+Getting Started
+-----------------------------------
+The code in the quickstart guide below is written using dummy spectra,
+but if you have downloaded an SED library then you can use that with the 
+same syntax used in the notebook.
 
 .. toctree::
    :maxdepth: 1
