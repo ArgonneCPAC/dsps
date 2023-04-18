@@ -1,21 +1,25 @@
-.. dsps documentation master file, created by
-   sphinx-quickstart on Sat Apr  1 11:29:47 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 DSPS: Differentiable Stellar Population Synthesis
 =================================================
 
-DSPS is an SPS library written in JAX.
+DSPS is a library for stellar population synthesis (SPS) written in 
+`JAX <https://jax.readthedocs.io/>`__.
+You can use DSPS to calculate the SED and photometry of a galaxy as a function of its 
+star formation history, metallicity, dust, and other properties.
+Typical applications of DSPS include fitting the SED of an individual galaxy, 
+and making predictions for the SEDs and colors of a galaxy population.
+You can find more information about DSPS in 
+`our paper <https://arxiv.org/abs/2112.06830/>`__.
 
-See :ref:`Citation Information <cite_info>` for how to acknowledge DSPS.
+In addition to a quickstart guide, these docs also include tutorial material 
+on differentiable programming with JAX.
 
 User Guide
 ----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    installation.rst
    quickstart.rst
 
+See :ref:`Citation Information <cite_info>` for how to acknowledge DSPS.
