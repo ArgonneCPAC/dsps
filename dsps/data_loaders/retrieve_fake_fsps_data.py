@@ -3,20 +3,30 @@
 import numpy as np
 from scipy.stats import norm
 import os
+from .defaults import SSPData
 
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_fake_sps_data():
-    filter_waves = _get_filter_waves()
-    filter_trans = _get_filter_trans()
-    wave_ssp = _get_wave_ssp()
-    spec_ssp = _get_spec_ssp()
-    lgZsun_bin_mids = _get_lgZsun_bin_mids()
-    log_age_gyr = _get_log_age_gyr()
-    ret = filter_waves, filter_trans, wave_ssp, spec_ssp, lgZsun_bin_mids, log_age_gyr
-    return ret
+def load_fake_ssp_data():
+    ssp_lgmet = _get_lgzlegend()
+    ssp_lg_age = _get_log_age_gyr()
+    ssp_wave = _get_ssp_wave()
+    ssp_flux = _get_spec_ssp()
+    return SSPData(ssp_lgmet, ssp_lg_age, ssp_wave, ssp_flux)
+
+
+def load_fake_filter_transmission_curves():
+    wave = _get_ssp_wave()
+    lgwave = np.log10(wave)
+    u = _lsst_u_trans(lgwave)
+    g = _lsst_g_trans(lgwave)
+    r = _lsst_r_trans(lgwave)
+    i = _lsst_i_trans(lgwave)
+    z = _lsst_z_trans(lgwave)
+    y = _lsst_y_trans(lgwave)
+    return wave, u, g, r, i, z, y
 
 
 def _get_log_age_gyr():
@@ -24,24 +34,21 @@ def _get_log_age_gyr():
     return log_age_gyr
 
 
-def _get_lgZsun_bin_mids():
-    lgZsun_bin_mids = np.log10(zlegend / zlegend[-3])
-    return lgZsun_bin_mids
+def _get_lgzlegend():
+    lgzlegend = np.log10(zlegend)
+    return lgzlegend
 
 
-def _get_wave_ssp():
+def _get_ssp_wave():
     n_wave_ssp = 1963
-    x = np.arange(n_wave_ssp)
-    c0, c1 = 2.358, 0.00257
-    lg_wave_ssp = c0 + c1 * x
-    wave_ssp = 10 ** lg_wave_ssp
-    return wave_ssp
+    ssp_wave = np.linspace(100, 20_000, n_wave_ssp)
+    return ssp_wave
 
 
 def _get_spec_ssp():
-    drn = os.path.join(_THIS_DRNAME, "testing_data")
-    wave_ssp = _get_wave_ssp()
-    n_wave_ssp = wave_ssp.size
+    drn = os.path.join(_THIS_DRNAME, "tests", "testing_data")
+    ssp_wave = _get_ssp_wave()
+    n_wave_ssp = ssp_wave.size
     ssp_plaw_data_c0 = np.loadtxt(os.path.join(drn, "ssp_plaw_data_c0.txt"))
     ssp_plaw_data_c1 = np.loadtxt(os.path.join(drn, "ssp_plaw_data_c1.txt"))
     n_met, n_age = ssp_plaw_data_c0.shape
@@ -50,7 +57,7 @@ def _get_spec_ssp():
         for iage in range(n_age):
             c0 = ssp_plaw_data_c0[iz, iage]
             c1 = ssp_plaw_data_c1[iz, iage]
-            spec_ssp[iz, iage, :] = 10 ** (c0 + c1 * np.log10(wave_ssp))
+            spec_ssp[iz, iage, :] = 10 ** (c0 + c1 * np.log10(ssp_wave))
     return spec_ssp
 
 

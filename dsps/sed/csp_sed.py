@@ -9,6 +9,22 @@ from ..constants import SFR_MIN
 
 
 class RestSED(typing.NamedTuple):
+    """namedtuple with 4 entries storing SED and information about the SSPs
+
+    rest_sed : ndarray of shape (n_wave, )
+        Restframe SED of the galaxy in units of Lsun/Hz
+
+    weights : ndarray of shape (n_met, n_ages, 1)
+        SSP weights of the joint distribution of stellar age and metallicity
+
+    lgmet_weights : ndarray of shape (n_met, )
+        SSP weights of the distribution of stellar metallicity
+
+    age_weights : ndarray of shape (n_ages, )
+        SSP weights of the distribution of stellar age
+
+    """
+
     rest_sed: jnp.ndarray
     weights: jnp.ndarray
     lgmet_weights: jnp.ndarray
@@ -47,10 +63,10 @@ def calc_rest_sed_sfh_table_lognormal_mdf(
         Lognormal scatter in metallicity
 
     ssp_lgmet : ndarray of shape (n_met, )
-        Metallicity of stellar populations of the input SSP table ssp_flux
+        Array of log10(Z) of the SSP templates
 
     ssp_lg_age : ndarray of shape (n_ages, )
-        Age of stellar populations of the input SSP table ssp_flux
+        Array of log10(age/Gyr) of the SSP templates
 
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
