@@ -23,5 +23,6 @@ User Guide
 
    installation.rst
    quickstart.rst
+   tutorials.rst
 
 See :ref:`Citation Information <cite_info>` for how to acknowledge DSPS.
