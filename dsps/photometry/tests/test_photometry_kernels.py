@@ -8,7 +8,9 @@ from ...cosmology.flat_wcdm import FSPS_COSMO
 
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
-DATA_DRN = os.path.join(os.path.dirname(os.path.dirname(_THIS_DRNAME)), "data")
+DATA_DRN = os.path.join(
+    os.path.dirname(os.path.dirname(_THIS_DRNAME)), "tests", "testing_data"
+)
 LSST_BAND_FNPAT = "lsst_{}_transmission.npy"
 
 _a = (*[None] * 4, 0, *[None] * 4)
