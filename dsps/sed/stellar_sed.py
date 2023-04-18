@@ -7,6 +7,8 @@ from .ssp_weights import calc_ssp_weights_sfh_table_met_table
 from .stellar_age_weights import _calc_logsm_table_from_sfh_table
 from ..constants import SFR_MIN
 
+__all__ = ("calc_rest_sed_sfh_table_lognormal_mdf", "calc_rest_sed_sfh_table_met_table")
+
 
 class RestSED(typing.NamedTuple):
     """namedtuple with 4 entries storing SED and information about the SSPs

@@ -2,8 +2,8 @@
 """
 import numpy as np
 from jax import random as jran
-from ..csp_sed import calc_rest_sed_sfh_table_lognormal_mdf
-from ..csp_sed import calc_rest_sed_sfh_table_met_table
+from ..stellar_sed import calc_rest_sed_sfh_table_lognormal_mdf
+from ..stellar_sed import calc_rest_sed_sfh_table_met_table
 from ...constants import T_BIRTH_MIN
 
 
