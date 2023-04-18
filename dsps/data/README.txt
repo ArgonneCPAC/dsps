@@ -36,4 +36,4 @@ To do this in bash:
     export DSPS_DRN="/path/to/dsps/data"
 
 With the DSPS_DRN environment variable defined as above,
-you can now call the `load_ssp_templates` function without any arguments.
+you can now call the `dsps.load_ssp_templates` function without any arguments.
