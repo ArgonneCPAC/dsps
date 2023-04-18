@@ -19,8 +19,9 @@ The latest release of ``dsps`` is available on conda-forge:
 Installing the development branch
 ---------------------------------
 
-You can also install dsps by downloading the source code or cloning the GitHub
-repository and running the standard::
+You can also install dsps by downloading the source code or cloning 
+`the GitHub repository <https://github.com/ArgonneCPAC/dsps/>`__,
+and running the standard::
 
        pip install .
 
