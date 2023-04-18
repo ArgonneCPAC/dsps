@@ -1,6 +1,9 @@
 # Using dynamic versioning and writing here
 dsps/_version.py
 
+# Notebooks must be force-added
+*.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
