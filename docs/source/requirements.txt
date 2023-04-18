@@ -2,3 +2,6 @@ nbsphinx
 jupyter
 matplotlib
 sphinx-copybutton
+numpy
+jax
+jaxlib

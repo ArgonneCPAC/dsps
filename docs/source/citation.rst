@@ -1,6 +1,11 @@
-Citation Information
-====================
+:orphan:
 
+.. _cite_info:
+
+License & Citation Information
+------------------------------
+DSPS is free software made available under a 
+`3-clause BSD License <https://github.com/ArgonneCPAC/dsps/blob/main/LICENSE.rst/>`__.
 If you use this package, please cite `Hearin et al. (2022) <https://arxiv.org/abs/2112.06830>`_::
 
     @ARTICLE{2023MNRAS.521.1741H,

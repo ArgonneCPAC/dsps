@@ -1,6 +1,12 @@
 # Using dynamic versioning and writing here
 dsps/_version.py
 
+# Notebooks must be force-added
+*.ipynb
+
+# Ignore hdf5 data (incl DSPS data that may have been downloaded within package drn)
+*.h5
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
