@@ -1,10 +1,5 @@
 """
 """
-import numpy as np
-
-# z=0 age of the universe for default cosmology
-TODAY = 13.79
-LGT0 = np.log10(TODAY)
 
 # Constants related to SFH integrals
 SFR_MIN = 1e-14

@@ -2,7 +2,8 @@
 from jax import numpy as jnp
 from jax import jit as jjit
 from ..utils import _jax_get_dt_array
-from ..constants import SFR_MIN, T_BIRTH_MIN, TODAY, N_T_LGSM_INTEGRATION
+from ..constants import SFR_MIN, T_BIRTH_MIN, N_T_LGSM_INTEGRATION
+from ..cosmology import TODAY
 
 
 @jjit
@@ -79,8 +80,13 @@ def _calc_age_weights_from_logsm_table(lgt_table, logsm_table, ssp_lg_age, t_obs
 
 
 @jjit
-def _get_linspace_time_tables():
+def _get_linspace_time_tables(t0=TODAY):
     """Convenience function returning time arrays used in SFH integrations
+
+    Parameters
+    ----------
+    t0 : float, optional
+        Age of the universe in Gyr at z=0
 
     Returns
     -------
@@ -94,7 +100,7 @@ def _get_linspace_time_tables():
         Duration in Gyr between the midpoints bracketing each element of t_table
 
     """
-    t_table = jnp.linspace(T_BIRTH_MIN, TODAY, N_T_LGSM_INTEGRATION)
+    t_table = jnp.linspace(T_BIRTH_MIN, t0, N_T_LGSM_INTEGRATION)
     lgt_table = jnp.log10(t_table)
     dt_table = _jax_get_dt_array(t_table)
     return t_table, lgt_table, dt_table

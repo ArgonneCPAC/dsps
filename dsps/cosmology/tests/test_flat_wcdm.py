@@ -129,9 +129,9 @@ def test_dynamical_time():
 
 
 def test_cosmology_defaults():
-    from ...cosmology import DSPS_DEFAULT_COSMOLOGY, PLANCK15
+    from ...cosmology import DEFAULT_COSMOLOGY, PLANCK15
 
-    assert np.allclose(DSPS_DEFAULT_COSMOLOGY, PLANCK15)
+    assert np.allclose(DEFAULT_COSMOLOGY, PLANCK15)
 
 
 @pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
