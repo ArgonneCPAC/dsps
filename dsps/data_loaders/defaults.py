@@ -30,3 +30,18 @@ class SSPData(typing.NamedTuple):
 
 
 DEFAULT_SSP_KEYS = SSPData._fields
+
+
+class TransmissionCurve(typing.NamedTuple):
+    """NamedTuple with 2 entries storing info about the transmission curve
+
+    wave : ndarray of shape (n, )
+        Array of λ/AA
+
+    transmission : ndarray of shape (n, )
+        Fraction of the flux transmitted through the filter
+
+    """
+
+    wave: np.ndarray
+    transmission: np.ndarray

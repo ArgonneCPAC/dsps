@@ -30,10 +30,6 @@ def load_ssp_templates(
         Basename of hdf5 file storing the SSP data
         This argument is only used if fn is not supplied
 
-    dummy : bool, optional
-        If True, function will return dummy data instead of real SSP data
-        Default is False. This option is only for unit-testing purposes.
-
     Returns
     -------
     NamedTuple with 4 entries storing info about SSP templates
