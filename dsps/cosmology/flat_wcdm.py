@@ -10,6 +10,8 @@ __all__ = (
     "distance_modulus_to_z",
     "angular_diameter_distance_to_z",
     "lookback_to_z",
+    "age_at_z0",
+    "age_at_z",
     "rho_crit",
     "virial_dynamical_time",
 )
@@ -199,11 +201,73 @@ def lookback_to_z(redshift, Om0, w0, wa, h):
         lookback time in Gyr
 
     """
-    z_table = jnp.linspace(0, redshift, 256)
+    z_table = jnp.linspace(0, redshift, 512)
     integrand = 1 / _Ez(z_table, Om0, w0, wa) / (1 + z_table)
     res = jnp.trapz(integrand, x=z_table)
     th = _hubble_time(0.0, Om0, w0, wa, h)
     return th * res
+
+
+@jjit
+def age_at_z0(Om0, w0, wa, h):
+    """Age of the Universe in Gyr at z=0
+
+    Parameters
+    ----------
+    Om0 : float
+
+    w0 : float
+
+    wa : float
+
+    h : float
+
+    Returns
+    -------
+    t0 : float
+        Age of the Universe in Gyr at z=0
+
+    """
+    z_table = jnp.logspace(0, 3, 512) - 1.0
+    integrand = 1 / _Ez(z_table, Om0, w0, wa) / (1 + z_table)
+    res = jnp.trapz(integrand, x=z_table)
+    th = _hubble_time(0.0, Om0, w0, wa, h)
+    return th * res
+
+
+@jjit
+def _age_at_z_kern(redshift, Om0, w0, wa, h):
+    t0 = age_at_z0(Om0, w0, wa, h)
+    tlook = lookback_to_z(redshift, Om0, w0, wa, h)
+    return t0 - tlook
+
+
+_age_at_z_vmap = jjit(vmap(_age_at_z_kern, in_axes=(0, *[None] * 4)))
+
+
+@jjit
+def age_at_z(redshift, Om0, w0, wa, h):
+    """Age of the Universe in Gyr as a function of redshift
+
+    Parameters
+    ----------
+    redshift : ndarray of shape (n, )
+
+    Om0 : float
+
+    w0 : float
+
+    wa : float
+
+    h : float
+
+    Returns
+    -------
+    t : float
+        Age of the Universe in Gyr
+
+    """
+    return _age_at_z_vmap(jnp.atleast_1d(redshift), Om0, w0, wa, h)
 
 
 @jjit

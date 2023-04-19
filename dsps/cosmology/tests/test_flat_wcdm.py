@@ -7,6 +7,7 @@ from ..flat_wcdm import lookback_time, _Om, _delta_vir, virial_dynamical_time
 from ..flat_wcdm import PLANCK15 as PLANCK15_dsps
 from ..flat_wcdm import WMAP5 as WMAP5_dsps
 from ..flat_wcdm import CosmoParams
+from ..flat_wcdm import age_at_z, age_at_z0
 
 try:
     from astropy.cosmology import Planck15 as Planck15_astropy
@@ -131,3 +132,22 @@ def test_cosmology_defaults():
     from ...cosmology import DSPS_DEFAULT_COSMOLOGY, PLANCK15
 
     assert np.allclose(DSPS_DEFAULT_COSMOLOGY, PLANCK15)
+
+
+@pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
+def test_age_at_z():
+    zray = np.linspace(0.001, 10, 500)
+    for cosmo in ASTROPY_COSMO_LIST:
+        cosmo_dsps = CosmoParams(cosmo.Om0, -1, 0, cosmo.h)
+        age_astropy = cosmo.age(zray).value
+        age_jax = age_at_z(zray, *cosmo_dsps)
+        assert np.allclose(age_astropy, age_jax, rtol=0.01)
+
+
+@pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
+def test_age_at_z0():
+    for cosmo in ASTROPY_COSMO_LIST:
+        cosmo_dsps = CosmoParams(cosmo.Om0, -1, 0, cosmo.h)
+        age_astropy = cosmo.age(0.0).value
+        age_jax = age_at_z0(*cosmo_dsps)
+        assert np.allclose(age_astropy, age_jax, rtol=0.01)
