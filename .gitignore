@@ -7,6 +7,9 @@ dsps/_version.py
 # Ignore hdf5 data (incl DSPS data that may have been downloaded within package drn)
 *.h5
 
+# Ignore .npy data (incl DSPS data that may have been downloaded within package drn)
+*.npy
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
