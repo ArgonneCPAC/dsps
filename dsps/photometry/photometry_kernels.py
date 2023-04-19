@@ -6,6 +6,9 @@ from ..cosmology.flat_wcdm import distance_modulus_to_z
 AB0 = 1.13492e-13  # 3631 Jansky placed at 10 pc in units of Lsun/Hz
 
 
+__all__ = ("calc_obs_mag", "calc_rest_mag")
+
+
 @jjit
 def calc_obs_mag(
     wave_spec_rest, lum_spec, wave_filter, trans_filter, redshift, Om0, w0, wa, h
