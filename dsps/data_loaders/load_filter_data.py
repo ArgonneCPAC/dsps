@@ -2,7 +2,7 @@
 """
 import os
 from glob import glob
-import numpy as np
+import h5py
 from .defaults import TransmissionCurve
 
 
@@ -66,6 +66,8 @@ def load_transmission_curve(fn=None, bn_pat=None, drn=None):
         fn = fn_list[0]
 
     assert os.path.isfile(fn), "{0} does not exist".format(fn)
-    data = np.load(fn)
+    with h5py.File(fn, "r") as hdf:
+        wave = hdf["wave"][...]
+        transmission = hdf["transmission"][...]
 
-    return TransmissionCurve(data["wave"], data["transmission"])
+    return TransmissionCurve(wave, transmission)

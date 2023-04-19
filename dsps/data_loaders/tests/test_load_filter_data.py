@@ -25,7 +25,7 @@ def _enforce_filter_is_sensible(filter_data):
 @pytest.mark.skipif(DSPS_DATA_DRN is None, reason=ENV_VAR_MSG)
 def test_load_any_existent_filter_data_from_fnames():
     drn = os.path.join(DSPS_DATA_DRN, "filters")
-    fn_list = glob(os.path.join(drn, "*transmission.npy"))
+    fn_list = glob(os.path.join(drn, "*transmission.h5"))
     for fn in fn_list:
         filter_data = load_transmission_curve(fn=fn)
         _enforce_filter_is_sensible(filter_data)
@@ -34,7 +34,7 @@ def test_load_any_existent_filter_data_from_fnames():
 @pytest.mark.skipif(DSPS_DATA_DRN is None, reason=ENV_VAR_MSG)
 def test_load_any_existent_filter_data_from_bnpat():
     drn = os.path.join(DSPS_DATA_DRN, "filters")
-    fn_list = glob(os.path.join(drn, "*transmission.npy"))
+    fn_list = glob(os.path.join(drn, "*transmission.h5"))
     bn_list = [os.path.basename(fn) for fn in fn_list]
 
     if APH_DSPS_DRN == DSPS_DATA_DRN:
