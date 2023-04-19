@@ -125,3 +125,9 @@ def test_dynamical_time():
         z0 = np.atleast_1d(0.0)
         tcross_z0 = float(virial_dynamical_time(z0, *cosmo_dsps))
         assert np.allclose(tcross_z0, 4, atol=1)
+
+
+def test_cosmology_defaults():
+    from ...cosmology import DSPS_DEFAULT_COSMOLOGY, PLANCK15
+
+    assert np.allclose(DSPS_DEFAULT_COSMOLOGY, PLANCK15)
