@@ -5,6 +5,8 @@ from ..utils import _jax_get_dt_array
 from ..constants import SFR_MIN, T_BIRTH_MIN, N_T_LGSM_INTEGRATION
 from ..cosmology import TODAY
 
+__all__ = ("calc_age_weights_from_sfh_table",)
+
 
 @jjit
 def calc_age_weights_from_sfh_table(

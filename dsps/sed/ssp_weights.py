@@ -6,6 +6,11 @@ from .stellar_age_weights import calc_age_weights_from_sfh_table
 from .metallicity_weights import calc_lgmet_weights_from_lognormal_mdf
 from .metallicity_weights import calc_lgmet_weights_from_lgmet_table
 
+__all__ = (
+    "calc_ssp_weights_sfh_table_lognormal_mdf",
+    "calc_ssp_weights_sfh_table_met_table",
+)
+
 
 class SSPWeights(typing.NamedTuple):
     weights: jnp.ndarray

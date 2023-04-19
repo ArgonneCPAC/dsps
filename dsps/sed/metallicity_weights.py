@@ -8,6 +8,12 @@ from ..utils import _fill_empty_weights_singlepoint
 from ..constants import LGMET_LO, LGMET_HI
 
 
+__all__ = (
+    "calc_lgmet_weights_from_lognormal_mdf",
+    "calc_lgmet_weights_from_lgmet_table",
+)
+
+
 @jjit
 def calc_lgmet_weights_from_lognormal_mdf(gal_lgmet, gal_lgmet_scatter, ssp_lgmet):
     """Calculate PDF-weights of lognormal metallicity distribution function
