@@ -28,12 +28,6 @@ To do that in bash:
     export DSPS_DRN="/path/to/dsps/data"
 
 
-Getting Started
------------------------------------
-The code in the quickstart guide below is written using dummy spectra,
-but if you have downloaded an SED library then you can use that with the 
-same syntax used in the notebook.
-
 .. toctree::
    :maxdepth: 1
    
