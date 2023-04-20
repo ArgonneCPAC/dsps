@@ -17,7 +17,8 @@ DSPS includes a convenience function for using
 to generate customizable versions of these SED libraries.
 There are many other sources of SED libraries that are publicly available,
 and you can use DSPS with whatever SED library is most appropriate for
-your science application.
+your science application. 
+See :ref:`Using Alternative SED libraries <custom_ssp_libraries>` for further information.
 
 Whichever SED libraries you choose, you can optionally set an environment variable
 DSPS_DRN with the default location of the data you use with DSPS.
@@ -27,13 +28,6 @@ To do that in bash:
 
     export DSPS_DRN="/path/to/dsps/data"
 
-.. Important:: Mind your units and logarithms when using your own SSP library.
-    As we will see in the demo notebook and the docstrings of the source code,
-    stellar ages should be specified in units of Gyr (not in yr!)
-    and metallicity as the mass fraction of elements heavier than helium (not in Zsun!), 
-    and both quantities should be supplied in base-10 log.
-    And the SSP spectra are defined in units of Lsun/Hz as a function of 
-    wavelength λ in Angstroms.
 
 Demo Notebook
 -----------------------------------
