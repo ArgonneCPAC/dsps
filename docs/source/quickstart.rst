@@ -27,6 +27,10 @@ To do that in bash:
 
     export DSPS_DRN="/path/to/dsps/data"
 
+Demo Notebook
+-----------------------------------
+Once you're set up with an SSP library, you can follow the notebook below
+for a code demo showing how to use the core functions in DSPS.
 
 .. toctree::
    :maxdepth: 1
