@@ -27,6 +27,14 @@ To do that in bash:
 
     export DSPS_DRN="/path/to/dsps/data"
 
+.. Important:: Mind your units and logarithms when using your own SSP library.
+    As we will see in the demo notebook and the docstrings of the source code,
+    stellar ages should be specified in units of Gyr (not in yr!)
+    and metallicity as the mass fraction of elements heavier than helium (not in Zsun!), 
+    and both quantities should be supplied in base-10 log.
+    And the SSP spectra are defined in units of Lsun/Hz as a function of 
+    wavelength λ in Angstroms.
+
 Demo Notebook
 -----------------------------------
 Once you're set up with an SSP library, you can follow the notebook below
