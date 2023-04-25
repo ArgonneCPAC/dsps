@@ -53,3 +53,21 @@ def test_compute_bursty_age_weights():
     assert age_weights.shape == (n_ages,)
     assert np.allclose(age_weights.sum(), 1.0, rtol=1e-3)
     assert np.all(np.isfinite(age_weights))
+
+
+def test_compute_bursty_age_weights_pop():
+    n_ages = 25
+    n_galpop = 50
+    lgyr_since_burst = np.linspace(5, 10, n_ages)
+    smooth_age_weights = np.ones((n_galpop, n_ages)) / n_ages
+    fburst = 0.01 * np.ones(n_galpop)
+    dburst = np.zeros(n_galpop) + db.DEFAULT_DBURST
+    assert fburst.shape == (n_galpop,)
+    assert dburst.shape == (n_galpop,)
+
+    bursty_age_weights = db._compute_bursty_age_weights_pop(
+        lgyr_since_burst, smooth_age_weights, fburst, dburst
+    )
+    assert bursty_age_weights.shape == (n_galpop, n_ages)
+    assert np.all(np.isfinite(bursty_age_weights))
+    assert np.allclose(np.sum(bursty_age_weights, axis=1), 1.0, rtol=1e-4)

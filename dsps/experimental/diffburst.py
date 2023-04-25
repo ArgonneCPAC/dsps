@@ -92,3 +92,7 @@ def _compute_bursty_age_weights(lgyr_since_burst, age_weights, fburst, dburst):
     burst_weights = _burst_age_weights(lgyr_since_burst, dburst)
     age_weights = fburst * burst_weights + (1 - fburst) * age_weights
     return age_weights
+
+
+_B = (None, 0, 0, 0)
+_compute_bursty_age_weights_pop = jjit(vmap(_compute_bursty_age_weights, in_axes=_B))
