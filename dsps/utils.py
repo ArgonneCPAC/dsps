@@ -3,6 +3,7 @@
 from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap
+from jax import random as jran
 
 
 @jjit
@@ -184,3 +185,60 @@ _mult_3d_vmap = jjit(
     )
 )
 _get_weight_matrices_3d = jjit(vmap(_mult_3d_vmap, in_axes=[0, 0, 0]))
+
+
+@jjit
+def powerlaw_pdf(x, a, b, g):
+    """pdf(x) propto x^{g-1}. Assumes a<b and g!=0
+
+    Parameters
+    ----------
+    x : ndarray of shape (n, )
+        Points at which to evaluate the powerlaw PDF
+
+    a : ndarray of shape (n, )
+        Lower bound on each powerlaw
+
+    b : ndarray of shape (n, )
+        Upper bound on each powerlaw
+
+    g : ndarray of shape (n, )
+        Index for each powerlaw
+
+    Returns
+    -------
+    pdf : ndarray of shape (n, )
+        Value of the PDF for each powerlaw
+
+    """
+    ag, bg = a**g, b**g
+    return g * x ** (g - 1) / (bg - ag)
+
+
+@jjit
+def powerlaw_rvs(ran_key, a, b, g):
+    """Power-law gen for pdf(x) propto x^{g-1} for a<=x<=b. Assumes a<b and g!=0
+
+    Parameters
+    ----------
+    ran_key : jax.random.PRNGKey
+
+    a : ndarray of shape (n, )
+        Lower bound on each powerlaw
+
+    b : ndarray of shape (n, )
+        Upper bound on each powerlaw
+
+    g : ndarray of shape (n, )
+        Index for each powerlaw
+
+    Returns
+    -------
+    y : ndarray of shape (n, )
+        Monte Carlo realization of the input powerlaws
+
+    """
+    npts = a.shape[0]
+    r = jran.uniform(ran_key, (npts,))
+    ag, bg = a**g, b**g
+    return (ag + (bg - ag) * r) ** (1.0 / g)

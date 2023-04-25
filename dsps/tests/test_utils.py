@@ -6,6 +6,7 @@ from ..utils import triweighted_histogram, _get_bin_edges, _get_triweights_singl
 from ..utils import _mult_2d_vmap, _get_weight_matrices_2d
 from ..utils import _mult_3d_vmap, _get_weight_matrices_3d
 from ..utils import _sigmoid, _inverse_sigmoid
+from ..utils import powerlaw_rvs
 
 
 def test_sigmoid_inversion():
@@ -107,3 +108,16 @@ def test_weight_matrix_kernels_3d():
     w3arr_pop = np.random.uniform(0, 1, size=(ngals, n3))
     res_vmap = _get_weight_matrices_3d(w1arr_pop, w2arr_pop, w3arr_pop)
     assert res_vmap.shape == (ngals, n1, n2, n3)
+
+
+def test_powerlaw_rvs():
+    ran_key = jran.PRNGKey(0)
+    npts = 2_000
+    a = np.random.uniform(2, 3, npts)
+    b = a + np.random.uniform(0, 1, npts)
+    g = np.random.uniform(1, 4, npts)
+
+    sample = powerlaw_rvs(ran_key, a, b, g)
+    assert np.all(np.isfinite(sample))
+    assert np.all(sample > a)
+    assert np.all(sample < b)
