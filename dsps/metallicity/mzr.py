@@ -12,10 +12,10 @@ MAIOLINO08_PARAMS[2.2] = (12.38, 8.99)
 MAIOLINO08_PARAMS[3.5] = (12.76, 8.79)
 MAIOLINO08_PARAMS[3.51] = (12.87, 8.90)
 
-MZR_T0_PARAMS = OrderedDict(
+MZR_T0_PDICT = OrderedDict(
     mzr_t0_y0=0.05, mzr_t0_x0=10.5, mzr_t0_k=1, mzr_t0_slope_lo=0.4, mzr_t0_slope_hi=0.1
 )
-MZR_T0_PARAM_BOUNDS = OrderedDict(
+MZR_T0_PARAM_PBDICT = OrderedDict(
     mzr_t0_y0=(-1.0, 0.25),
     mzr_t0_x0=(10.25, 10.75),
     mzr_t0_k=(0.5, 2),
@@ -25,7 +25,7 @@ MZR_T0_PARAM_BOUNDS = OrderedDict(
 
 MZR_EVOL_T0 = 12.5
 MZR_EVOL_K = 1.6
-MZR_VS_T_PARAMS = OrderedDict(
+MZR_VS_T_PDICT = OrderedDict(
     c0_y_at_tlook_c=-1.455,
     c1_y_at_tlook_c=0.13,
     tlook_c=8.44,
@@ -33,13 +33,13 @@ MZR_VS_T_PARAMS = OrderedDict(
     c1_early_time_slope=0.067242,
 )
 
-MZR_SCATTER_PARAMS = OrderedDict(mzr_scatter=0.1)
-MZR_SCATTER_BOUNDS = OrderedDict(mzr_scatter=(0.01, 0.5))
+MZR_SCATTER_PDICT = OrderedDict(mzr_scatter=0.1)
+MZR_SCATTER_PBDICT = OrderedDict(mzr_scatter=(0.01, 0.5))
 
-DEFAULT_MZR_PARAMS = OrderedDict()
-DEFAULT_MZR_PARAMS.update(MZR_T0_PARAMS)
-DEFAULT_MZR_PARAMS.update(MZR_VS_T_PARAMS)
-DEFAULT_MZR_PARAMS.update(MZR_SCATTER_PARAMS)
+DEFAULT_MZR_PDICT = OrderedDict()
+DEFAULT_MZR_PDICT.update(MZR_T0_PDICT)
+DEFAULT_MZR_PDICT.update(MZR_VS_T_PDICT)
+DEFAULT_MZR_PDICT.update(MZR_SCATTER_PDICT)
 
 
 @jjit
