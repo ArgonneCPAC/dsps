@@ -6,7 +6,7 @@ from ..utils import triweighted_histogram, _get_bin_edges, _get_triweights_singl
 from ..utils import _mult_2d_vmap, _get_weight_matrices_2d
 from ..utils import _mult_3d_vmap, _get_weight_matrices_3d
 from ..utils import _sigmoid, _inverse_sigmoid
-from ..utils import powerlaw_rvs
+from ..utils import powerlaw_rvs, powerlaw_pdf
 
 
 def test_sigmoid_inversion():
@@ -121,3 +121,16 @@ def test_powerlaw_rvs():
     assert np.all(np.isfinite(sample))
     assert np.all(sample > a)
     assert np.all(sample < b)
+
+
+def test_powerlaw_pdf():
+    npts = 2_000
+    a = np.random.uniform(2, 3, npts)
+    b = a + np.random.uniform(0, 1, npts)
+    g = np.random.uniform(1, 4, npts)
+    x = np.random.uniform(a, b, npts)
+
+    pdf = powerlaw_pdf(x, a, b, g)
+    assert np.all(np.isfinite(pdf))
+    assert np.all(pdf >= 0)
+    assert np.any(pdf > 0)
