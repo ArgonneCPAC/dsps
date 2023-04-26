@@ -59,7 +59,7 @@ def calc_rest_sed_sfh_table_lognormal_mdf(
         Star formation history in Msun/yr evaluated at the input gal_t_table
 
     gal_lgmet : ndarray of shape (n_t, )
-        Metallicity of the galaxy at the time of observation
+        log10(Z) of the galaxy at the time of observation
 
     gal_lgmet_scatter : float
         Lognormal scatter in metallicity
