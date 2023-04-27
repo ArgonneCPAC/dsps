@@ -13,7 +13,7 @@ class SSPData(typing.NamedTuple):
         Array of log10(Z) of the SSP templates
         where dimensionless Z is the mass fraction of elements heavier than He
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Array of log10(age/Gyr) of the SSP templates
 
     ssp_wave : ndarray of shape (n_wave, )
@@ -24,7 +24,7 @@ class SSPData(typing.NamedTuple):
     """
 
     ssp_lgmet: np.ndarray
-    ssp_lg_age: np.ndarray
+    ssp_lg_age_gyr: np.ndarray
     ssp_wave: np.ndarray
     ssp_flux: np.ndarray
 
