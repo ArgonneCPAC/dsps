@@ -31,12 +31,12 @@ def test_age_weights_are_mathematically_sensible():
     gal_lgt_table = np.log10(gal_t_table)
     logsm_table = np.linspace(-1, 10, gal_t_table.size)
 
-    ssp_lg_ages_gyr = FSPS_LG_AGES - 9.0
+    ssp_lg_age_gyr = FSPS_LG_AGES - 9.0
     lgt_birth_bin_mids, age_weights = _calc_age_weights_from_logsm_table(
-        gal_lgt_table, logsm_table, ssp_lg_ages_gyr, t_obs
+        gal_lgt_table, logsm_table, ssp_lg_age_gyr, t_obs
     )
     assert age_weights.shape == lgt_birth_bin_mids.shape
-    assert age_weights.shape == ssp_lg_ages_gyr.shape
+    assert age_weights.shape == ssp_lg_age_gyr.shape
     assert np.allclose(age_weights.sum(), 1.0)
 
 
@@ -44,8 +44,8 @@ def test_age_weights_agree_with_analytical_calculation_of_constant_sfr_weights()
     constant_sfr = 1.0 * 1e9  # Msun/Gyr
 
     # Analytically calculate age distributions for constant SFR (independent of t_obs)
-    ssp_lg_ages_gyr = FSPS_LG_AGES - 9
-    dt_ages = _jax_get_dt_array(10**ssp_lg_ages_gyr)
+    ssp_lg_age_gyr = FSPS_LG_AGES - 9
+    dt_ages = _jax_get_dt_array(10**ssp_lg_age_gyr)
     mstar_age_bins = dt_ages * constant_sfr
     correct_weights = mstar_age_bins / mstar_age_bins.sum()
 
@@ -57,7 +57,7 @@ def test_age_weights_agree_with_analytical_calculation_of_constant_sfr_weights()
     logsm_table = np.log10(mstar_table)
 
     dsps_age_weights = _calc_age_weights_from_logsm_table(
-        gal_lgt_table, logsm_table, ssp_lg_ages_gyr, t_obs
+        gal_lgt_table, logsm_table, ssp_lg_age_gyr, t_obs
     )[1]
     assert np.allclose(dsps_age_weights, correct_weights, atol=0.01)
 
@@ -66,8 +66,8 @@ def test_age_weights_agree_with_analytical_calculation_of_linear_sfr_weights():
     t_obs = 16.0
 
     # Analytically calculate age distributions for SFR(t) = t
-    ssp_lg_ages_gyr = FSPS_LG_AGES - 9
-    lgt_age_bin_edges = _get_lg_age_bin_edges(ssp_lg_ages_gyr)
+    ssp_lg_age_gyr = FSPS_LG_AGES - 9
+    lgt_age_bin_edges = _get_lg_age_bin_edges(ssp_lg_age_gyr)
     t_age_bin_edges_gyr = 10**lgt_age_bin_edges
     t_births_bin_edges = t_obs - t_age_bin_edges_gyr
     mstar_at_age_bins = linear_smh(T_BIRTH_MIN, t_births_bin_edges)
@@ -80,6 +80,6 @@ def test_age_weights_agree_with_analytical_calculation_of_linear_sfr_weights():
 
     logsm_table = np.log10(linear_smh(T_BIRTH_MIN, gal_t_table[1:]))
     dsps_age_weights = _calc_age_weights_from_logsm_table(
-        gal_lgt_table[1:], logsm_table, ssp_lg_ages_gyr, t_obs
+        gal_lgt_table[1:], logsm_table, ssp_lg_age_gyr, t_obs
     )[1]
     assert np.allclose(dsps_age_weights, correct_weights, atol=0.001)

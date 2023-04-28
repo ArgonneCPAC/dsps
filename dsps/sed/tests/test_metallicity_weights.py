@@ -60,8 +60,8 @@ def test_calc_lgmet_weights_from_lgmet_table():
     gal_lgmet_table = jran.uniform(
         met_key, minval=ssp_lgmet.min(), maxval=ssp_lgmet.max(), shape=(n_t,)
     )
-    ssp_lg_age = FSPS_LG_AGES - 9.0
-    n_ages = ssp_lg_age.size
+    ssp_lg_age_gyr = FSPS_LG_AGES - 9.0
+    n_ages = ssp_lg_age_gyr.size
 
     lgmet_scatter = 0.1
     lgmet_weights = calc_lgmet_weights_from_lgmet_table(
@@ -69,7 +69,7 @@ def test_calc_lgmet_weights_from_lgmet_table():
         gal_lgmet_table,
         lgmet_scatter,
         ssp_lgmet,
-        ssp_lg_age,
+        ssp_lg_age_gyr,
         t_obs,
     )
     assert lgmet_weights.shape == (n_met, n_ages)

@@ -10,7 +10,7 @@ __all__ = ("calc_age_weights_from_sfh_table",)
 
 @jjit
 def calc_age_weights_from_sfh_table(
-    gal_t_table, gal_sfr_table, ssp_lg_age, t_obs, sfr_min=SFR_MIN
+    gal_t_table, gal_sfr_table, ssp_lg_age_gyr, t_obs, sfr_min=SFR_MIN
 ):
     """Calculate PDF-weights of stellar ages from a tabulated SFH
 
@@ -22,7 +22,7 @@ def calc_age_weights_from_sfh_table(
     gal_sfr_table : ndarray of shape (n_t, )
         Tabulation of the galaxy SFH in Msun/yr at the times gal_t_table
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         log10(stellar age) in Gyr of the SSP templates
 
     t_obs : float
@@ -37,13 +37,13 @@ def calc_age_weights_from_sfh_table(
     logsm_table = _calc_logsm_table_from_sfh_table(gal_t_table, gal_sfr_table, sfr_min)
     gal_lgt_table = jnp.log10(gal_t_table)
     age_weights = _calc_age_weights_from_logsm_table(
-        gal_lgt_table, logsm_table, ssp_lg_age, t_obs
+        gal_lgt_table, logsm_table, ssp_lg_age_gyr, t_obs
     )[1]
     return age_weights
 
 
 @jjit
-def _calc_age_weights_from_logsm_table(lgt_table, logsm_table, ssp_lg_age, t_obs):
+def _calc_age_weights_from_logsm_table(lgt_table, logsm_table, ssp_lg_age_gyr, t_obs):
     """Calculate PDF weights of the SSP spectra of a composite SED
 
     Parameters
@@ -54,7 +54,7 @@ def _calc_age_weights_from_logsm_table(lgt_table, logsm_table, ssp_lg_age, t_obs
     logsm_table : ndarray of shape (n_t, )
         log10 of the cumulative stellar mass formed in-situ at each time in lgt_table
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Array of stellar ages of the SSP templates
 
     t_obs : float
@@ -70,9 +70,9 @@ def _calc_age_weights_from_logsm_table(lgt_table, logsm_table, ssp_lg_age, t_obs
         PDF weights of the SSP spectra
 
     """
-    lg_age_bin_edges = _get_lg_age_bin_edges(ssp_lg_age)
+    lg_age_bin_edges = _get_lg_age_bin_edges(ssp_lg_age_gyr)
     lgt_birth_bin_edges = _get_lgt_birth(t_obs, lg_age_bin_edges)
-    lgt_birth_bin_mids = _get_lgt_birth(t_obs, ssp_lg_age)
+    lgt_birth_bin_mids = _get_lgt_birth(t_obs, ssp_lg_age_gyr)
 
     logsm_at_t_birth_bin_edges = jnp.interp(lgt_birth_bin_edges, lgt_table, logsm_table)
     delta_mstar_at_t_birth = -jnp.diff(10**logsm_at_t_birth_bin_edges)

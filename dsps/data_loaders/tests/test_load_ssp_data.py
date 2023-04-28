@@ -18,3 +18,9 @@ def test_load_ssp_templates():
 def test_load_dummy_ssp_templates():
     ssp_data = load_ssp_templates(dummy=True)
     assert len(ssp_data) == len(SSPData._fields)
+
+
+def test_and_freeze_sspdata_field_names():
+    ssp_data = SSPData(None, None, None, None)
+    expected_names = ("ssp_lgmet", "ssp_lg_age_gyr", "ssp_wave", "ssp_flux")
+    assert set(expected_names) == set(ssp_data._fields)

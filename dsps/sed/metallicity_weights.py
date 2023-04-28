@@ -48,7 +48,7 @@ def calc_lgmet_weights_from_lgmet_table(
     gal_lgmet_table,
     gal_lgmet_scatter,
     ssp_lgmet,
-    ssp_lg_age,
+    ssp_lg_age_gyr,
     t_obs,
 ):
     """Calculate PDF-weights from a tabulated metallicity history
@@ -67,7 +67,7 @@ def calc_lgmet_weights_from_lgmet_table(
     ssp_lgmet : ndarray of shape (n_ages, )
         Array of log10(Z) of the SSP templates
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Array of log10(age/Gyr) of the stellar ages of the SSP templates
 
     Returns
@@ -77,7 +77,7 @@ def calc_lgmet_weights_from_lgmet_table(
 
     """
     lgmet_at_ssp_lgages = _calc_lgmet_at_ssp_lgage_table(
-        gal_t_table, gal_lgmet_table, ssp_lg_age, t_obs
+        gal_t_table, gal_lgmet_table, ssp_lg_age_gyr, t_obs
     )
 
     lgmetbin_edges = _get_bin_edges(ssp_lgmet, LGMET_LO, LGMET_HI)
@@ -85,7 +85,7 @@ def calc_lgmet_weights_from_lgmet_table(
         lgmet_at_ssp_lgages, gal_lgmet_scatter, lgmetbin_edges
     )
     # Normalize so that sum of all matrix elements is unity
-    lgmet_weight_matrix = lgmet_weight_matrix / ssp_lg_age.size
+    lgmet_weight_matrix = lgmet_weight_matrix / ssp_lg_age_gyr.size
 
     lgmet_weight_matrix = jnp.swapaxes(lgmet_weight_matrix, 1, 0)
 
@@ -112,8 +112,8 @@ _get_lgmet_weights_singlegal_zh = jjit(vmap(_get_lgmet_weights_singlegal, in_axe
 
 
 @jjit
-def _calc_lgmet_at_ssp_lgage_table(gal_t_table, gal_lgmet_table, ssp_lg_age, t_obs):
+def _calc_lgmet_at_ssp_lgage_table(gal_t_table, gal_lgmet_table, ssp_lg_age_gyr, t_obs):
     lgt_table = jnp.log10(gal_t_table)
-    lgt_birth = _get_lgt_birth(t_obs, ssp_lg_age)
+    lgt_birth = _get_lgt_birth(t_obs, ssp_lg_age_gyr)
     lgmet_at_ssp_lgages = jnp.interp(lgt_birth, lgt_table, gal_lgmet_table)
     return lgmet_at_ssp_lgages
