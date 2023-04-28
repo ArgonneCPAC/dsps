@@ -21,7 +21,8 @@ the following convenience function:
     >>> ssp_data = load_ssp_templates(fn="/path/to/dsps/data/fname.h5")
 
 See :ref:`dsps_drn_config` for instructions on how to set a default location
-for your DSPS data.
+for your DSPS data, including both your SSP library
+as well as filter transmission curves.
 
 There are many other sources of SED libraries that are publicly available,
 and you can use DSPS with whatever SED library is most appropriate for

@@ -7,6 +7,11 @@ Acquiring and using alternative SSP libraries
 This section of the docs describes how to use DSPS with alternatives to the 
 default SSP libraries supplied at the DSPS data URL.
 
+Whether you use the `python-fsps <https://dfm.io/python-fsps/current/>`__ wrapper 
+within DSPS, or whether you download the SSP libraries from an external location, 
+DSPS has a few convenience functions that you can use to load your SPS data.
+See :ref:`dsps_drn_config` for more information.
+
 
 Using python-fsps
 ----------------------------------
@@ -42,4 +47,4 @@ There are many other sources of SED libraries that are publicly available,
 and you can use DSPS with whatever SED library is most appropriate for
 your science application. As described in more detail :ref:`here <dsps_drn_config>`,
 there is no need to use the data-loading functions in DSPS,
-since these are just convenience functions that return a sequence of flat ndarrays.
+since these are just convenience functions that return a sequence of plain ndarrays.
