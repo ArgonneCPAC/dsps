@@ -21,7 +21,7 @@ def retrieve_ssp_data_from_fsps():
         Array of log10(Z) of the SSP templates
         where dimensionless Z is the mass fraction of elements heavier than He
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Array of log10(age/Gyr) of the SSP templates
 
     ssp_wave : ndarray of shape (n_wave, )
@@ -47,7 +47,7 @@ def retrieve_ssp_data_from_fsps():
     sp = fsps.StellarPopulation(zcontinuous=0)
     ssp_lgmet = np.log10(sp.zlegend)
     nzmet = ssp_lgmet.size
-    ssp_lg_age = sp.log_age - 9.0
+    ssp_lg_age_gyr = sp.log_age - 9.0
     spectrum_collector = []
     for zmet_indx in range(1, ssp_lgmet.size + 1):
         print("...retrieving zmet = {0} of {1}".format(zmet_indx, nzmet))
@@ -59,4 +59,4 @@ def retrieve_ssp_data_from_fsps():
     ssp_wave = np.array(_wave)
     ssp_flux = np.array(spectrum_collector)
 
-    return SSPData(ssp_lgmet, ssp_lg_age, ssp_wave, ssp_flux)
+    return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)

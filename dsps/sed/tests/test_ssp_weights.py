@@ -21,7 +21,7 @@ def test_calc_ssp_weights_lognormal_mdf():
     gal_sfr_table = jran.uniform(sfr_key, minval=0, maxval=10, shape=(n_t,))
 
     n_ages = FSPS_LG_AGES.size
-    ssp_lg_age = FSPS_LG_AGES - 9.0
+    ssp_lg_age_gyr = FSPS_LG_AGES - 9.0
     n_met = 15
     ssp_lgmet = np.linspace(-4, 0.5, n_met)
 
@@ -36,7 +36,7 @@ def test_calc_ssp_weights_lognormal_mdf():
         lgmet,
         lgmet_scatter,
         ssp_lgmet,
-        ssp_lg_age,
+        ssp_lg_age_gyr,
         t_obs,
     )
     weight_info = calc_ssp_weights_sfh_table_lognormal_mdf(*args)
@@ -65,7 +65,7 @@ def test_calc_ssp_weights_met_table():
     gal_sfr_table = jran.uniform(sfr_key, minval=0, maxval=10, shape=(n_t,))
 
     n_ages = FSPS_LG_AGES.size
-    ssp_lg_age = FSPS_LG_AGES - 9.0
+    ssp_lg_age_gyr = FSPS_LG_AGES - 9.0
     n_met = 15
     ssp_lgmet = np.linspace(-4, 0.5, n_met)
 
@@ -80,7 +80,7 @@ def test_calc_ssp_weights_met_table():
         gal_lgmet_table,
         gal_lgmet_scatter,
         ssp_lgmet,
-        ssp_lg_age,
+        ssp_lg_age_gyr,
         t_obs,
     )
     weight_info = calc_ssp_weights_sfh_table_met_table(*args)

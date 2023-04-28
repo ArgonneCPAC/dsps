@@ -40,7 +40,7 @@ def calc_rest_sed_sfh_table_lognormal_mdf(
     gal_lgmet,
     gal_lgmet_scatter,
     ssp_lgmet,
-    ssp_lg_age,
+    ssp_lg_age_gyr,
     ssp_flux,
     t_obs,
     sfr_min=SFR_MIN,
@@ -67,7 +67,7 @@ def calc_rest_sed_sfh_table_lognormal_mdf(
     ssp_lgmet : ndarray of shape (n_met, )
         Array of log10(Z) of the SSP templates
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Array of log10(age/Gyr) of the SSP templates
 
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
@@ -99,7 +99,7 @@ def calc_rest_sed_sfh_table_lognormal_mdf(
         gal_lgmet,
         gal_lgmet_scatter,
         ssp_lgmet,
-        ssp_lg_age,
+        ssp_lg_age_gyr,
         t_obs,
     )
     n_met, n_ages = weights.shape
@@ -124,7 +124,7 @@ def calc_rest_sed_sfh_table_met_table(
     gal_lgmet_table,
     gal_lgmet_scatter,
     ssp_lgmet,
-    ssp_lg_age,
+    ssp_lg_age_gyr,
     ssp_flux,
     t_obs,
     sfr_min=SFR_MIN,
@@ -150,7 +150,7 @@ def calc_rest_sed_sfh_table_met_table(
     ssp_lgmet : ndarray of shape (n_met, )
         Metallicity of stellar populations of the input SSP table ssp_flux
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Age of stellar populations of the input SSP table ssp_flux
 
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
@@ -182,7 +182,7 @@ def calc_rest_sed_sfh_table_met_table(
         gal_lgmet_table,
         gal_lgmet_scatter,
         ssp_lgmet,
-        ssp_lg_age,
+        ssp_lg_age_gyr,
         t_obs,
     )
     n_met, n_ages = weights.shape

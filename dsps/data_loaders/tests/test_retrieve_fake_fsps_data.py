@@ -10,11 +10,11 @@ def test_load_fake_ssp_data():
     (n_met, n_age, n_wave) = ssp_data.ssp_flux.shape
 
     assert ssp_data.ssp_lgmet.shape == (n_met,)
-    assert ssp_data.ssp_lg_age.shape == (n_age,)
+    assert ssp_data.ssp_lg_age_gyr.shape == (n_age,)
     assert ssp_data.ssp_wave.shape == (n_wave,)
 
     assert np.all(np.isfinite(ssp_data.ssp_lgmet))
-    assert np.all(np.isfinite(ssp_data.ssp_lg_age))
+    assert np.all(np.isfinite(ssp_data.ssp_lg_age_gyr))
     assert np.all(np.isfinite(ssp_data.ssp_wave))
     assert np.all(np.isfinite(ssp_data.ssp_flux))
 

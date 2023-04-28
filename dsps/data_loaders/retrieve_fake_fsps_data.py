@@ -11,10 +11,10 @@ _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
 def load_fake_ssp_data():
     ssp_lgmet = _get_lgzlegend()
-    ssp_lg_age = _get_log_age_gyr()
+    ssp_lg_age_gyr = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
     ssp_flux = _get_spec_ssp()
-    return SSPData(ssp_lgmet, ssp_lg_age, ssp_wave, ssp_flux)
+    return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)
 
 
 def load_fake_filter_transmission_curves():

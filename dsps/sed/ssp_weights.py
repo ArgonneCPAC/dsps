@@ -25,7 +25,7 @@ def calc_ssp_weights_sfh_table_lognormal_mdf(
     gal_lgmet,
     gal_lgmet_scatter,
     ssp_lgmet,
-    ssp_lg_age,
+    ssp_lg_age_gyr,
     t_obs,
 ):
     """Calculate SSP weights of a tabulated SFH and a lognormal MDF
@@ -47,7 +47,7 @@ def calc_ssp_weights_sfh_table_lognormal_mdf(
     ssp_lgmet : ndarray of shape (n_ages, )
         Array of log10(Z) of the SSP templates
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Array of log10(age/Gyr) of the SSP templates
 
     t_obs : float
@@ -68,7 +68,7 @@ def calc_ssp_weights_sfh_table_lognormal_mdf(
 
     """
     age_weights = calc_age_weights_from_sfh_table(
-        gal_t_table, gal_sfr_table, ssp_lg_age, t_obs
+        gal_t_table, gal_sfr_table, ssp_lg_age_gyr, t_obs
     )
     lgmet_weights = calc_lgmet_weights_from_lognormal_mdf(
         gal_lgmet, gal_lgmet_scatter, ssp_lgmet
@@ -87,7 +87,7 @@ def calc_ssp_weights_sfh_table_met_table(
     gal_lgmet_table,
     gal_lgmet_scatter,
     ssp_lgmet,
-    ssp_lg_age,
+    ssp_lg_age_gyr,
     t_obs,
 ):
     """Calculate SSP weights of a tabulated star-formation and metallicity history
@@ -109,7 +109,7 @@ def calc_ssp_weights_sfh_table_met_table(
     ssp_lgmet : ndarray of shape (n_ages, )
         Array of log10(Z) of the SSP templates
 
-    ssp_lg_age : ndarray of shape (n_ages, )
+    ssp_lg_age_gyr : ndarray of shape (n_ages, )
         Array of log10(age/Gyr) of the stellar ages of the SSP templates
 
     t_obs : float
@@ -130,10 +130,15 @@ def calc_ssp_weights_sfh_table_met_table(
 
     """
     age_weights = calc_age_weights_from_sfh_table(
-        gal_t_table, gal_sfr_table, ssp_lg_age, t_obs
+        gal_t_table, gal_sfr_table, ssp_lg_age_gyr, t_obs
     )
     lgmet_weights = calc_lgmet_weights_from_lgmet_table(
-        gal_t_table, gal_lgmet_table, gal_lgmet_scatter, ssp_lgmet, ssp_lg_age, t_obs
+        gal_t_table,
+        gal_lgmet_table,
+        gal_lgmet_scatter,
+        ssp_lgmet,
+        ssp_lg_age_gyr,
+        t_obs,
     )
 
     weights = lgmet_weights * age_weights.reshape((1, -1))
