@@ -14,6 +14,12 @@ ssp_data_fsps_v3.2_lgmet_age.h5 is a flat hdf5 file with four columns:
 * ssp_wave - λ/AA grid of shape (n_wave, )
 * ssp_flux - flux in Lsun/Hz/Msun of shape (n_met, n_age, n_wave)
 
+You can load the SSP data using the following convenience function:
+
+>>> from dsps import load_ssp_templates
+>>> ssp_data = load_ssp_templates("/path/to/dsps/data/ssp_data_fsps_v3.2_lgmet_age.h5")
+
+See the Quickstart Guide on dsps.readthedocs.io for more information.
 
 Filter transmission curves
 --------------------------
@@ -22,6 +28,12 @@ Transmission curve data are stored as a flat numpy structured array with two col
 * wave - λ/AA grid of shape (n_trans, )
 * transmission - transmission curve of the filter, shape (n_trans, )
 
+You can load filter transmission curves using the following convenience function:
+
+>>> from dsps.data_loaders import load_transmission_curve
+>>> trans_curve = load_transmission_curve("/path/to/dsps/data/lsst_r*")
+
+See the Quickstart Guide on dsps.readthedocs.io for more information.
 
 Configuring DSPS default data location
 --------------------------------------

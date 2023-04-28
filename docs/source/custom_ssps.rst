@@ -8,33 +8,6 @@ This section of the docs describes how to use DSPS with alternatives to the
 default SSP libraries supplied at the DSPS data URL.
 
 
-.. _dsps_drn_config:
-
-Configuring your default SSP data location
-------------------------------------------
-
-Whichever SED libraries you choose, you can optionally set an environment variable
-DSPS_DRN with the default location of the data you use with DSPS.
-To do that in bash:
-
-.. code-block:: bash
-
-    export DSPS_DRN="/path/to/dsps/data"
-
-If the DSPS_DRN environment variable has been set to the disk location storing
-the SSP data, then you can load the data like this:
-
-.. code-block:: python
-
-    >>> from dsps import load_ssp_templates
-    >>> ssp_data = load_ssp_templates()
-
-Without the DSPS_DRN environment variable, you will just need to pass the path of the 
-data to the load_ssp_templates function. The data returned by this function is simply a 
-sequence of ndarrays, and so you can also elect to ignore the data loader 
-convenience function if you prefer to keep track of these individual arrays yourself.
-
-
 Using python-fsps
 ----------------------------------
 
@@ -67,6 +40,6 @@ Using spectra from another library
 
 There are many other sources of SED libraries that are publicly available,
 and you can use DSPS with whatever SED library is most appropriate for
-your science application. As described above, there is also no need to use the 
-data-loading functions in DSPS, since these are just convenience functions 
-that return a sequence of flat ndarrays.
+your science application. As described in more detail :ref:`here <dsps_drn_config>`,
+there is no need to use the data-loading functions in DSPS,
+since these are just convenience functions that return a sequence of flat ndarrays.
