@@ -12,22 +12,21 @@ is an underlying spectral library of simple stellar populations (SSPs).
 You can download the default SEDs used by DSPS at
 `this URL <https://portal.nersc.gov/project/hacc/aphearin/DSPS\_data/>`__.
 
-DSPS includes a convenience function for using 
-`python-fsps <https://dfm.io/python-fsps/current/>`__
-to generate customizable versions of these SED libraries.
+Once you have downloaded these data, you can load them using
+the following convenience function:
+
+.. code-block:: python
+
+    >>> from dsps import load_ssp_templates
+    >>> ssp_data = load_ssp_templates(fn="/path/to/dsps/data/fname.h5")
+
+See :ref:`dsps_drn_config` for instructions on how to set a default location
+for your DSPS data.
+
 There are many other sources of SED libraries that are publicly available,
 and you can use DSPS with whatever SED library is most appropriate for
 your science application. 
 See :ref:`Using Alternative SED libraries <custom_ssp_libraries>` for further information.
-
-Whichever SED libraries you choose, you can optionally set an environment variable
-DSPS_DRN with the default location of the data you use with DSPS.
-To do that in bash:
-
-.. code-block:: bash
-
-    export DSPS_DRN="/path/to/dsps/data"
-
 
 Demo Notebook
 -----------------------------------
