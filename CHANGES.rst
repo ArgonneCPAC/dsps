@@ -1,5 +1,5 @@
-0.3.0 (in progress)
-------------------
+0.3.0 (2023-05-01)
+-------------------
 - Package DSPS using pyproject.toml (https://github.com/ArgonneCPAC/dsps/pull/43)
 - Remove Ode0 from flat wCDM cosmology params  (https://github.com/ArgonneCPAC/dsps/pull/39)
 - Add Lower+22 unubscured fraction feature to dust attenuation (https://github.com/ArgonneCPAC/dsps/pull/37)
