@@ -11,7 +11,11 @@ Dependencies
 Installing the latest release
 -----------------------------
 
-The latest release of ``dsps`` is available on conda-forge:
+The latest release of ``dsps`` is available for installation with pip::
+
+       pip install dsps
+
+Alternatively, you can install the code using conda-forge::
 
        conda install -c conda-forge dsps
 
