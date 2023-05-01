@@ -1,98 +1,129 @@
 """
 """
+import typing
 from jax import numpy as jnp
 from jax import jit as jjit
-from jax import vmap
+from ..utils import triweight_gaussian, _sigmoid, _inverse_sigmoid
 
-C0 = 1 / 2
-C1 = 35 / 96
-C3 = -35 / 864
-C5 = 7 / 2592
-C7 = -5 / 69984
-
-LGYR_STELLAR_AGE_MIN = 5.0
-DELTA_LGYR_STELLAR_AGES = 0.05
-LGYR_BURST_DURATION_MAX = 9.0
-DEFAULT_DBURST = 2.0
+LGYR_PEAK_MIN = 5.0
+LGAGE_MAX = 9.0
+DLGAGE_MIN = 1.0
+LGAGE_K = 0.1
 
 
-@jjit
-def _tw_cuml_kern(x, m, h):
-    """Triweight kernel version of an err function."""
-    z = (x - m) / h
-    zz = z * z
-    zzz = zz * z
-    val = C0 + C1 * z + C3 * zzz + C5 * zzz * zz + C7 * zzz * zzz * z
-    val = jnp.where(z < -3, 0, val)
-    val = jnp.where(z > 3, 1, val)
-    return val
+class BurstParams(typing.NamedTuple):
+    lgyr_peak: jnp.float32
+    lgyr_max: jnp.float32
+
+
+class BurstUParams(typing.NamedTuple):
+    u_lgyr_peak: jnp.float32
+    u_lgyr_max: jnp.float32
+
+
+DEFAULT_PARAMS = BurstParams(5.5, 7.0)
 
 
 @jjit
-def _tw_sigmoid(x, x0, tw_h, ymin, ymax):
-    height_diff = ymax - ymin
-    body = _tw_cuml_kern(x, x0, tw_h)
-    return ymin + height_diff * body
+def _zero_safe_normalize(x):
+    s = jnp.sum(x)
+    s = jnp.where(s <= 0, 1, s)
+    return x / s
 
 
 @jjit
-def _burst_age_weights_kern(lgyr_since_burst, lgyr_burst_duration, lgyr_age_min):
-    delta = lgyr_burst_duration - lgyr_age_min
-    x0 = lgyr_age_min + delta / 2.0
-    tw_h = delta / 6.0
-    return _tw_sigmoid(lgyr_since_burst, x0, tw_h, 1.0, 0.0)
+def _age_weights_from_params(lgyr, params):
+    lgyr_peak, lgyr_max = params
+
+    dlgyr_support = lgyr_max - lgyr_peak
+    lgyr_min = lgyr_peak - dlgyr_support
+    twx0 = 0.5 * (lgyr_min + lgyr_max)
+
+    dlgyr = lgyr_max - lgyr_min
+    twh = dlgyr / 6
+
+    tw_gauss = triweight_gaussian(lgyr, twx0, twh)
+
+    age_weights = _zero_safe_normalize(tw_gauss)
+    return age_weights
 
 
 @jjit
-def _get_lgyr_burst_duration(dburst, lgyr_age_min, delta_lgyr_ages, lgyr_burst_max):
-    lgyr_min = lgyr_age_min + delta_lgyr_ages
-    lgyr_max = lgyr_burst_max
-    dlgyr_tot = lgyr_max - lgyr_min
-    tw_h = dlgyr_tot / 6.0
-    x0 = (lgyr_max - lgyr_min) / 2.0
-    lgyr_burst_duration = _tw_sigmoid(dburst, x0, tw_h, lgyr_min, lgyr_max)
-    return lgyr_burst_duration
+def _age_weights_from_u_params(lgyr, u_params):
+    params = _get_params_from_u_params(u_params)
+    return _age_weights_from_params(lgyr, params)
 
 
 @jjit
-def _burst_age_weights_cdf(
-    lgyr_since_burst,
-    dburst,
-    lgyr_age_min=LGYR_STELLAR_AGE_MIN,
-    delta_lgyr_ages=DELTA_LGYR_STELLAR_AGES,
-    lgyr_burst_max=LGYR_BURST_DURATION_MAX,
+def _get_params_from_u_params(u_params):
+    u_lgyr_peak, u_lgyr_max = u_params
+    lgyr_peak = _get_lgyr_peak_from_u_lgyr_peak(u_lgyr_peak)
+    lgyr_max = _get_lgyr_max_from_lgyr_peak(lgyr_peak, u_lgyr_max)
+    params = lgyr_peak, lgyr_max
+    return params
+
+
+@jjit
+def _get_u_params_from_params(params):
+    lgyr_peak, lgyr_max = params
+    u_lgyr_peak = _get_u_lgyr_peak_from_lgyr_peak(lgyr_peak)
+    u_lgyr_max = _get_u_lgyr_max_from_lgyr_peak(lgyr_peak, lgyr_max)
+    u_params = u_lgyr_peak, u_lgyr_max
+    return u_params
+
+
+@jjit
+def _get_lgyr_peak_from_u_lgyr_peak(u_lgyr_peak):
+    lo = LGYR_PEAK_MIN
+    hi = LGAGE_MAX - DLGAGE_MIN
+    x0 = 0.5 * (hi + lo)
+    lgyr_peak = _sigmoid(u_lgyr_peak, x0, LGAGE_K, lo, hi)
+    return lgyr_peak
+
+
+@jjit
+def _get_lgyr_max_from_lgyr_peak(lgyr_peak, u_lgyr_max):
+    lo, hi = lgyr_peak + DLGAGE_MIN, LGAGE_MAX
+    x0 = 0.5 * (hi + lo)
+    lgyr_max = _sigmoid(u_lgyr_max, x0, LGAGE_K, lo, hi)
+    return lgyr_max
+
+
+@jjit
+def _get_u_lgyr_peak_from_lgyr_peak(lgyr_peak):
+    lo = LGYR_PEAK_MIN
+    hi = LGAGE_MAX - DLGAGE_MIN
+    x0 = 0.5 * (hi + lo)
+    lgyr_peak = _inverse_sigmoid(lgyr_peak, x0, LGAGE_K, lo, hi)
+    return lgyr_peak
+
+
+@jjit
+def _get_u_lgyr_max_from_lgyr_peak(lgyr_peak, lgyr_max):
+    lo, hi = lgyr_peak + DLGAGE_MIN, LGAGE_MAX
+    x0 = 0.5 * (hi + lo)
+    u_lgyr_max = _inverse_sigmoid(lgyr_max, x0, LGAGE_K, lo, hi)
+    return u_lgyr_max
+
+
+DEFAULT_U_PARAMS = BurstUParams(
+    *[float(u_p) for u_p in _get_u_params_from_params(DEFAULT_PARAMS)]
+)
+
+
+@jjit
+def _compute_bursty_age_weights_from_params(
+    lgyr_since_burst, age_weights, fburst, params
 ):
-    lgyr_burst_duration = _get_lgyr_burst_duration(
-        dburst, lgyr_age_min, delta_lgyr_ages, lgyr_burst_max
-    )
-    return _burst_age_weights_kern(lgyr_since_burst, lgyr_burst_duration, lgyr_age_min)
-
-
-@jjit
-def _burst_age_weights(
-    lgyr_since_burst,
-    dburst,
-    lgyr_age_min=LGYR_STELLAR_AGE_MIN,
-    delta_lgyr_ages=DELTA_LGYR_STELLAR_AGES,
-    lgyr_burst_max=LGYR_BURST_DURATION_MAX,
-):
-    cdf = _burst_age_weights_cdf(
-        lgyr_since_burst, dburst, lgyr_age_min, delta_lgyr_ages, lgyr_burst_max
-    )
-    weights = cdf / jnp.sum(cdf)
-    return weights
-
-
-_A = (None, 0)
-_burst_age_weights_pop = jjit(vmap(_burst_age_weights, in_axes=_A))
-
-
-@jjit
-def _compute_bursty_age_weights(lgyr_since_burst, age_weights, fburst, dburst):
-    burst_weights = _burst_age_weights(lgyr_since_burst, dburst)
+    burst_weights = _age_weights_from_params(lgyr_since_burst, params)
     age_weights = fburst * burst_weights + (1 - fburst) * age_weights
     return age_weights
 
 
-_B = (None, 0, 0, 0)
-_compute_bursty_age_weights_pop = jjit(vmap(_compute_bursty_age_weights, in_axes=_B))
+@jjit
+def _compute_bursty_age_weights_from_u_params(
+    lgyr_since_burst, age_weights, fburst, u_params
+):
+    burst_weights = _age_weights_from_u_params(lgyr_since_burst, u_params)
+    age_weights = fburst * burst_weights + (1 - fburst) * age_weights
+    return age_weights
