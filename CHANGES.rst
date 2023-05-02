@@ -1,3 +1,7 @@
+0.3.1 (2023-05-02)
+-------------------
+- Include .git_archival.txt and .gitattributes to help with versioning (https://github.com/ArgonneCPAC/dsps/pull/61)
+
 0.3.0 (2023-05-01)
 -------------------
 - Package DSPS using pyproject.toml (https://github.com/ArgonneCPAC/dsps/pull/43)
