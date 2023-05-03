@@ -1,7 +1,7 @@
 """
 """
 import numpy as np
-from scipy.stats import norm
+from jax.scipy.stats import norm
 import os
 from .defaults import SSPData
 
