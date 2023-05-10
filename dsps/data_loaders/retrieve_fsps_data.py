@@ -11,9 +11,18 @@ except ImportError:
 from .load_ssp_data import SSPData
 
 
-def retrieve_ssp_data_from_fsps():
+def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
     """Use python-fsps to populate arrays and matrices of data
     for the default simple stellar populations (SSPs) in the shapes expected by DSPS
+
+    Parameters
+    ----------
+    add_neb_emission : bool, optional
+        Argument passed to fsps.StellarPopulation. Default is True.
+
+    kwargs : optional
+        Any keyword arguments passed to the retrieve_ssp_data_from_fsps function will be
+        passed on to fsps.StellarPopulation.
 
     Returns
     -------
@@ -52,7 +61,7 @@ def retrieve_ssp_data_from_fsps():
     for zmet_indx in range(1, ssp_lgmet.size + 1):
         print("...retrieving zmet = {0} of {1}".format(zmet_indx, nzmet))
         sp = fsps.StellarPopulation(
-            zcontinuous=0, zmet=zmet_indx, add_neb_emission=True
+            zcontinuous=0, zmet=zmet_indx, add_neb_emission=add_neb_emission, **kwargs
         )
         _wave, _fluxes = sp.get_spectrum()
         spectrum_collector.append(_fluxes)
