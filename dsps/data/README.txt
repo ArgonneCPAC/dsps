@@ -52,3 +52,9 @@ You can load filter transmission curves using the following convenience function
 If you have set the DSPS_DRN environment variable to your default data location,
 then you will need to store transmission curves in the DSPS_DRN/filters subdirectory.
 See the Quickstart Guide on dsps.readthedocs.io for more information.
+
+
+Alternate SSP data
+------------------
+The ssp_data_continuum_fsps_v3.2_lgmet_age.h5 file was run with the add_neb_emission 
+keyword set to False, so these SSPs can be treated as stellar continuum SSPs.
