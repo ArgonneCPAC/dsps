@@ -1,13 +1,23 @@
 """
 """
-from .. import blackbody as jbb
-from astropy.modeling.models import BlackBody
-from astropy import units as u
 import numpy as np
-from astropy import constants as const
+from .. import blackbody as jbb
 import warnings
+import pytest
+
+try:
+    from astropy.modeling.models import BlackBody
+    from astropy import units as u
+    from astropy import constants as const
+
+    HAS_ASTROPY = True
+except ImportError:
+    HAS_ASTROPY = False
+
+NO_ASTROPY_MSG = "Must have astropy installed to run this unit test"
 
 
+@pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
 def test_jax_blackbody_freq_density_unit_conversion():
     wave_m = np.logspace(-5, -2.3, 50) * u.m
     freq_hz = (const.c / wave_m).to(u.Hz)
@@ -25,6 +35,7 @@ def test_jax_blackbody_freq_density_unit_conversion():
         assert np.allclose(bb_freq_density_jax_lsun, bb_freq_density_astropy_lsun.value)
 
 
+@pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
 def test_jax_blackbody_freq_density_agrees_with_astropy_in_si_units():
     wave_m = np.logspace(-5, -2.3, 50) * u.m
     freq_hz = (const.c / wave_m).to(u.Hz)
@@ -40,6 +51,7 @@ def test_jax_blackbody_freq_density_agrees_with_astropy_in_si_units():
         assert np.all(np.isfinite(bb_freq_density_jax_si))
 
 
+@pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
 def test_jax_blackbody_freq_density_vs_wave_density_are_consistent_in_si_units():
     """Enforce ν*L_ν = λ*L_λ"""
     wave_m = np.logspace(-5, -2.3, 50) * u.m
@@ -55,6 +67,7 @@ def test_jax_blackbody_freq_density_vs_wave_density_are_consistent_in_si_units()
         assert np.allclose(bb_freq_density_jax_si, bb_wave_density_jax_si * factor)
 
 
+@pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
 def test_jax_blackbody_wave_density_units():
     """Enforce agreement between SI and code units for wave density"""
     wave_m = np.logspace(-5, -2.3, 50) * u.m
