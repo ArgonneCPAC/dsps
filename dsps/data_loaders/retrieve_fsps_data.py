@@ -5,7 +5,7 @@ try:
     import fsps
 
     HAS_FSPS = True
-except ImportError:
+except (ImportError, RuntimeError):
     HAS_FSPS = False
 
 from .load_ssp_data import SSPData
