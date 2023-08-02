@@ -1,3 +1,7 @@
+0.3.2 (2023-08-01)
+-------------------
+- Fix bug leading to edge case in which FSPS is assumed to be installed and configured (https://github.com/ArgonneCPAC/dsps/pull/68)
+
 0.3.1 (2023-05-02)
 -------------------
 - Include .git_archival.txt and .gitattributes to help with versioning (https://github.com/ArgonneCPAC/dsps/pull/61)
