@@ -1,11 +1,16 @@
 """Functions calculating the SED of a composite stellar population"""
 import typing
+from functools import partial
+
 from jax import jit as jjit
 from jax import numpy as jnp
-from .ssp_weights import calc_ssp_weights_sfh_table_lognormal_mdf
-from .ssp_weights import calc_ssp_weights_sfh_table_met_table
-from .stellar_age_weights import _calc_logsm_table_from_sfh_table
+
 from ..constants import SFR_MIN
+from .ssp_weights import (
+    calc_ssp_weights_sfh_table_lognormal_mdf,
+    calc_ssp_weights_sfh_table_met_table,
+)
+from .stellar_age_weights import _calc_logsm_table_from_sfh_table
 
 __all__ = ("calc_rest_sed_sfh_table_lognormal_mdf", "calc_rest_sed_sfh_table_met_table")
 
@@ -31,6 +36,48 @@ class RestSED(typing.NamedTuple):
     weights: jnp.ndarray
     lgmet_weights: jnp.ndarray
     age_weights: jnp.ndarray
+
+
+@partial(jjit, static_argnames=["lgmet_model"])
+def calc_rest_sed(
+    gal_t_table,
+    gal_sfr_table,
+    gal_lgmet_data,
+    ssp_data,
+    t_obs,
+    sfr_min=SFR_MIN,
+    lgmet_model="lognormal",
+):
+    ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux = ssp_data
+
+    if lgmet_model == "lognormal":
+        gal_lgmet, gal_lgmet_scatter = gal_lgmet_data
+        rest_sed = calc_rest_sed_sfh_table_lognormal_mdf(
+            gal_t_table,
+            gal_sfr_table,
+            gal_lgmet,
+            gal_lgmet_scatter,
+            ssp_lgmet,
+            ssp_lg_age_gyr,
+            ssp_flux,
+            t_obs,
+            sfr_min=sfr_min,
+        )
+        return rest_sed
+    elif lgmet_model == "lgmet_table":
+        gal_lgmet_table, gal_lgmet_scatter = gal_lgmet_data
+        rest_sed = calc_rest_sed_sfh_table_met_table(
+            gal_t_table,
+            gal_sfr_table,
+            gal_lgmet_table,
+            gal_lgmet_scatter,
+            ssp_lgmet,
+            ssp_lg_age_gyr,
+            ssp_flux,
+            t_obs,
+            sfr_min=sfr_min,
+        )
+        return rest_sed
 
 
 @jjit
