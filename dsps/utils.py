@@ -1,9 +1,10 @@
 """
 """
 from jax import jit as jjit
+from jax import lax
 from jax import numpy as jnp
-from jax import vmap
 from jax import random as jran
+from jax import vmap
 
 
 @jjit
@@ -149,13 +150,13 @@ def _get_triweights_singlepoint(x, sig, bin_edges):
 @jjit
 def _sigmoid(x, x0, k, ylo, yhi):
     height_diff = yhi - ylo
-    return ylo + height_diff / (1 + jnp.exp(-k * (x - x0)))
+    return ylo + height_diff * lax.logistic(k * (x - x0))
 
 
 @jjit
 def _inverse_sigmoid(y, x0, k, ylo, yhi):
     lnarg = (yhi - ylo) / (y - ylo) - 1
-    return x0 - jnp.log(lnarg) / k
+    return x0 - lax.log(lnarg) / k
 
 
 @jjit
@@ -241,4 +242,5 @@ def powerlaw_rvs(ran_key, a, b, g):
     npts = a.shape[0]
     r = jran.uniform(ran_key, (npts,))
     ag, bg = a**g, b**g
+    return (ag + (bg - ag) * r) ** (1.0 / g)
     return (ag + (bg - ag) * r) ** (1.0 / g)

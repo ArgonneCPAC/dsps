@@ -1,6 +1,8 @@
 """Kernels calculating distances in flat FLRW cosmologies"""
 import typing
+
 from jax import jit as jjit
+from jax import lax
 from jax import numpy as jnp
 from jax import vmap
 
@@ -42,7 +44,7 @@ YEAR = 31556925.2  # year in seconds
 @jjit
 def _rho_de_z(z, w0, wa):
     a = 1.0 / (1.0 + z)
-    de_z = a ** (-3.0 * (1.0 + w0 + wa)) * jnp.exp(-3.0 * wa * (1.0 - a))
+    de_z = a ** (-3.0 * (1.0 + w0 + wa)) * lax.exp(-3.0 * wa * (1.0 - a))
     return de_z
 
 
@@ -347,4 +349,5 @@ def virial_dynamical_time(redshift, Om0, w0, wa, h):
     """
     delta = _delta_vir(redshift, Om0, w0, wa)
     t_cross = 2**1.5 * _hubble_time(redshift, Om0, w0, wa, h) * delta**-0.5
+    return t_cross
     return t_cross

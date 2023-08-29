@@ -1,8 +1,8 @@
 """JAX implementation of a blackbody spectral energy density"""
 import numpy as np
-from jax import numpy as jnp
-from jax import jit as jjit
 from jax import config
+from jax import jit as jjit
+from jax import lax
 
 config.update("jax_enable_x64", True)
 
@@ -73,14 +73,14 @@ def _freq_density_denom(freq_hz, temp_kelvin):
     hnu = H_PLANCK * freq_hz
     kt = K_BOLTZ * temp_kelvin
     x = hnu / kt
-    denom = 1 / (jnp.exp(x) - 1)
+    denom = 1 / (lax.exp(x) - 1)
     return denom
 
 
 @jjit
 def _jax_bb_freq_density_exparg(freq_hz):
     lg_term1 = LG2 + LGH - 2 * LGC
-    lg_term2 = 3 * jnp.log(freq_hz)
+    lg_term2 = 3 * lax.log(freq_hz)
     exparg = lg_term1 + lg_term2
     return exparg
 
@@ -90,7 +90,7 @@ def _blackbody_freq_density_si(freq_hz, temp_kelvin):
     """Blackbody frequency density, L_ν, in SI units [W/Hz/sr/m/m]"""
     exparg = _jax_bb_freq_density_exparg(freq_hz)
     denom = _freq_density_denom(freq_hz, temp_kelvin)
-    return denom * jnp.exp(exparg)
+    return denom * lax.exp(exparg)
 
 
 @jjit
@@ -112,7 +112,7 @@ def _wave_density_denom(wave_meters, temp_kelvin):
     hc = H_PLANCK * C_SPEED
     kt = K_BOLTZ * temp_kelvin
     x = hc / kt / wave_meters
-    denom = 1 / (jnp.exp(x) - 1)
+    denom = 1 / (lax.exp(x) - 1)
     return denom
 
 
@@ -121,7 +121,7 @@ def _blackbody_wave_density_si(wave_m, temp_kelvin):
     """Blackbody wavelength density, L_λ, in SI units [W/m/sr/m/m]"""
     denom_factor = _wave_density_denom(wave_m, temp_kelvin)
     lg_term1 = LG2 + LGH + 2 * LGC
-    lg_term2 = 5 * jnp.log(wave_m)
+    lg_term2 = 5 * lax.log(wave_m)
     exparg = lg_term1 - lg_term2
-    wave_factor = jnp.exp(exparg)
+    wave_factor = lax.exp(exparg)
     return wave_factor * denom_factor
