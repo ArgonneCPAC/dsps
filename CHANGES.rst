@@ -1,3 +1,7 @@
+0.3.3 (2023-08-29)
+-------------------
+- Improve numerical robustness of gradients of exponentials (https://github.com/ArgonneCPAC/dsps/pull/69)
+
 0.3.2 (2023-08-01)
 -------------------
 - Fix bug leading to edge case in which FSPS is assumed to be installed and configured (https://github.com/ArgonneCPAC/dsps/pull/68)
