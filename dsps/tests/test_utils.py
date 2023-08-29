@@ -2,20 +2,30 @@
 """
 import numpy as np
 from jax import random as jran
-from ..utils import triweighted_histogram, _get_bin_edges, _get_triweights_singlepoint
-from ..utils import _mult_2d_vmap, _get_weight_matrices_2d
-from ..utils import _mult_3d_vmap, _get_weight_matrices_3d
-from ..utils import _sigmoid, _inverse_sigmoid
-from ..utils import powerlaw_rvs, powerlaw_pdf
+
+from ..utils import (
+    _get_bin_edges,
+    _get_triweights_singlepoint,
+    _get_weight_matrices_2d,
+    _get_weight_matrices_3d,
+    _inverse_sigmoid,
+    _mult_2d_vmap,
+    _mult_3d_vmap,
+    _sigmoid,
+    powerlaw_pdf,
+    powerlaw_rvs,
+    triweighted_histogram,
+)
 
 
 def test_sigmoid_inversion():
-    xarr = np.linspace(-10, 10, 500)
+    xarr = np.linspace(-100, 100, 500)
 
     x0, k, ylo, yhi = 0, 0.1, -5, 5
     y = _sigmoid(xarr, x0, k, ylo, yhi)
     x2 = _inverse_sigmoid(y, x0, k, ylo, yhi)
-    assert np.allclose(xarr, x2, rtol=1e-4)
+    assert np.all(~np.isnan(x2))
+    assert np.allclose(xarr, x2, rtol=1e-2)
 
 
 def test_triweighted_histogram():
@@ -125,6 +135,15 @@ def test_powerlaw_rvs():
 
 def test_powerlaw_pdf():
     npts = 2_000
+    a = np.random.uniform(2, 3, npts)
+    b = a + np.random.uniform(0, 1, npts)
+    g = np.random.uniform(1, 4, npts)
+    x = np.random.uniform(a, b, npts)
+
+    pdf = powerlaw_pdf(x, a, b, g)
+    assert np.all(np.isfinite(pdf))
+    assert np.all(pdf >= 0)
+    assert np.any(pdf > 0)
     a = np.random.uniform(2, 3, npts)
     b = a + np.random.uniform(0, 1, npts)
     g = np.random.uniform(1, 4, npts)
