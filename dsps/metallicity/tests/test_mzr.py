@@ -1,10 +1,11 @@
 """
 """
 import numpy as np
-from ..mzr import MAIOLINO08_PARAMS
-from ..mzr import MZR_VS_T_PDICT, mzr_evolution_model
-from ..mzr import maiolino08_metallicity_evolution as m08_zevol
+
 from ...cosmology.flat_wcdm import PLANCK15, lookback_time
+from ..mzr import MAIOLINO08_PARAMS, MZR_VS_T_PDICT
+from ..mzr import maiolino08_metallicity_evolution as m08_zevol
+from ..mzr import mzr_evolution_model
 
 
 def test_mzr_fit_agreement_with_maiolino08():
@@ -18,3 +19,10 @@ def test_mzr_fit_agreement_with_maiolino08():
         m08_at_z = m08_zevol(lgsmarr_fit, *MAIOLINO08_PARAMS[ztest[i]])
         logZ_reduction_correct = m08_at_z - m08_at_z0
         assert np.allclose(logZ_reduction, logZ_reduction_correct, atol=0.02)
+
+
+def test_default_mzr_params_are_importable_from_metallicity_defaults_module():
+    from ...metallicity.defaults import DEFAULT_MET_PARAMS
+    from ...metallicity.mzr import DEFAULT_MET_PDICT
+
+    assert np.allclose(list(DEFAULT_MET_PDICT.values()), DEFAULT_MET_PARAMS)
