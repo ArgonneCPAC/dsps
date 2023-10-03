@@ -1,9 +1,11 @@
 """Model for the mass-metallicity relation"""
 from collections import OrderedDict
+
+import numpy as np
 from jax import jit as jjit
 from jax import numpy as jnp
-from ..utils import _sig_slope
 
+from ..utils import _sig_slope
 
 MAIOLINO08_PARAMS = OrderedDict()
 MAIOLINO08_PARAMS[0.07] = (11.18, 9.04)
@@ -40,6 +42,9 @@ DEFAULT_MZR_PDICT = OrderedDict()
 DEFAULT_MZR_PDICT.update(MZR_T0_PDICT)
 DEFAULT_MZR_PDICT.update(MZR_VS_T_PDICT)
 DEFAULT_MZR_PDICT.update(MZR_SCATTER_PDICT)
+DEFAULT_MZR_PARAMS = np.array(list(DEFAULT_MZR_PDICT.values()))
+DEFAULT_LGMET_SCATTER = 0.2
+DEFAULT_MET_PARAMS = np.array((*DEFAULT_MZR_PARAMS, DEFAULT_LGMET_SCATTER))
 
 
 @jjit
