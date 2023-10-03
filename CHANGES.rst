@@ -1,14 +1,22 @@
+0.4.0 (unreleased)
+-------------------
+- Remove dsps.metallicity.mzrDEFAULT_MZR_PDICT and replace with DEFAULT_MET_PDICT (https://github.com/ArgonneCPAC/dsps/pull/71)
+
+
 0.3.3 (2023-08-29)
 -------------------
 - Improve numerical robustness of gradients of exponentials (https://github.com/ArgonneCPAC/dsps/pull/69)
+
 
 0.3.2 (2023-08-01)
 -------------------
 - Fix bug leading to edge case in which FSPS is assumed to be installed and configured (https://github.com/ArgonneCPAC/dsps/pull/68)
 
+
 0.3.1 (2023-05-02)
 -------------------
 - Include .git_archival.txt and .gitattributes to help with versioning (https://github.com/ArgonneCPAC/dsps/pull/61)
+
 
 0.3.0 (2023-05-01)
 -------------------
