@@ -3,6 +3,7 @@
 import numpy as np
 from jax import random as jran
 
+from ..constants import T_TABLE_MIN
 from ..utils import (
     _get_bin_edges,
     _get_triweights_singlepoint,
@@ -12,6 +13,8 @@ from ..utils import (
     _mult_2d_vmap,
     _mult_3d_vmap,
     _sigmoid,
+    cumtrapz,
+    cumulative_mstar_formed,
     powerlaw_pdf,
     powerlaw_rvs,
     triweighted_histogram,
@@ -153,3 +156,26 @@ def test_powerlaw_pdf():
     assert np.all(np.isfinite(pdf))
     assert np.all(pdf >= 0)
     assert np.any(pdf > 0)
+
+
+def test_cumtrapz():
+    ran_key = jran.PRNGKey(0)
+    n_x = 100
+    n_tests = 10
+    for __ in range(n_tests):
+        x_key, y_key, ran_key = jran.split(ran_key, 3)
+        xarr = np.sort(jran.uniform(x_key, minval=0, maxval=1, shape=(n_x,)))
+        yarr = jran.uniform(y_key, minval=0, maxval=1, shape=(n_x,))
+        jax_result = cumtrapz(xarr, yarr)
+        np_result = [np.trapz(yarr[:-i], x=xarr[:-i]) for i in range(1, n_x)][::-1]
+        assert np.allclose(jax_result[:-1], np_result, rtol=1e-4)
+        assert np.allclose(jax_result[-1], np.trapz(yarr, x=xarr), rtol=1e-4)
+
+
+def test_cumulative_mstar_formed():
+    t_table = np.linspace(T_TABLE_MIN, 13.8, 200)
+    sfh_table = np.random.uniform(0, 1, t_table.size)
+    smh_table = cumulative_mstar_formed(t_table, sfh_table)
+    assert smh_table.shape == t_table.shape
+    assert np.all(smh_table > 0)
+    assert np.all(np.diff(smh_table) > 0)

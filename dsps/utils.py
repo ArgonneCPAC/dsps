@@ -5,6 +5,11 @@ from jax import lax
 from jax import numpy as jnp
 from jax import random as jran
 from jax import vmap
+from jax.lax import scan
+
+from .constants import SFR_MIN, T_BIRTH_MIN
+
+YEAR_PER_GYR = 1e9
 
 
 @jjit
@@ -243,4 +248,75 @@ def powerlaw_rvs(ran_key, a, b, g):
     r = jran.uniform(ran_key, (npts,))
     ag, bg = a**g, b**g
     return (ag + (bg - ag) * r) ** (1.0 / g)
-    return (ag + (bg - ag) * r) ** (1.0 / g)
+
+
+@jjit
+def _cumtrapz_scan_func(carryover, el):
+    b, fb = el
+    a, fa, cumtrapz = carryover
+    cumtrapz = cumtrapz + (b - a) * (fb + fa) / 2.0
+    carryover = b, fb, cumtrapz
+    accumulated = cumtrapz
+    return carryover, accumulated
+
+
+@jjit
+def cumtrapz(xarr, yarr):
+    """Cumulative trapezoidal integral
+
+    Parameters
+    ----------
+    xarr : ndarray, shape (n, )
+
+    yarr : ndarray, shape (n, )
+
+    Returns
+    -------
+    result : ndarray, shape (n, )
+
+    """
+    res_init = xarr[0], yarr[0], 0.0
+    scan_data = xarr, yarr
+    cumtrapz = scan(_cumtrapz_scan_func, res_init, scan_data)[1]
+    return cumtrapz
+
+
+@jjit
+def cumulative_mstar_formed(t_table, sfh_table):
+    """Compute the cumulative stellar mass formed at each input time
+
+    Parameters
+    ----------
+    t_table : ndarray, shape (n, )
+        Age of the Universe in Gyr.
+        Array should be monotonically increasing and
+        t_table[0] >= dsps.constants.T_TABLE_MIN
+
+    sfh_table : ndarray, shape (n, )
+        SFR in Msun/yr at each of the input times
+
+    Returns
+    -------
+    mstar_formed : ndarray, shape (n, )
+        Cumulative stellar mass formed in Msun at each input time
+
+    Notes
+    -----
+    Mstar formed is calculated using trapezoidal integration
+    and assuming that during the interval (dsps.constants.T_BIRTH_MIN, t_table[0]),
+    SFH is constant and equal to dsps.constants.SFR_MIN
+
+    """
+    n_t = t_table.size
+
+    padded_t_table = jnp.zeros(n_t + 1)
+    padded_t_table = padded_t_table.at[0].set(T_BIRTH_MIN)
+    padded_t_table = padded_t_table.at[1:].set(t_table)
+
+    padded_sfh_table = jnp.zeros(n_t + 1)
+    padded_sfh_table = padded_sfh_table.at[0].set(SFR_MIN)
+    padded_sfh_table = padded_sfh_table.at[1:].set(sfh_table)
+
+    mstar_formed = cumtrapz(padded_t_table, padded_sfh_table)[1:] * YEAR_PER_GYR
+
+    return mstar_formed
