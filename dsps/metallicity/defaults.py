@@ -2,4 +2,4 @@
 """
 # flake8: noqa
 
-from .mzr import DEFAULT_LGMET_SCATTER, DEFAULT_MET_PARAMS, DEFAULT_MZR_PARAMS
+from .mzr import DEFAULT_MET_PARAMS

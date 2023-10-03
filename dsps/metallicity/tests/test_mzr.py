@@ -22,11 +22,7 @@ def test_mzr_fit_agreement_with_maiolino08():
 
 
 def test_default_mzr_params_are_importable_from_metallicity_defaults_module():
-    from ...metallicity.defaults import (
-        DEFAULT_LGMET_SCATTER,
-        DEFAULT_MET_PARAMS,
-        DEFAULT_MZR_PARAMS,
-    )
+    from ...metallicity.defaults import DEFAULT_MET_PARAMS
+    from ...metallicity.mzr import DEFAULT_MET_PDICT
 
-    assert np.allclose(DEFAULT_LGMET_SCATTER, DEFAULT_MET_PARAMS[-1])
-    assert np.allclose(DEFAULT_MZR_PARAMS, DEFAULT_MET_PARAMS[:-1])
+    assert np.allclose(list(DEFAULT_MET_PDICT.values()), DEFAULT_MET_PARAMS)
