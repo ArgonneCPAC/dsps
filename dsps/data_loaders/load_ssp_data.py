@@ -1,7 +1,8 @@
 """
 """
-from collections import OrderedDict
 import os
+from collections import OrderedDict
+
 import h5py
 
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
@@ -71,3 +72,33 @@ def load_ssp_templates(
             ssp_data[key] = hdf[key][...]
 
     return SSPData(*[ssp_data[key] for key in ssp_keys])
+
+
+def save_ssp_templates(fn, ssp_data):
+    """Save SSP templates to disk in the hdf5 format expected by load_ssp_templates
+
+    Parameters
+    ----------
+    fn : string
+        Absolute path to hdf5 file storing the SSP data.
+
+    ssp_data : NamedTuple
+
+        NamedTuple with 4 entries storing info about SSP templates
+
+        ssp_lgmet : ndarray of shape (n_met, )
+            Array of log10(Z) of the SSP templates
+            where dimensionless Z is the mass fraction of elements heavier than He
+
+        ssp_lg_age_gyr : ndarray of shape (n_ages, )
+            Array of log10(age/Gyr) of the SSP templates
+
+        ssp_wave : ndarray of shape (n_wave, )
+
+        ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
+            SED of the SSP in units of Lsun/Hz/Msun
+
+    """
+    with h5py.File(fn, "r") as hdf:
+        for key, arr in zip(ssp_data._fields, ssp_data):
+            hdf[key] = arr
