@@ -1,6 +1,10 @@
 name: tests
 
 on:
+  workflow_dispatch: null
+  schedule:
+    # Runs "every Monday & Thursday at 3:05am Central"
+    - cron: '5 8 * * 1,4'
   push:
     branches:
       - main
@@ -13,6 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -22,8 +28,10 @@ jobs:
           show-channel-urls: true
           miniforge-version: latest
           miniforge-variant: Mambaforge
+          use-mamba: true
 
       - name: configure conda and install code
+          # Test against latest releases of each code in the dependency chain
         shell: bash -l {0}
         run: |
           conda config --set always_yes yes
@@ -35,12 +43,12 @@ jobs:
             pytest \
             pytest-xdist \
             pytest-cov \
+            pip \
+            setuptools \
+            "setuptools_scm>=7,<8" \
+            python-build \
             flake8-pyproject
-
-      - name: lint
-        shell: bash -l {0}
-        run: |
-          flake8 dsps
+          python -m pip install --no-build-isolation --no-deps -e .
 
       - name: test
         shell: bash -l {0}
