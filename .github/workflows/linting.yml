@@ -24,13 +24,24 @@ jobs:
           miniforge-variant: Mambaforge
 
       - name: configure conda and install code
+          # Test against latest releases of each code in the dependency chain
         shell: bash -l {0}
         run: |
+          conda config --set always_yes yes
           mamba install --quiet \
             --file=requirements.txt
           python -m pip install --no-deps -e .
           mamba install -y -q \
-            flake8
+            flake8 \
+            pytest \
+            pytest-xdist \
+            pytest-cov \
+            pip \
+            setuptools \
+            "setuptools_scm>=7,<8" \
+            python-build \
+            flake8-pyproject
+          python -m pip install --no-build-isolation --no-deps -e .
 
       - name: lint
         shell: bash -l {0}
