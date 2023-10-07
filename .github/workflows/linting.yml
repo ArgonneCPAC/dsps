@@ -1,0 +1,38 @@
+name: linting
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: null
+
+jobs:
+  tests:
+    name: tests
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.9
+          channels: conda-forge,defaults
+          channel-priority: strict
+          show-channel-urls: true
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
+
+      - name: configure conda and install code
+        shell: bash -l {0}
+        run: |
+          mamba install --quiet \
+            --file=requirements.txt
+          python -m pip install --no-deps -e .
+          mamba install -y -q \
+            flake8
+
+      - name: lint
+        shell: bash -l {0}
+        run: |
+          flake8 dsps
