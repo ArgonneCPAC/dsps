@@ -1,9 +1,10 @@
 """Kernels calculating stellar age PDF-weighting of SSP tempates"""
-from jax import numpy as jnp
 from jax import jit as jjit
-from ..utils import _jax_get_dt_array
-from ..constants import SFR_MIN, T_BIRTH_MIN, N_T_LGSM_INTEGRATION
+from jax import numpy as jnp
+
+from ..constants import N_T_LGSM_INTEGRATION, SFR_MIN, T_BIRTH_MIN
 from ..cosmology import TODAY
+from ..utils import _jax_get_dt_array, cumulative_mstar_formed
 
 __all__ = ("calc_age_weights_from_sfh_table",)
 
@@ -170,9 +171,7 @@ def _calc_logsm_table_from_sfh_table(gal_t_table, gal_sfr_table, sfr_min):
         Minimum star formation rate in Msun/yr
 
     """
-    dt_table = _jax_get_dt_array(gal_t_table)
-
     gal_sfr_table = jnp.where(gal_sfr_table < sfr_min, sfr_min, gal_sfr_table)
-    gal_mstar_table = jnp.cumsum(gal_sfr_table * dt_table) * 1e9
-    logsm_table = jnp.log10(gal_mstar_table)
+    gal_smh_table = cumulative_mstar_formed(gal_t_table, gal_sfr_table)
+    logsm_table = jnp.log10(gal_smh_table)
     return logsm_table
