@@ -5,7 +5,7 @@ Differentiable Stellar Population Synthesis
 
 ## Installation
 
-The latest release of DSPS is v0.3, which is now available for pip installation:
+The latest release of DSPS is now available for installation with pip:
 ```
 $ pip install dsps
 ```
