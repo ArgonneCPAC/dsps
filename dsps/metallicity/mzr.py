@@ -44,13 +44,15 @@ DEFAULT_MET_PDICT.update(MZR_VS_T_PDICT)
 DEFAULT_MET_PDICT.update(MZR_SCATTER_PDICT)
 DEFAULT_MET_PARAMS = np.array((list(DEFAULT_MET_PDICT.values())))
 
+LGMET_SOLAR = np.log10(0.012)
+
 
 @jjit
 def mzr_model_t0(
     logsm, mzr_t0_y0, mzr_t0_x0, mzr_t0_k, mzr_t0_slope_lo, mzr_t0_slope_hi
 ):
     mzr_t0_xtp = mzr_t0_x0
-    return _sig_slope(
+    mzr_t0 = _sig_slope(
         logsm,
         mzr_t0_xtp,
         mzr_t0_y0,
@@ -59,6 +61,7 @@ def mzr_model_t0(
         mzr_t0_slope_lo,
         mzr_t0_slope_hi,
     )
+    return mzr_t0 + LGMET_SOLAR
 
 
 @jjit
