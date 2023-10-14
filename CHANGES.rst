@@ -1,3 +1,8 @@
+0.3.5 (2023-10-14)
+-------------------
+- mzr model now return absolute metallicity rather than Z/Zsun (https://github.com/ArgonneCPAC/dsps/pull/75)
+
+
 0.3.4 (2023-10-03)
 -------------------
 - Remove dsps.metallicity.mzrDEFAULT_MZR_PDICT and replace with DEFAULT_MET_PDICT (https://github.com/ArgonneCPAC/dsps/pull/71)
