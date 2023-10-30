@@ -31,8 +31,10 @@ license = {file = "LICENSE.rst"}
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
-dependencies = ["numpy", "jax", "h5py"]
-dynamic = ["version"]
+dynamic = ["version", "dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
 [tool.black]
 line-length = 88
