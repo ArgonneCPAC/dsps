@@ -57,3 +57,27 @@ jobs:
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
+
+      - name: test versions
+        shell: bash -el {0}
+        run: |
+          pip uninstall dsps --yes
+          [[ $(python setup.py --version) != "0.0.0" ]] || exit 1
+
+          rm -rf dist/*
+          python setup.py sdist
+          pip install --no-deps --no-build-isolation dist/*.tar.gz
+          pushd ..
+          python -c "import dsps; assert dsps.__version__ != '0.0.0'"
+          popd
+          pip uninstall dsps --yes
+
+          rm -rf dist/*
+          python -m build --sdist . --outdir dist
+          pip install --no-deps --no-build-isolation dist/*.tar.gz
+          pushd ..
+          python -c "import dsps; assert dsps.__version__ != '0.0.0'"
+          popd
+          pip uninstall dsps --yes
+
+          python -m pip install -v --no-deps --no-build-isolation -e .
