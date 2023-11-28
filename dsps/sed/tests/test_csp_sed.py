@@ -2,10 +2,12 @@
 """
 import numpy as np
 from jax import random as jran
-from ..stellar_sed import calc_rest_sed_sfh_table_lognormal_mdf
-from ..stellar_sed import calc_rest_sed_sfh_table_met_table
-from ...constants import T_BIRTH_MIN
 
+from ...constants import T_TABLE_MIN
+from ..stellar_sed import (
+    calc_rest_sed_sfh_table_lognormal_mdf,
+    calc_rest_sed_sfh_table_met_table,
+)
 
 SEED = 43
 FSPS_LG_AGES = np.arange(5.5, 10.2, 0.05)  # log10 ages in years
@@ -15,7 +17,7 @@ def test_calc_rest_sed_lognormal_mdf():
     ran_key = jran.PRNGKey(SEED)
     t_obs = 13.0
     n_t = 500
-    gal_t_table = np.linspace(T_BIRTH_MIN, t_obs, n_t)
+    gal_t_table = np.linspace(T_TABLE_MIN, t_obs, n_t)
 
     sfr_key, met_key, sed_key = jran.split(ran_key, 3)
     gal_sfr_table = jran.uniform(sfr_key, minval=0, maxval=10, shape=(n_t,))
@@ -63,7 +65,7 @@ def test_calc_rest_sed_lgmet_table():
     ran_key = jran.PRNGKey(SEED)
     t_obs = 13.0
     n_t = 500
-    gal_t_table = np.linspace(T_BIRTH_MIN, t_obs, n_t)
+    gal_t_table = np.linspace(T_TABLE_MIN, t_obs, n_t)
 
     sfr_key, met_key, sed_key = jran.split(ran_key, 3)
     gal_sfr_table = jran.uniform(sfr_key, minval=0, maxval=10, shape=(n_t,))
