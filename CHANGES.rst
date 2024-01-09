@@ -1,3 +1,8 @@
+0.3.6 (2024-01-109)
+-------------------
+- Adopt custom trapezoidal integration to calculate stellar age weights (https://github.com/ArgonneCPAC/dsps/pull/78)
+
+
 0.3.5 (2023-10-14)
 -------------------
 - mzr model now return absolute metallicity rather than Z/Zsun (https://github.com/ArgonneCPAC/dsps/pull/75)
