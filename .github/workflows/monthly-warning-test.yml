@@ -2,7 +2,6 @@ name: Test for Warnings
 
 on:
   workflow_dispatch: null
-  pull_request: null
   schedule:
     # Runs "First of every month at 3:15am Central"
     - cron: '15 8 1 * *'
