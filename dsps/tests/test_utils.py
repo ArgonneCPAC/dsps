@@ -17,6 +17,7 @@ from ..utils import (
     cumulative_mstar_formed,
     powerlaw_pdf,
     powerlaw_rvs,
+    trapz,
     triweighted_histogram,
 )
 
@@ -170,6 +171,19 @@ def test_cumtrapz():
         np_result = [np.trapz(yarr[:-i], x=xarr[:-i]) for i in range(1, n_x)][::-1]
         assert np.allclose(jax_result[:-1], np_result, rtol=1e-4)
         assert np.allclose(jax_result[-1], np.trapz(yarr, x=xarr), rtol=1e-4)
+
+
+def test_trapz():
+    ran_key = jran.PRNGKey(0)
+    n_x = 100
+    n_tests = 10
+    for __ in range(n_tests):
+        x_key, y_key, ran_key = jran.split(ran_key, 3)
+        xarr = np.sort(jran.uniform(x_key, minval=0, maxval=1, shape=(n_x,)))
+        yarr = jran.uniform(y_key, minval=0, maxval=1, shape=(n_x,))
+        jax_result = trapz(xarr, yarr)
+        np_result = np.trapz(yarr, x=xarr)
+        assert np.allclose(jax_result, np_result, rtol=1e-4)
 
 
 def test_cumulative_mstar_formed():
