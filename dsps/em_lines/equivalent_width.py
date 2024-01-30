@@ -2,6 +2,8 @@
 from jax import jit as jjit
 from jax import numpy as jnp
 
+from ..utils import trapz
+
 
 @jjit
 def _get_quadfit_weights(x, x1, x2, x3, x4):
@@ -60,8 +62,8 @@ def _ew_kernel(
     continuum_integrand = int_w * (c0 + c1 * wave + c2 * wave * wave)
     spec_integrand = int_w * flux
 
-    continuum_flux_integral = jnp.trapz(continuum_integrand, x=wave)
-    spec_flux_integral = jnp.trapz(spec_integrand, x=wave)
+    continuum_flux_integral = trapz(wave, continuum_integrand)
+    spec_flux_integral = trapz(wave, spec_integrand)
     total_line_flux = spec_flux_integral - continuum_flux_integral
     equivalent_width = total_line_flux / continuum_strength_at_line
 

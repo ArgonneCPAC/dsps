@@ -6,6 +6,8 @@ from jax import lax
 from jax import numpy as jnp
 from jax import vmap
 
+from ..utils import trapz
+
 __all__ = (
     "comoving_distance_to_z",
     "luminosity_distance_to_z",
@@ -93,7 +95,7 @@ def comoving_distance_to_z(redshift, Om0, w0, wa, h):
     integrand = _integrand_oneOverEz(z_table, Om0, w0, wa)
     # The 1E-5 factor comes from the conversion between the
     # speed of light in m/s to km/s and H0 = 100 * h.
-    return jnp.trapz(integrand, x=z_table) * C_SPEED * 1e-5 / h
+    return trapz(z_table, integrand) * C_SPEED * 1e-5 / h
 
 
 @jjit
@@ -205,7 +207,7 @@ def lookback_to_z(redshift, Om0, w0, wa, h):
     """
     z_table = jnp.linspace(0, redshift, 512)
     integrand = 1 / _Ez(z_table, Om0, w0, wa) / (1 + z_table)
-    res = jnp.trapz(integrand, x=z_table)
+    res = trapz(z_table, integrand)
     th = _hubble_time(0.0, Om0, w0, wa, h)
     return th * res
 
@@ -232,7 +234,7 @@ def age_at_z0(Om0, w0, wa, h):
     """
     z_table = jnp.logspace(0, 3, 512) - 1.0
     integrand = 1 / _Ez(z_table, Om0, w0, wa) / (1 + z_table)
-    res = jnp.trapz(integrand, x=z_table)
+    res = trapz(z_table, integrand)
     th = _hubble_time(0.0, Om0, w0, wa, h)
     return th * res
 

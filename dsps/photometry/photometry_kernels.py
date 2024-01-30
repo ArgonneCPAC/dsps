@@ -1,7 +1,9 @@
 """Kernels of common photometry integrals"""
-from jax import numpy as jnp
 from jax import jit as jjit
+from jax import numpy as jnp
+
 from ..cosmology.flat_wcdm import distance_modulus_to_z
+from ..utils import trapz
 
 AB0 = 1.13492e-13  # 3631 Jansky placed at 10 pc in units of Lsun/Hz
 
@@ -100,7 +102,7 @@ def _obs_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter, z):
         wave_filter, wave_spec_rest * (1 + z), lum_spec, left=0, right=0
     )
     integrand = trans_filter * lum_zshift_phot / wave_filter
-    lum_filter = jnp.trapz(integrand, x=wave_filter)
+    lum_filter = trapz(wave_filter, integrand)
     return lum_filter
 
 
@@ -108,12 +110,12 @@ def _obs_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter, z):
 def _rest_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter):
     lum_phot = jnp.interp(wave_filter, wave_spec_rest, lum_spec, left=0, right=0)
     integrand = trans_filter * lum_phot / wave_filter
-    lum_filter = jnp.trapz(integrand, x=wave_filter)
+    lum_filter = trapz(wave_filter, integrand)
     return lum_filter
 
 
 @jjit
 def _flux_ab0_at_10pc(wave_filter, trans_filter):
     integrand = trans_filter * AB0 / wave_filter
-    lum_ab0_filter = jnp.trapz(integrand, x=wave_filter)
+    lum_ab0_filter = trapz(wave_filter, integrand)
     return lum_ab0_filter

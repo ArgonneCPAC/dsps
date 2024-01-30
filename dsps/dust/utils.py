@@ -1,7 +1,8 @@
 """
 """
 from jax import jit as jjit
-from jax import numpy as jnp
+
+from ..utils import trapz
 
 
 @jjit
@@ -23,7 +24,7 @@ def get_filter_effective_wavelength(filter_wave, filter_trans, redshift):
     lambda_eff : float
 
     """
-    norm = jnp.trapz(filter_trans, x=filter_wave)
-    lambda_eff_rest = jnp.trapz(filter_trans * filter_wave, x=filter_wave) / norm
+    norm = trapz(filter_wave, filter_trans)
+    lambda_eff_rest = trapz(filter_wave, filter_trans * filter_wave) / norm
     lambda_eff = lambda_eff_rest / (1 + redshift)
     return lambda_eff

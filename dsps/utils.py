@@ -282,6 +282,27 @@ def cumtrapz(xarr, yarr):
 
 
 @jjit
+def trapz(xarr, yarr):
+    """Trapezoidal integral
+
+    Parameters
+    ----------
+    xarr : ndarray, shape (n, )
+
+    yarr : ndarray, shape (n, )
+
+    Returns
+    -------
+    result : float
+
+    """
+    res_init = xarr[0], yarr[0], 0.0
+    scan_data = xarr, yarr
+    cumtrapz = scan(_cumtrapz_scan_func, res_init, scan_data)[1]
+    return cumtrapz[-1]
+
+
+@jjit
 def cumulative_mstar_formed(t_table, sfh_table):
     """Compute the cumulative stellar mass formed at each input time
 

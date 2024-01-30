@@ -5,6 +5,10 @@ on:
   schedule:
     # Runs "First of every month at 3:15am Central"
     - cron: '15 8 1 * *'
+  push:
+    branches:
+      - main
+  pull_request: null
 
 jobs:
   tests:
