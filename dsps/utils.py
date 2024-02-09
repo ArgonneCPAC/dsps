@@ -1,7 +1,8 @@
 """
 """
+
 from jax import jit as jjit
-from jax import lax
+from jax import lax, nn
 from jax import numpy as jnp
 from jax import random as jran
 from jax import vmap
@@ -57,13 +58,7 @@ def _get_bin_edges(bin_mids, lowest_bin_edge, highest_bin_edge):
 def _tw_cuml_kern(x, m, h):
     """Triweight kernel version of an err function."""
     z = (x - m) / h
-    val = (
-        -5 * z**7 / 69984
-        + 7 * z**5 / 2592
-        - 35 * z**3 / 864
-        + 35 * z / 96
-        + 1 / 2
-    )
+    val = -5 * z**7 / 69984 + 7 * z**5 / 2592 - 35 * z**3 / 864 + 35 * z / 96 + 1 / 2
     val = jnp.where(z < -3, 0, val)
     val = jnp.where(z > 3, 1, val)
     return val
@@ -155,7 +150,7 @@ def _get_triweights_singlepoint(x, sig, bin_edges):
 @jjit
 def _sigmoid(x, x0, k, ylo, yhi):
     height_diff = yhi - ylo
-    return ylo + height_diff * lax.logistic(k * (x - x0))
+    return ylo + height_diff * nn.sigmoid(k * (x - x0))
 
 
 @jjit
