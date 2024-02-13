@@ -1,4 +1,10 @@
-0.3.6 (2024-01-109)
+0.3.7 (2024-02-13)
+-------------------
+- Require python>=3.9
+- Change API of diffburst (https://github.com/ArgonneCPAC/dsps/pull/82)
+
+
+0.3.6 (2024-01-09)
 -------------------
 - Adopt custom trapezoidal integration to calculate stellar age weights (https://github.com/ArgonneCPAC/dsps/pull/78)
 
