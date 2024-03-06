@@ -72,7 +72,7 @@ def test_continuum_line_decomp_kern():
         cont_hi_hi,
     )
 
-    ew2, line_flux2, continuum_strength_at_line = _continuum_line_decomp_kern(
+    ew2, line_flux2, continuum_strength_at_line, coeffs = _continuum_line_decomp_kern(
         wave,
         continuum + line,
         line_lo,
@@ -86,3 +86,4 @@ def test_continuum_line_decomp_kern():
     assert np.allclose(ew, ew2)
     assert np.allclose(line_flux, line_flux2)
     assert np.all(np.isfinite(continuum_strength_at_line))
+    assert np.all(np.isfinite(coeffs))

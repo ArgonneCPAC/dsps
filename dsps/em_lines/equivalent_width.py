@@ -86,8 +86,8 @@ def _continuum_line_decomp_kern(
     quadfit_w = _get_quadfit_weights(
         wave, cont_lo_lo, cont_lo_hi, cont_hi_lo, cont_hi_hi
     )
-    c = _weighted_quadratic_fit(wave, flux, quadfit_w)
-    c2, c1, c0 = c
+    coeffs = _weighted_quadratic_fit(wave, flux, quadfit_w)
+    c2, c1, c0 = coeffs
 
     continuum_strength_at_line = c0 + c1 * line_mid + c2 * line_mid**2
 
@@ -100,4 +100,4 @@ def _continuum_line_decomp_kern(
     total_line_flux = spec_flux_integral - continuum_flux_integral
     equivalent_width = total_line_flux / continuum_strength_at_line
 
-    return equivalent_width, total_line_flux, continuum_strength_at_line
+    return equivalent_width, total_line_flux, continuum_strength_at_line, coeffs
