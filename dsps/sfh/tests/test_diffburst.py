@@ -1,11 +1,12 @@
 """
 """
+
 import numpy as np
 from jax import random as jran
 
 from .. import diffburst as db
 
-TOL = 1e-2
+TOL = 1e-4
 
 
 def test_params_invert():
