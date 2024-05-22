@@ -1,18 +1,27 @@
 """
 """
-import pytest
+
 import numpy as np
-from ..flat_wcdm import distance_modulus, angular_diameter_distance
-from ..flat_wcdm import lookback_time, _Om, _delta_vir, virial_dynamical_time
+import pytest
+
 from ..flat_wcdm import PLANCK15 as PLANCK15_dsps
 from ..flat_wcdm import WMAP5 as WMAP5_dsps
-from ..flat_wcdm import CosmoParams
-from ..flat_wcdm import age_at_z, age_at_z0
+from ..flat_wcdm import (
+    CosmoParams,
+    _delta_vir,
+    _Om,
+    age_at_z,
+    age_at_z0,
+    angular_diameter_distance,
+    distance_modulus,
+    lookback_time,
+    virial_dynamical_time,
+)
 
 try:
-    from astropy.cosmology import Planck15 as Planck15_astropy
     from astropy.cosmology import WMAP5 as WMAP5_astropy
     from astropy.cosmology import Flatw0waCDM
+    from astropy.cosmology import Planck15 as Planck15_astropy
 
     HAS_ASTROPY = True
     ASTROPY_COSMO_LIST = [Planck15_astropy, WMAP5_astropy]
@@ -132,6 +141,12 @@ def test_cosmology_defaults():
     from ...cosmology import DEFAULT_COSMOLOGY, PLANCK15
 
     assert np.allclose(DEFAULT_COSMOLOGY, PLANCK15)
+
+
+def test_top_level_imports():
+    from ...cosmology import DEFAULT_COSMOLOGY, CosmoParams
+
+    CosmoParams(*DEFAULT_COSMOLOGY)
 
 
 @pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)

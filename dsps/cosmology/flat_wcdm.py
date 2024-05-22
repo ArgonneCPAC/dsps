@@ -1,4 +1,5 @@
 """Kernels calculating distances in flat FLRW cosmologies"""
+
 import typing
 
 from jax import jit as jjit
@@ -18,6 +19,7 @@ __all__ = (
     "age_at_z",
     "rho_crit",
     "virial_dynamical_time",
+    "CosmoParams",
 )
 
 
