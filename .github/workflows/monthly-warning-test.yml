@@ -5,6 +5,10 @@ on:
   schedule:
     # Runs "First of every month at 3:15am Central"
     - cron: '15 8 1 * *'
+  push:
+    branches:
+      - main
+  pull_request: null
 
 jobs:
   tests:
@@ -18,7 +22,7 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: 3.9
+          python-version: 3.11
           channels: conda-forge,defaults
           channel-priority: strict
           show-channel-urls: true
