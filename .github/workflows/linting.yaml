@@ -21,7 +21,6 @@ jobs:
           channel-priority: strict
           show-channel-urls: true
           miniforge-version: latest
-          miniforge-variant: Mambaforge
 
       - name: configure conda and install code
           # Test against latest releases of each code in the dependency chain
