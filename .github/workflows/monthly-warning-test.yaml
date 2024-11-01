@@ -1,10 +1,10 @@
-name: linting
+name: Test for Warnings
 
 on:
-  push:
-    branches:
-      - main
-  pull_request: null
+  workflow_dispatch: null
+  schedule:
+    # Runs "First of every month at 3:15am Central"
+    - cron: '15 8 1 * *'
 
 jobs:
   tests:
@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -21,7 +23,7 @@ jobs:
           channel-priority: strict
           show-channel-urls: true
           miniforge-version: latest
-          miniforge-variant: Mambaforge
+          use-mamba: true
 
       - name: configure conda and install code
           # Test against latest releases of each code in the dependency chain
@@ -43,7 +45,8 @@ jobs:
             flake8-pyproject
           python -m pip install --no-build-isolation --no-deps -e .
 
-      - name: lint
+      - name: test that no warnings are raised
         shell: bash -l {0}
         run: |
-          flake8 dsps
+          export PYTHONWARNINGS=error
+          pytest -v dsps --cov --cov-report=xml
