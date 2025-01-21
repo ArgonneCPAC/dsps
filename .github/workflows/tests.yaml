@@ -16,28 +16,25 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: 3.11
           channels: conda-forge,defaults
           channel-priority: strict
           show-channel-urls: true
           miniforge-version: latest
-          use-mamba: true
 
       - name: configure conda and install code
-          # Test against latest releases of each code in the dependency chain
         shell: bash -l {0}
         run: |
           conda config --set always_yes yes
-          mamba install --quiet \
+          conda install --quiet \
             --file=requirements.txt
-          python -m pip install --no-deps -e .
-          mamba install -y -q \
+          conda install -y -q \
             flake8 \
             pytest \
             pytest-xdist \
@@ -45,8 +42,8 @@ jobs:
             pip \
             setuptools \
             "setuptools_scm>=7,<8" \
-            python-build \
-            flake8-pyproject
+            scipy \
+            python-build
           python -m pip install --no-build-isolation --no-deps -e .
 
       - name: test
@@ -55,7 +52,7 @@ jobs:
           pytest -v dsps --cov --cov-report=xml
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
 
       - name: test versions
         shell: bash -el {0}
