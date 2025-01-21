@@ -133,7 +133,7 @@ def test_dynamical_time():
         assert np.all(np.diff(tcross) < 0)
 
         z0 = np.atleast_1d(0.0)
-        tcross_z0 = float(virial_dynamical_time(z0, *cosmo_dsps))
+        tcross_z0 = virial_dynamical_time(z0, *cosmo_dsps)
         assert np.allclose(tcross_z0, 4, atol=1)
 
 
