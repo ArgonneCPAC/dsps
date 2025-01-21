@@ -116,7 +116,7 @@ def test_delta_vir():
     for cosmo in ASTROPY_COSMO_LIST:
         cosmo_dsps = CosmoParams(cosmo.Om0, -1, 0, cosmo.h)
         z_high = np.atleast_1d(500.0)
-        delta = float(_delta_vir(z_high, *cosmo_dsps[:-1]))
+        delta = _delta_vir(z_high, *cosmo_dsps[:-1])
         assert np.allclose(delta, 178, atol=1)
         delta_ray = _delta_vir(zray, *cosmo_dsps[:-1])
         assert np.all(np.diff(delta_ray) > 0)
