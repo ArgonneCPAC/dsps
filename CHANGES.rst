@@ -1,3 +1,8 @@
+0.4.0 (2025-01-21)
+-------------------
+- Require python>=3.11 (https://github.com/ArgonneCPAC/dsps/pull/95)
+
+
 0.3.7 (2024-02-13)
 -------------------
 - Require python>=3.9
