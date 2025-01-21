@@ -27,10 +27,10 @@ jobs:
         shell: bash -l {0}
         run: |
           conda config --set always_yes yes
-          mamba install --quiet \
+          conda install --quiet \
             --file=requirements.txt
           python -m pip install --no-deps -e .
-          mamba install -y -q \
+          conda install -y -q \
             flake8 \
             pytest \
             pytest-xdist \
