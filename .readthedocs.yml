@@ -6,7 +6,7 @@ sphinx:
 build:
   os: "ubuntu-22.04"
   tools:
-    python: "mambaforge-22.9"
+    python: "miniconda-latest"
 
 conda:
   environment: docs/source/rtd_environment.yaml
