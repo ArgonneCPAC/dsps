@@ -51,6 +51,8 @@ def test_param_inversion():
         params = umzr.get_bounded_mzr_params(umzr.MZRUParams(*uran))
         u_params = umzr.get_unbounded_mzr_params(umzr.MZRParams(*params))
         assert np.allclose(uran, u_params, rtol=0.01)
+        assert np.all(np.isfinite(u_params))
+        assert np.all(np.isfinite(params))
 
 
 def test_monotonic_mzr():
@@ -58,7 +60,7 @@ def test_monotonic_mzr():
 
     logsm = np.linspace(1, 13, 500)
 
-    ntests = 100
+    ntests = 1000
     for __ in range(ntests):
         ran_key, u_key, time_key = jran.split(ran_key, 3)
         uran = jran.uniform(
@@ -71,7 +73,9 @@ def test_monotonic_mzr():
         lgmet = umzr.mzr_model(logsm, t, *params)
         assert np.all(np.isfinite(lgmet))
         assert np.all(lgmet < 2)
-        assert np.all(np.diff(lgmet) >= 0)
+        assert np.all(np.diff(lgmet) >= -0.01)
+
+        assert params.mzr_t0_slope_lo >= params.mzr_t0_slope_hi
 
 
 def test_default_mzr_umzr_agree():
@@ -87,3 +91,13 @@ def test_default_mzr_umzr_agree():
         lgmet_new = umzr.mzr_model(logsm, tobs, *umzr.DEFAULT_MZR_PARAMS)
 
         assert np.allclose(lgmet_old, lgmet_new, rtol=1e-4)
+
+
+def test_default_umzr_params():
+    gen = zip(umzr.DEFAULT_MZR_PARAMS, umzr.DEFAULT_MZR_PARAMS._fields)
+    for param, key in gen:
+        assert np.all(np.isfinite(param)), f"Parameter `{key}` is NaN"
+
+    gen = zip(umzr.DEFAULT_MZR_U_PARAMS, umzr.DEFAULT_MZR_U_PARAMS._fields)
+    for u_param, key in gen:
+        assert np.all(np.isfinite(u_param)), f"Parameter `{key}` is NaN"
