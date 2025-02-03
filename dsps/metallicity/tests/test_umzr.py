@@ -92,8 +92,10 @@ def test_default_mzr_umzr_agree():
 
 
 def test_default_umzr_params():
-    for param in umzr.DEFAULT_MZR_PARAMS:
-        assert np.all(np.isfinite(param))
+    gen = zip(umzr.DEFAULT_MZR_PARAMS, umzr.DEFAULT_MZR_PARAMS._fields)
+    for param, key in gen:
+        assert np.all(np.isfinite(param)), f"Parameter `{key}` is NaN"
 
-    for u_param in umzr.DEFAULT_MZR_U_PARAMS:
-        assert np.all(np.isfinite(u_param))
+    gen = zip(umzr.DEFAULT_MZR_U_PARAMS, umzr.DEFAULT_MZR_U_PARAMS._fields)
+    for u_param, key in gen:
+        assert np.all(np.isfinite(u_param)), f"Parameter `{key}` is NaN"
