@@ -1,3 +1,8 @@
+0.4.1 (2025-02-03)
+-------------------
+- Fix bug in mass-metallicity scaling relation (https://github.com/ArgonneCPAC/dsps/pull/98)
+
+
 0.4.0 (2025-01-21)
 -------------------
 - Require python>=3.11 (https://github.com/ArgonneCPAC/dsps/pull/95)
