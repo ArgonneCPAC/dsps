@@ -51,6 +51,8 @@ def test_param_inversion():
         params = umzr.get_bounded_mzr_params(umzr.MZRUParams(*uran))
         u_params = umzr.get_unbounded_mzr_params(umzr.MZRParams(*params))
         assert np.allclose(uran, u_params, rtol=0.01)
+        assert np.all(np.isfinite(u_params))
+        assert np.all(np.isfinite(params))
 
 
 def test_monotonic_mzr():
@@ -87,3 +89,11 @@ def test_default_mzr_umzr_agree():
         lgmet_new = umzr.mzr_model(logsm, tobs, *umzr.DEFAULT_MZR_PARAMS)
 
         assert np.allclose(lgmet_old, lgmet_new, rtol=1e-4)
+
+
+def test_default_umzr_params():
+    for param in umzr.DEFAULT_MZR_PARAMS:
+        assert np.all(np.isfinite(param))
+
+    for u_param in umzr.DEFAULT_MZR_U_PARAMS:
+        assert np.all(np.isfinite(u_param))
