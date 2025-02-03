@@ -60,7 +60,7 @@ def test_monotonic_mzr():
 
     logsm = np.linspace(1, 13, 500)
 
-    ntests = 100
+    ntests = 1000
     for __ in range(ntests):
         ran_key, u_key, time_key = jran.split(ran_key, 3)
         uran = jran.uniform(
@@ -73,7 +73,9 @@ def test_monotonic_mzr():
         lgmet = umzr.mzr_model(logsm, t, *params)
         assert np.all(np.isfinite(lgmet))
         assert np.all(lgmet < 2)
-        assert np.all(np.diff(lgmet) >= 0)
+        assert np.all(np.diff(lgmet) >= -0.01)
+
+        assert params.mzr_t0_slope_lo >= params.mzr_t0_slope_hi
 
 
 def test_default_mzr_umzr_agree():

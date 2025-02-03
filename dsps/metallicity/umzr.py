@@ -206,16 +206,16 @@ def _get_square_unbounded_param(param, bound):
 @jjit
 def _get_mzr_t0_slope_hi_from_unbounded(mzr_t0_slope_lo, u_mzr_t0_slope_hi):
     x0 = 0.0
-    ylo = mzr_t0_slope_lo
-    yhi = MZR_PBDICT["mzr_t0_slope_hi"][1]
+    ylo = MZR_PBDICT["mzr_t0_slope_hi"][0]
+    yhi = mzr_t0_slope_lo
     mzr_t0_slope_hi = _sigmoid(u_mzr_t0_slope_hi, x0, BOUNDING_K, ylo, yhi)
     return mzr_t0_slope_hi
 
 
 def _get_u_mzr_t0_slope_hi_from_bounded(mzr_t0_slope_lo, mzr_t0_slope_hi):
     x0 = 0.0
-    ylo = mzr_t0_slope_lo
-    yhi = MZR_PBDICT["mzr_t0_slope_hi"][1]
+    ylo = MZR_PBDICT["mzr_t0_slope_hi"][0]
+    yhi = mzr_t0_slope_lo
     u_mzr_t0_slope_hi = _inverse_sigmoid(mzr_t0_slope_hi, x0, BOUNDING_K, ylo, yhi)
     return u_mzr_t0_slope_hi
 
