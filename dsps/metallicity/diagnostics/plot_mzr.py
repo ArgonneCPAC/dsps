@@ -3,12 +3,18 @@
 
 import os
 
-import matplotlib.cm as cm
 import numpy as np
-from matplotlib import lines as mlines
-from matplotlib import pyplot as plt
 
-from dsps.metallicity import umzr
+try:
+    import matplotlib.cm as cm
+    from matplotlib import lines as mlines
+    from matplotlib import pyplot as plt
+
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
+
+from .. import umzr
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -35,6 +41,7 @@ def make_mzr_comparison_plot(
         filename of the output figure
 
     """
+    assert HAS_MATPLOTLIB, "Must have matplotlb installed to use this function"
 
     n_t = 5
     colors = cm.coolwarm(np.linspace(1, 0, n_t))  # red first
