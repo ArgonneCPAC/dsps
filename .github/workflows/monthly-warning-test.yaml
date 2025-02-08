@@ -33,6 +33,7 @@ jobs:
             --file=requirements.txt
           python -m pip install --no-deps -e .
           conda install -y -q \
+            matplotlib \
             flake8 \
             pytest \
             pytest-xdist \
