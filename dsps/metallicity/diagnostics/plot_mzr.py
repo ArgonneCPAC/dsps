@@ -19,6 +19,7 @@ from .. import umzr
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
 MGREEN = "#2ca02c"
+MPURPLE = "#9467bd"
 
 
 def make_mzr_comparison_plot(
@@ -56,7 +57,7 @@ def make_mzr_comparison_plot(
 
     fig, ax = plt.subplots(1, 1)
     ax.set_ylim(-7.5, -1.1)
-    ax.set_xlim(4.1, 11.9)
+    ax.set_xlim(4.1, 12.4)
 
     for it in range(n_t):
         ax.plot(
@@ -97,6 +98,21 @@ def make_mzr_comparison_plot(
         linestyle="None",
     )
 
+    bn = "galazzi_etal05_mzr.dat"
+    fn = os.path.join(drn, bn)
+    g05_data = np.loadtxt(fn, delimiter=",")
+    lgsm_msun_g05 = g05_data[:, 0]
+    lgz_zsun_g05 = g05_data[:, 1]
+    lgzmet_g05 = lgz_zsun_g05 + umzr.LGMET_SOLAR
+
+    ax.plot(
+        lgsm_msun_g05[::2],
+        lgzmet_g05[::2],
+        color=MPURPLE,
+        marker="d",
+        linestyle="None",
+    )
+
     red_line = mlines.Line2D([], [], ls="-", c=colors[0], label=r"${\rm z=3}$")
     blue_line = mlines.Line2D([], [], ls="-", c=colors[-1], label=r"${\rm z=0}$")
     solid_line = mlines.Line2D([], [], ls="-", c="gray", label=label2)
@@ -110,7 +126,7 @@ def make_mzr_comparison_plot(
         markersize=6,
         label=r"${\rm Maiolino}$+$18\ (z=0)$",
     )
-    green_star = mlines.Line2D(
+    green_triangle = mlines.Line2D(
         [],
         [],
         color=MGREEN,
@@ -120,11 +136,21 @@ def make_mzr_comparison_plot(
         label=r"${\rm Kirby}$+$13\ (z=0)$",
     )
 
+    purple_square = mlines.Line2D(
+        [],
+        [],
+        color=MPURPLE,
+        marker="d",
+        linestyle="None",
+        markersize=6,
+        label=r"${\rm Gallazzi}$+$05\ (z=0)$",
+    )
+
     leg0 = ax.legend(handles=[blue_line, red_line], loc="upper left")
     ax.add_artist(leg0)
-    ax.legend(handles=[black_star, solid_line, dashed_line], loc="lower right")
     ax.legend(
-        handles=[black_star, green_star, solid_line, dashed_line], loc="lower right"
+        handles=[purple_square, black_star, green_triangle, solid_line, dashed_line],
+        loc="lower right",
     )
     xlabel = ax.set_xlabel(r"$\log_{10}M_{\star}/M_{\odot}$")
     ylabel = ax.set_ylabel(r"$\log_{10}Z$")
