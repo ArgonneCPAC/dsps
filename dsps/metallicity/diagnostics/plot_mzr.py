@@ -1,12 +1,16 @@
 """
 """
 
+import os
+
 import matplotlib.cm as cm
 import numpy as np
 from matplotlib import lines as mlines
 from matplotlib import pyplot as plt
 
 from dsps.metallicity import umzr
+
+_THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
 def make_mzr_comparison_plot(
@@ -54,13 +58,34 @@ def make_mzr_comparison_plot(
             color=colors[it],
         )
 
+    drn = os.path.join(
+        os.path.join(os.path.dirname(_THIS_DRNAME), "tests"), "testing_data"
+    )
+    bn = "maiolino_etal18_mzr.dat"
+    fn = os.path.join(drn, bn)
+    m18_data = np.loadtxt(fn, delimiter=",")
+    lgsm_msun_m18 = m18_data[:, 0]
+    lgz_zsun_m18 = m18_data[:, 1]
+    lgzmet_m18 = lgz_zsun_m18 + umzr.LGMET_SOLAR
+    ax.scatter(lgsm_msun_m18[::2], lgzmet_m18[::2], s=100, color="k", marker="*")
+
     red_line = mlines.Line2D([], [], ls="-", c=colors[0], label=r"${\rm z=3}$")
     blue_line = mlines.Line2D([], [], ls="-", c=colors[-1], label=r"${\rm z=0}$")
     solid_line = mlines.Line2D([], [], ls="-", c="gray", label=label2)
     dashed_line = mlines.Line2D([], [], ls="--", c="gray", label=label1)
+    black_star = mlines.Line2D(
+        [],
+        [],
+        color="k",
+        marker="*",
+        linestyle="None",
+        markersize=10,
+        label=r"${\rm Maiolino}$+$18\ (z=0)$",
+    )
+
     leg0 = ax.legend(handles=[blue_line, red_line], loc="upper left")
     ax.add_artist(leg0)
-    ax.legend(handles=[solid_line, dashed_line], loc="lower right")
+    ax.legend(handles=[black_star, solid_line, dashed_line], loc="lower right")
     xlabel = ax.set_xlabel(r"$\log_{10}M_{\star}/M_{\odot}$")
     ylabel = ax.set_ylabel(r"$\log_{10}Z$")
     ax.set_title(r"${\rm mass}$--${\rm metallicity\ relation}$")
