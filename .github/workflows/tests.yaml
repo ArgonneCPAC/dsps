@@ -35,6 +35,7 @@ jobs:
           conda install --quiet \
             --file=requirements.txt
           conda install -y -q \
+            matplotlib \
             flake8 \
             pytest \
             pytest-xdist \
