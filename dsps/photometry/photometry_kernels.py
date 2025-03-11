@@ -1,4 +1,5 @@
 """Kernels of common photometry integrals"""
+
 from jax import jit as jjit
 from jax import numpy as jnp
 
