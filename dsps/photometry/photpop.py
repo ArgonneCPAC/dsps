@@ -1,8 +1,9 @@
 """Functions used to compute photometry for collections of SEDs"""
+
 from jax import jit as jjit
 from jax import vmap
-from .photometry_kernels import calc_obs_mag, calc_rest_mag
 
+from .photometry_kernels import _calc_obs_mag_no_dimming, calc_obs_mag, calc_rest_mag
 
 _z = [*[None] * 4, 0, *[None] * 4]
 _f = [None, None, 0, 0, None, *[None] * 4]
@@ -12,6 +13,14 @@ _calc_obs_mag_vmap_f_ssp = jjit(
     vmap(vmap(_calc_obs_mag_vmap_f, in_axes=_ssp), in_axes=_ssp)
 )
 _calc_obs_mag_vmap_f_ssp_z = jjit(vmap(_calc_obs_mag_vmap_f_ssp, in_axes=_z))
+
+# wave_spec_rest, lum_spec, wave_filter, trans_filter, z
+_b = [None, None, 0, 0, None]
+_ssp2 = [None, 0, *[None] * 3]
+_calc_obs_mag_no_dimming_f = jjit(vmap(_calc_obs_mag_no_dimming, in_axes=_b))
+_calc_obs_mag_no_dimming_f_ssp = jjit(
+    vmap(vmap(_calc_obs_mag_no_dimming_f, in_axes=_ssp2), in_axes=_ssp2)
+)
 
 
 @jjit
@@ -102,5 +111,39 @@ def precompute_ssp_restmags(ssp_wave, ssp_fluxes, filter_waves, filter_trans):
     """
     ssp_restmag_table = _calc_rest_mag_vmap_f_ssp(
         ssp_wave, ssp_fluxes, filter_waves, filter_trans
+    )
+    return ssp_restmag_table
+
+
+@jjit
+def precompute_ssp_restmags_z_kcorrect(
+    ssp_wave, ssp_fluxes, filter_waves, filter_trans, z_kcorrect
+):
+    """Precompute restframe magnitudes of a collection of SEDs with k-correction
+
+    Parameters
+    ----------
+    ssp_wave : array of shape (n_spec, )
+        Wavelength of the SEDs in Angstroms
+
+    ssp_fluxes : array of shape (n_met, n_age, n_spec)
+        Flux of the SEDs in Lsun/Hz, normalized to unit stellar mass
+
+    filter_waves : array of shape (n_filters, n_trans_curve)
+        Wavelength of the filter transmission curves in Angstroms
+
+    filter_trans : array of shape (n_filters, n_trans_curve)
+        Transmission curves defining fractional transmission of the filters
+
+    z_kcorrect : float
+        Redshift to which the SEDs should be k-corrected
+
+    Returns
+    -------
+    ssp_photmag_table : array of shape (n_met, n_age, n_filters)
+
+    """
+    ssp_restmag_table = _calc_obs_mag_no_dimming_f_ssp(
+        ssp_wave, ssp_fluxes, filter_waves, filter_trans, z_kcorrect
     )
     return ssp_restmag_table
