@@ -91,10 +91,35 @@ def calc_rest_mag(wave_spec_rest, lum_spec, wave_filter, trans_filter):
     rest_mag : float
 
     """
+    rest_flux = calc_rest_flux(wave_spec_rest, lum_spec, wave_filter, trans_filter)
+    rest_mag = -2.5 * jnp.log10(rest_flux)
+    return rest_mag
+
+
+@jjit
+def calc_rest_flux(wave_spec_rest, lum_spec, wave_filter, trans_filter):
+    """Calculate the restframe AB flux of an SED observed through a filter
+
+    Parameters
+    ----------
+    wave_spec_rest : ndarray of shape (n_wave, )
+
+    lum_spec : ndarray of shape (n_wave, )
+
+    wave_filter : ndarray of shape (n_filter_wave, )
+
+    trans_filter : ndarray of shape (n_filter_wave, )
+
+    Returns
+    -------
+    rest_flux : float
+        rest_mag = -2.5*log10(rest_flux)
+
+    """
     flux_source = _rest_flux_ssp(wave_spec_rest, lum_spec, wave_filter, trans_filter)
     flux_ab0 = _flux_ab0_at_10pc(wave_filter, trans_filter)
-    rest_mag = -2.5 * jnp.log10(flux_source / flux_ab0)
-    return rest_mag
+    rest_flux = flux_source / flux_ab0
+    return rest_flux
 
 
 @jjit
