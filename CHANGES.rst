@@ -1,3 +1,8 @@
+0.4.2 (2025-03-13)
+-------------------
+- Refactor photometric flux calculations to simplify downstream vmapping (https://github.com/ArgonneCPAC/dsps/pull/103)
+
+
 0.4.1 (2025-02-03)
 -------------------
 - Fix bug in mass-metallicity scaling relation (https://github.com/ArgonneCPAC/dsps/pull/98)
