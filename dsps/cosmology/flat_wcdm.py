@@ -100,6 +100,10 @@ def comoving_distance_to_z(redshift, Om0, w0, wa, h):
     return trapz(z_table, integrand) * C_SPEED * 1e-5 / h
 
 
+_CD = (0, None, None, None, None)
+comoving_distance = jjit(vmap(comoving_distance_to_z, in_axes=_CD))
+
+
 @jjit
 def luminosity_distance_to_z(redshift, Om0, w0, wa, h):
     """Luminosity distance in Mpc
@@ -354,4 +358,21 @@ def virial_dynamical_time(redshift, Om0, w0, wa, h):
     delta = _delta_vir(redshift, Om0, w0, wa)
     t_cross = 2**1.5 * _hubble_time(redshift, Om0, w0, wa, h) * delta**-0.5
     return t_cross
-    return t_cross
+
+
+@jjit
+def hubble_distance_mpc(h):
+    H0 = 100.0 * h  # km/s/Mpc
+    c_speed_kms = C_SPEED / 1000.0
+    D_H = c_speed_kms / H0
+    return D_H
+
+
+@jjit
+def differential_comoving_volume(redshift, Om0, w0, wa, h):
+    dh = hubble_distance_mpc(h)
+    da = angular_diameter_distance(redshift, Om0, w0, wa, h)
+    zp1 = 1.0 + redshift
+    ez = _Ez(redshift, Om0, w0, wa)
+    diff_vol_com = dh * ((zp1 * da) ** 2.0) / ez
+    return diff_vol_com
