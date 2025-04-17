@@ -155,6 +155,10 @@ def test_age_at_z0():
         assert np.allclose(age_astropy, age_jax, rtol=0.01)
 
 
-# @pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
-# def test_differential_comoving_volume():
-#     differential_comoving_volume(redshift, Om0, w0, wa, h)
+@pytest.mark.skipif(not HAS_ASTROPY, reason=NO_ASTROPY_MSG)
+def test_differential_comoving_volume():
+    zarr = np.linspace(0.01, 2.0, 50)
+    cosmo_params = Planck15_astropy.Om0, -1.0, 0.0, Planck15_astropy.h
+    diff_com_vol = flat_wcdm.differential_comoving_volume(zarr, *cosmo_params)
+    diff_com_vol_astropy = Planck15_astropy.differential_comoving_volume(zarr).value
+    assert np.allclose(diff_com_vol, diff_com_vol_astropy, rtol=0.01)
