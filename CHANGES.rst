@@ -1,3 +1,8 @@
+0.4.3 (2025-05-05)
+-------------------
+- Add new vmapped kernels to flat_wcdm.py to simplify lightcone photometry
+
+
 0.4.2 (2025-03-13)
 -------------------
 - Refactor photometric flux calculations to simplify downstream vmapping (https://github.com/ArgonneCPAC/dsps/pull/103)
