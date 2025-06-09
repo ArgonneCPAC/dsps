@@ -1,11 +1,19 @@
 """Functions calculating the SED of a composite stellar population"""
+
 import typing
+
+import jax
 from jax import jit as jjit
 from jax import numpy as jnp
-from .ssp_weights import calc_ssp_weights_sfh_table_lognormal_mdf
-from .ssp_weights import calc_ssp_weights_sfh_table_met_table
-from .stellar_age_weights import _calc_logsm_table_from_sfh_table
+
 from ..constants import SFR_MIN
+from .ssp_weights import (
+    calc_ssp_weights_sfh_table_lognormal_mdf,
+    calc_ssp_weights_sfh_table_met_table,
+)
+from .stellar_age_weights import _calc_logsm_table_from_sfh_table
+
+jax.config.update("jax_enable_x64", True)
 
 __all__ = ("calc_rest_sed_sfh_table_lognormal_mdf", "calc_rest_sed_sfh_table_met_table")
 

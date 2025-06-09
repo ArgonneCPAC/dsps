@@ -1,10 +1,18 @@
 """Kernels calculating SSP weights of a composite stellar population"""
+
 import typing
+
+import jax
 from jax import jit as jjit
 from jax import numpy as jnp
+
+from .metallicity_weights import (
+    calc_lgmet_weights_from_lgmet_table,
+    calc_lgmet_weights_from_lognormal_mdf,
+)
 from .stellar_age_weights import calc_age_weights_from_sfh_table
-from .metallicity_weights import calc_lgmet_weights_from_lognormal_mdf
-from .metallicity_weights import calc_lgmet_weights_from_lgmet_table
+
+jax.config.update("jax_enable_x64", True)
 
 __all__ = (
     "calc_ssp_weights_sfh_table_lognormal_mdf",
