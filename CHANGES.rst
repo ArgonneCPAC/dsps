@@ -1,3 +1,8 @@
+0.4.4 (2025-06-09)
+-------------------
+- Improve accuracy of young-star contribution stellar age PDF (https://github.com/ArgonneCPAC/dsps/pull/107)
+
+
 0.4.3 (2025-05-05)
 -------------------
 - Add new vmapped kernels to flat_wcdm.py to simplify lightcone photometry
