@@ -1,3 +1,8 @@
+0.4.5 (2025-06-09)
+-------------------
+- Fix bug in declaring double precision (https://github.com/ArgonneCPAC/dsps/pull/108)
+
+
 0.4.4 (2025-06-09)
 -------------------
 - Improve accuracy of young-star contribution stellar age PDF (https://github.com/ArgonneCPAC/dsps/pull/107)
