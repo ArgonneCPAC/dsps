@@ -1,10 +1,12 @@
 """JAX implementation of a blackbody spectral energy density"""
-import numpy as np
+
 from jax import config
-from jax import jit as jjit
-from jax import lax
 
 config.update("jax_enable_x64", True)
+
+import numpy as np
+from jax import jit as jjit
+from jax import lax
 
 H_PLANCK = 6.62607015e-34  # J*s
 K_BOLTZ = 1.380649e-23  # J/K
