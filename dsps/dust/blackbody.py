@@ -1,12 +1,13 @@
+# flake8: noqa: E402
 """JAX implementation of a blackbody spectral energy density"""
 
 from jax import config
 
 config.update("jax_enable_x64", True)
 
-import numpy as np  # noqa: E402
-from jax import jit as jjit  # noqa: E402
-from jax import lax  # noqa: E402
+import numpy as np
+from jax import jit as jjit
+from jax import lax
 
 H_PLANCK = 6.62607015e-34  # J*s
 K_BOLTZ = 1.380649e-23  # J/K

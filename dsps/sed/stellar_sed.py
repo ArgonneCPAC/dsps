@@ -1,3 +1,4 @@
+# flake8: noqa: E402
 """Functions calculating the SED of a composite stellar population"""
 
 import jax

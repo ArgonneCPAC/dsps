@@ -1,3 +1,4 @@
+# flake8: noqa: E402
 """Kernels calculating stellar age PDF-weighting of SSP tempates"""
 
 import jax

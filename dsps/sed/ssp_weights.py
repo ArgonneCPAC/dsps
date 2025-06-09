@@ -1,3 +1,4 @@
+# flake8: noqa: E402
 """Kernels calculating SSP weights of a composite stellar population"""
 
 import jax
