@@ -1,14 +1,15 @@
 """Kernels calculating stellar age PDF-weighting of SSP tempates"""
 
 import jax
+
+jax.config.update("jax_enable_x64", True)
+
 from jax import jit as jjit
 from jax import numpy as jnp
 
 from ..constants import N_T_LGSM_INTEGRATION, SFR_MIN, T_BIRTH_MIN
 from ..cosmology import TODAY
 from ..utils import _jax_get_dt_array, cumulative_mstar_formed
-
-jax.config.update("jax_enable_x64", True)
 
 __all__ = ("calc_age_weights_from_sfh_table",)
 
