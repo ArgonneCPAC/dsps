@@ -1,6 +1,10 @@
+# flake8: noqa: E402
 """Kernels calculating metallicity PDF-weighting of SSP tempates"""
 
 import jax
+
+jax.config.update("jax_enable_x64", True)
+
 from jax import jit as jjit
 from jax import numpy as jnp
 from jax import vmap
@@ -12,8 +16,6 @@ from ..utils import (
     triweighted_histogram,
 )
 from .stellar_age_weights import _get_lgt_birth
-
-jax.config.update("jax_enable_x64", True)
 
 __all__ = (
     "calc_lgmet_weights_from_lognormal_mdf",
