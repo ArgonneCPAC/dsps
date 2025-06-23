@@ -51,5 +51,5 @@ archivePrefix = {arXiv},
 ## Project data
 Data associated with DSPS (such as SSP SEDs and transmission curves) can be found at [this URL](https://portal.nersc.gov/project/hacc/aphearin/DSPS_data/).
 
-A much larger compilation of SSP SEDs tabulated by Suchetha Cooray can be found [at this URL](https://halos.as.arizona.edu/suchethacooray/dsps_ssp/).
+A much larger compilation of SSP SEDs tabulated by Suchetha Cooray can be found [at this URL](https://halos.as.arizona.edu/suchethacooray/ssp-spectra/).
 
