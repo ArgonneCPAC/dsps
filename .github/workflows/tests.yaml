@@ -54,6 +54,8 @@ jobs:
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
+        env:
+          CODECOV_TOKEN: ${{ secrets.DSPS_CODECOV }}
 
       - name: test versions
         shell: bash -el {0}
