@@ -1,3 +1,8 @@
+0.4.6 (2025-11-29)
+-------------------
+- Refactor differential_comoving_volume function (https://github.com/ArgonneCPAC/dsps/pull/111)
+
+
 0.4.5 (2025-06-09)
 -------------------
 - Fix bug in declaring double precision (https://github.com/ArgonneCPAC/dsps/pull/108)
