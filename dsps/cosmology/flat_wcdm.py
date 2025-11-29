@@ -369,10 +369,16 @@ def hubble_distance_mpc(h):
 
 
 @jjit
-def differential_comoving_volume(redshift, Om0, w0, wa, h):
+def differential_comoving_volume_at_z(redshift, Om0, w0, wa, h):
+    """Differential comoving volume at redshift z"""
     dh = hubble_distance_mpc(h)
-    da = angular_diameter_distance(redshift, Om0, w0, wa, h)
+    da = angular_diameter_distance_to_z(redshift, Om0, w0, wa, h)
     zp1 = 1.0 + redshift
     ez = _Ez(redshift, Om0, w0, wa)
     diff_vol_com = dh * ((zp1 * da) ** 2.0) / ez
     return diff_vol_com
+
+
+_Z = (0, None, None, None, None)
+differential_comoving_volume = jjit(vmap(differential_comoving_volume_at_z, in_axes=_Z))
+differential_comoving_volume.__doc__ = differential_comoving_volume_at_z.__doc__
