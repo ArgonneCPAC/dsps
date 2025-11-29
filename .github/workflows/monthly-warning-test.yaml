@@ -1,4 +1,4 @@
-name: Test for Warnings
+name: Monthly test for warnings in diffstuff main branches
 
 on:
   workflow_dispatch: null
@@ -8,7 +8,7 @@ on:
 
 jobs:
   tests:
-    name: tests
+    name: pytest with diffmah/diffstar/dsps@main
     runs-on: "ubuntu-latest"
 
     steps:
