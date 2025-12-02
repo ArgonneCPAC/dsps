@@ -8,7 +8,7 @@ on:
 
 jobs:
   tests:
-    name: tests
+    name: flake8 dsps
     runs-on: "ubuntu-latest"
 
     steps:
