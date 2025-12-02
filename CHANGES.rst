@@ -1,3 +1,8 @@
+0.4.7 (unreleased)
+-------------------
+- Add clip at 0 to filter transmission curve loader (https://github.com/ArgonneCPAC/dsps/pull/112)
+
+
 0.4.6 (2025-11-29)
 -------------------
 - Refactor differential_comoving_volume function (https://github.com/ArgonneCPAC/dsps/pull/111)
