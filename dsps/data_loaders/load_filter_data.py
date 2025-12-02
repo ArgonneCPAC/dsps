@@ -1,8 +1,11 @@
-"""
-"""
+""" """
+
 import os
 from glob import glob
+
 import h5py
+import numpy as np
+
 from .defaults import TransmissionCurve
 
 
@@ -69,5 +72,6 @@ def load_transmission_curve(fn=None, bn_pat=None, drn=None):
     with h5py.File(fn, "r") as hdf:
         wave = hdf["wave"][...]
         transmission = hdf["transmission"][...]
+        transmission = np.clip(transmission, 0.0, np.inf)
 
     return TransmissionCurve(wave, transmission)
