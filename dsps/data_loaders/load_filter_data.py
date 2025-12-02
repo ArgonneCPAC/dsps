@@ -8,6 +8,8 @@ import numpy as np
 
 from .defaults import TransmissionCurve
 
+TOL = 0.01
+
 
 def load_transmission_curve(fn=None, bn_pat=None, drn=None):
     """Load filter transmission curves from disk,
@@ -72,6 +74,12 @@ def load_transmission_curve(fn=None, bn_pat=None, drn=None):
     with h5py.File(fn, "r") as hdf:
         wave = hdf["wave"][...]
         transmission = hdf["transmission"][...]
-        transmission = np.clip(transmission, 0.0, np.inf)
+
+        if transmission.min() < -TOL:
+            raise ValueError(f"Negatively-valued transmission curve for {fn}")
+        elif transmission.min() > 1 + TOL:
+            raise ValueError(f"transmission curve exceeds unity for {fn}")
+        else:
+            transmission = np.clip(transmission, 0.0, 1.0)
 
     return TransmissionCurve(wave, transmission)

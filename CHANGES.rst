@@ -1,6 +1,6 @@
 0.4.7 (unreleased)
 -------------------
-- Add clip at 0 to filter transmission curve loader (https://github.com/ArgonneCPAC/dsps/pull/112)
+- Clip to [0,1] for filter transmission curve loader (https://github.com/ArgonneCPAC/dsps/pull/112)
 
 
 0.4.6 (2025-11-29)
