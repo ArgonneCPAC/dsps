@@ -1,10 +1,12 @@
-"""
-"""
+""" """
+
 import os
-import pytest
-import numpy as np
 from glob import glob
-from ..load_filter_data import load_transmission_curve
+
+import numpy as np
+import pytest
+
+from .. import load_filter_data as lfd
 from ..defaults import TransmissionCurve
 
 DSPS_DATA_DRN = os.environ.get("DSPS_DRN", None)
@@ -27,7 +29,7 @@ def test_load_any_existent_filter_data_from_fnames():
     drn = os.path.join(DSPS_DATA_DRN, "filters")
     fn_list = glob(os.path.join(drn, "*transmission.h5"))
     for fn in fn_list:
-        filter_data = load_transmission_curve(fn=fn)
+        filter_data = lfd.load_transmission_curve(fn=fn)
         _enforce_filter_is_sensible(filter_data)
 
 
@@ -41,9 +43,21 @@ def test_load_any_existent_filter_data_from_bnpat():
         assert len(bn_list) > 0
 
     for bn_pat in bn_list:
-        filter_data = load_transmission_curve(bn_pat=bn_pat)
+        filter_data = lfd.load_transmission_curve(bn_pat=bn_pat)
         _enforce_filter_is_sensible(filter_data)
 
     for bn_pat in bn_list:
-        filter_data = load_transmission_curve(drn=drn, bn_pat=bn_pat)
+        filter_data = lfd.load_transmission_curve(drn=drn, bn_pat=bn_pat)
         _enforce_filter_is_sensible(filter_data)
+
+
+def test_load_random_transmission_curve():
+    tcurve = lfd.load_random_transmission_curve()
+    assert tcurve.wave.shape == tcurve.transmission.shape
+
+    assert np.all(tcurve.wave >= 0)
+    assert np.all(tcurve.wave <= 1e6)
+    assert np.all(tcurve.transmission >= 0)
+    assert np.all(tcurve.transmission <= 1)
+    assert np.any(tcurve.transmission < 1)
+    assert np.any(tcurve.transmission > 0)
