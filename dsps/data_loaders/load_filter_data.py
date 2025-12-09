@@ -1,10 +1,13 @@
 """ """
 
 import os
+import random
 from glob import glob
 
 import h5py
 import numpy as np
+from jax import random as jran
+from jax.scipy.stats import norm
 
 from .defaults import TransmissionCurve
 
@@ -83,3 +86,26 @@ def load_transmission_curve(fn=None, bn_pat=None, drn=None):
             transmission = np.clip(transmission, 0.0, 1.0)
 
     return TransmissionCurve(wave, transmission)
+
+
+def load_random_transmission_curve(
+    ran_key=None, tcurve_center=None, wave_range=(1_000, 10_000), scale=300
+):
+    if ran_key is None:
+        seed = random.randint(0, 2**32 - 1)
+        ran_key = jran.key(seed)
+
+    if tcurve_center is None:
+        xmin = wave_range[0] + scale * 2
+        xmax = wave_range[1] - scale * 2
+        tcurve_center = jran.uniform(ran_key, minval=xmin, maxval=xmax)
+    else:
+        assert wave_range[0] < tcurve_center < wave_range[1]
+
+    wave = np.linspace(*wave_range, 200)
+
+    _transmission = norm.pdf(wave, loc=tcurve_center, scale=scale)
+    transmission = _transmission / _transmission.max()
+    tcurve = TransmissionCurve(wave, transmission)
+
+    return tcurve
