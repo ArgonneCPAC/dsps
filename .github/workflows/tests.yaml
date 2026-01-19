@@ -44,6 +44,7 @@ jobs:
             setuptools \
             "setuptools_scm>=7,<8" \
             scipy \
+            readme_renderer \
             python-build
           python -m pip install --no-build-isolation --no-deps -e .
 

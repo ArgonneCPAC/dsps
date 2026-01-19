@@ -10,6 +10,10 @@ dsps/_version.py
 # Ignore .npy data (incl DSPS data that may have been downloaded within package drn)
 *.npy
 
+# MacOS finder files
+.DS_Store
+**/.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
