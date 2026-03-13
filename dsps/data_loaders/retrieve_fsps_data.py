@@ -58,14 +58,36 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
     nzmet = ssp_lgmet.size
     ssp_lg_age_gyr = sp.log_age - 9.0
     spectrum_collector = []
+    if hasattr(sp, "emline_luminosity") is True:
+        emline_luminosity_collector = []
     for zmet_indx in range(1, ssp_lgmet.size + 1):
         print("...retrieving zmet = {0} of {1}".format(zmet_indx, nzmet))
         sp = fsps.StellarPopulation(
-            zcontinuous=0, zmet=zmet_indx, add_neb_emission=add_neb_emission, **kwargs
+            zcontinuous=0,
+            zmet=zmet_indx,
+            add_neb_emission=add_neb_emission,
         )
         _wave, _fluxes = sp.get_spectrum()
         spectrum_collector.append(_fluxes)
+
+        if hasattr(sp, "emline_luminosity") is True:
+            emline_luminosity_collector.append(sp.emline_luminosity)
+
     ssp_wave = np.array(_wave)
     ssp_flux = np.array(spectrum_collector)
 
-    return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)
+    if hasattr(sp, "emline_luminosity") is True:
+        ssp_emline_wave = np.array(sp.emline_wavelengths)
+        ssp_emline_luminosity = np.array(emline_luminosity_collector)
+
+    if hasattr(sp, "emline_luminosity") is True:
+        return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)
+    else:
+        return SSPData(
+            ssp_lgmet,
+            ssp_lg_age_gyr,
+            ssp_wave,
+            ssp_flux,
+            ssp_emline_wave,
+            ssp_emline_luminosity,
+        )
