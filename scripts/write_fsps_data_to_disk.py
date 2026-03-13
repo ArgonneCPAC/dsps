@@ -1,8 +1,10 @@
 """
 """
 import argparse
-from dsps.data_loaders import retrieve_ssp_data_from_fsps
+
 import h5py
+
+from dsps.data_loaders import retrieve_ssp_data_from_fsps
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
