@@ -1,7 +1,7 @@
 """Globals storing defaults for various DSPS options"""
 import typing
-import numpy as np
 
+import numpy as np
 
 DEFAULT_SSP_BNAME = "ssp_data_fsps_v3.2_lgmet_age.h5"
 
@@ -21,12 +21,20 @@ class SSPData(typing.NamedTuple):
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
+    ssp_emline_wave (optional): ndarray of shape (n_lines, )
+        Array of line wavelengths in Angstroms
+
+    ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_lines)
+        Array of emission line luminosities in units of Lsun/Msun
+
     """
 
     ssp_lgmet: np.ndarray
     ssp_lg_age_gyr: np.ndarray
     ssp_wave: np.ndarray
     ssp_flux: np.ndarray
+    ssp_emline_wave: np.ndarray = None
+    ssp_emline_luminosity: np.ndarray = None
 
 
 DEFAULT_SSP_KEYS = SSPData._fields

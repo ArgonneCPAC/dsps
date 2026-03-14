@@ -1,8 +1,10 @@
 """
 """
 import argparse
-from dsps.data_loaders import retrieve_ssp_data_from_fsps
+
 import h5py
+
+from dsps.data_loaders import retrieve_ssp_data_from_fsps
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -13,4 +15,5 @@ if __name__ == "__main__":
 
     with h5py.File(args.outname, "w") as hdf:
         for key, arr in zip(ssp_data._fields, ssp_data):
-            hdf[key] = arr
+            if arr is not None:
+                hdf[key] = arr
