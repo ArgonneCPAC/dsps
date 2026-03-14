@@ -1,7 +1,8 @@
 """
 """
-from collections import OrderedDict
 import os
+from collections import OrderedDict
+
 import h5py
 
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
@@ -70,4 +71,4 @@ def load_ssp_templates(
         for key in hdf:
             ssp_data[key] = hdf[key][...]
 
-    return SSPData(*[ssp_data[key] for key in ssp_keys])
+    return SSPData(*[ssp_data.get(key) for key in ssp_keys])
