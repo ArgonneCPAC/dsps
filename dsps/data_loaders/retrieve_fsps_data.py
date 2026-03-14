@@ -38,6 +38,12 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
+    ssp_emline_wave (optional): ndarray of shape (n_lines, )
+        Array of line wavelengths in Angstroms
+
+    ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_lines)
+        Array of emission line luminosities in units of Lsun/Msun
+
     Notes
     -----
     The retrieve_ssp_data_from_fsps function is just a wrapper around
