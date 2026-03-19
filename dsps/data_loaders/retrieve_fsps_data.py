@@ -72,6 +72,7 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
             zcontinuous=0,
             zmet=zmet_indx,
             add_neb_emission=add_neb_emission,
+            **kwargs,
         )
         _wave, _fluxes = sp.get_spectrum()
         spectrum_collector.append(_fluxes)
