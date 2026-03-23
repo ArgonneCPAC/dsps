@@ -28,7 +28,7 @@ def test_and_freeze_sspdata_field_names():
         "ssp_lgmet",
         "ssp_lg_age_gyr",
         "ssp_wave",
-        "ssp_flux",
+        "ssp_luminosity",
         "ssp_emline_wave",
         "ssp_emline_luminosity",
     )

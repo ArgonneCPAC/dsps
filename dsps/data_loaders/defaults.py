@@ -18,7 +18,7 @@ class SSPData(typing.NamedTuple):
 
     ssp_wave : ndarray of shape (n_wave, )
 
-    ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
+    ssp_luminosity : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
     ssp_emline_wave (optional): ndarray of shape (n_lines, )
@@ -32,7 +32,7 @@ class SSPData(typing.NamedTuple):
     ssp_lgmet: np.ndarray
     ssp_lg_age_gyr: np.ndarray
     ssp_wave: np.ndarray
-    ssp_flux: np.ndarray
+    ssp_luminosity: np.ndarray
     ssp_emline_wave: np.ndarray = None
     ssp_emline_luminosity: np.ndarray = None
 
