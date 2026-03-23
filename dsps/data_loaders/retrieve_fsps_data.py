@@ -35,7 +35,7 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
 
     ssp_wave : ndarray of shape (n_wave, )
 
-    ssp_luminosity : ndarray of shape (n_met, n_ages, n_wave)
+    ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
     ssp_emline_wave (optional): ndarray of shape (n_lines, )
@@ -77,14 +77,14 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
             add_neb_emission=add_neb_emission,
             **kwargs,
         )
-        _wave, _luminosities = sp.get_spectrum()
-        spectrum_collector.append(_luminosities)
+        _wave, _fluxes = sp.get_spectrum()
+        spectrum_collector.append(_fluxes)
 
         if hasattr(sp, "emline_luminosity") is True:
             emline_luminosity_collector.append(sp.emline_luminosity)
 
     ssp_wave = np.array(_wave)
-    ssp_luminosity = np.array(spectrum_collector)
+    ssp_flux = np.array(spectrum_collector)
 
     if hasattr(sp, "emline_luminosity") is True:
         ssp_emline_wave = np.array(sp.emline_wavelengths)
@@ -96,10 +96,10 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
             ssp_lgmet,
             ssp_lg_age_gyr,
             ssp_wave,
-            ssp_luminosity,
+            ssp_flux,
             ssp_emline_wave,
             ssp_emline_luminosity,
         )
 
     else:
-        return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_luminosity)
+        return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)

@@ -44,7 +44,7 @@ def load_ssp_templates(
 
         ssp_wave : ndarray of shape (n_wave, )
 
-        ssp_luminosity : ndarray of shape (n_met, n_ages, n_wave)
+        ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
             SED of the SSP in units of Lsun/Hz/Msun
 
     """
