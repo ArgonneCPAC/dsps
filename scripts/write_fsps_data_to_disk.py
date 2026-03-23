@@ -6,6 +6,11 @@ import h5py
 
 from dsps.data_loaders import retrieve_ssp_data_from_fsps
 
+"""
+usage: 
+py write_fsps_data_to_disk.py <.h5 output filename> --gas_logz 0.0 --gas_logu -2.0
+"""
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("outname", help="Name of the output file")
