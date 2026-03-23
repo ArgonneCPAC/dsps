@@ -59,7 +59,10 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
     """
     assert HAS_FSPS, "Must have python-fsps installed to use this function"
 
-    sp = fsps.StellarPopulation(zcontinuous=0)
+    sp = fsps.StellarPopulation(
+        zcontinuous=0,
+        **kwargs,
+    )
     ssp_lgmet = np.log10(sp.zlegend)
     nzmet = ssp_lgmet.size
     ssp_lg_age_gyr = sp.log_age - 9.0
