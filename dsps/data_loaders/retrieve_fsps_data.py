@@ -91,7 +91,6 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
         ssp_emline_luminosity = np.array(emline_luminosity_collector)
 
     if hasattr(sp, "emline_luminosity") is True:
-        print("Emission line luminosities available!")
         return SSPData(
             ssp_lgmet,
             ssp_lg_age_gyr,
