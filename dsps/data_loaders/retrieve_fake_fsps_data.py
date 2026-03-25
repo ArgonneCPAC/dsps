@@ -1,10 +1,11 @@
 """
 """
+import os
+
 import numpy as np
 from jax.scipy.stats import norm
-import os
-from .defaults import SSPData
 
+from .defaults import SSPData
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,7 +15,16 @@ def load_fake_ssp_data():
     ssp_lg_age_gyr = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
     ssp_flux = _get_spec_ssp()
-    return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)
+    ssp_emline_wave = _get_emline_wave()
+    ssp_emline_luminosity = _get_ssp_emline_luminosity()
+    return SSPData(
+        ssp_lgmet,
+        ssp_lg_age_gyr,
+        ssp_wave,
+        ssp_flux,
+        ssp_emline_wave,
+        ssp_emline_luminosity,
+    )
 
 
 def load_fake_filter_transmission_curves():
@@ -59,6 +69,35 @@ def _get_spec_ssp():
             c1 = ssp_plaw_data_c1[iz, iage]
             spec_ssp[iz, iage, :] = 10 ** (c0 + c1 * np.log10(ssp_wave))
     return spec_ssp
+
+
+def _get_emline_wave():
+    n_lines = 166
+    ssp_emline_wave = np.logspace(3, 6, n_lines)
+    return ssp_emline_wave
+
+
+def _get_ssp_emline_luminosity():
+    drn = os.path.join(_THIS_DRNAME, "tests", "testing_data")
+    ssp_plaw_data_c0 = np.loadtxt(os.path.join(drn, "ssp_plaw_data_c0.txt"))
+    n_met, n_age = ssp_plaw_data_c0.shape
+
+    emline_wave = _get_emline_wave()
+    n_lines = emline_wave.size
+
+    ssp_emline_luminosity = np.zeros((n_met, n_age, n_lines))
+    for iz in range(n_met):
+        for iage in range(n_age):
+            n_low = int(0.2 * n_lines)
+            n_high = n_lines - n_low
+
+            low = 10 ** np.random.uniform(-70, -2, size=n_low)
+            high = 10 ** np.random.uniform(-2, 3, size=n_high)
+
+            ssp_emline_luminosity[iz][iage] = np.concatenate([low, high])
+            np.random.shuffle(ssp_emline_luminosity[iz][iage])
+
+    return ssp_emline_luminosity
 
 
 def _lsst_u_trans(x):
