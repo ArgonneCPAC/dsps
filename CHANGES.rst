@@ -1,3 +1,8 @@
+0.4.8 (unreleased)
+-------------------
+- Enable retrieval of emission line luminosities from fsps (https://github.com/ArgonneCPAC/dsps/pull/115)
+
+
 0.4.7 (unreleased)
 -------------------
 - Clip to [0,1] for filter transmission curve loader (https://github.com/ArgonneCPAC/dsps/pull/112)
