@@ -4,6 +4,7 @@ import os
 from collections import OrderedDict
 
 import h5py
+import numpy as np
 
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, EMLINE_SSP_KEYS, SSPData
 from .retrieve_fake_fsps_data import load_fake_ssp_data
@@ -84,6 +85,8 @@ def load_ssp_templates(
     with h5py.File(fn, "r") as hdf:
         for key in hdf:
             ssp_data[key] = hdf[key][...]
+            if ssp_data[key].dtype == object:
+                ssp_data[key] = np.array([x.decode("utf-8") for x in ssp_data[key]])
 
     if "ssp_emline_name" in ssp_data.keys():
         return SSPData(*[ssp_data[key] for key in emline_ssp_keys])
