@@ -29,7 +29,8 @@ def test_and_freeze_sspdata_field_names():
         "ssp_lg_age_gyr",
         "ssp_wave",
         "ssp_flux",
-        "ssp_emline_name" "ssp_emline_wave",
+        "ssp_emline_name",
+        "ssp_emline_wave",
         "ssp_emline_luminosity",
     )
     assert set(expected_names) == set(ssp_data._fields)
