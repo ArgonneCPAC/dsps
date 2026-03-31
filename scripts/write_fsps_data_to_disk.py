@@ -3,6 +3,7 @@
 import argparse
 
 import h5py
+import numpy as np
 
 from dsps.data_loaders import retrieve_ssp_data_from_fsps
 
@@ -31,6 +32,9 @@ if __name__ == "__main__":
 
     ssp_data = retrieve_ssp_data_from_fsps(**kwargs)
 
+    dt = h5py.string_dtype(encoding="utf-8")
     with h5py.File(args.outname, "w") as hdf:
         for key, arr in zip(ssp_data._fields, ssp_data):
+            if np.issubdtype(arr.dtype, np.str_):
+                arr = np.array(arr, dtype=dt)
             hdf[key] = arr
