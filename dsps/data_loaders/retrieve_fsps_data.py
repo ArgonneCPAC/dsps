@@ -8,7 +8,40 @@ try:
 except (ImportError, RuntimeError):
     HAS_FSPS = False
 
+from pathlib import Path
+
 from .load_ssp_data import SSPData
+
+BASE_PATH = Path(__file__).resolve().parent.parent
+EMLINES_INFO_PATH = BASE_PATH / "dsps/data/emlines_info.dat"
+
+
+def get_fsps_emline_info(fn=EMLINES_INFO_PATH):
+    with open(fn, "r") as f:
+        lines = f.readlines()
+        lines = [line.strip() for line in lines]
+        ref_emline_wave = np.array(
+            [line.split(",")[0] for line in lines], dtype="float64"
+        )
+        ref_emline_name = np.array([line.split(",")[1] for line in lines])
+    return ref_emline_wave, ref_emline_name
+
+
+def get_emline_name(ref_emline_wave, ref_emline_name, find_emline_wave):
+    """
+    ref_emline_wave: ndarray of shape (n_lines, )
+        Array of emission line wavelength in Angstroms from "emline_info.dat"
+    ref_emline_name: ndarray of shape (n_lines, )
+        Array of emission line names from "emline_info.dat"
+    find_emline_wave: float64
+        emission line wavelength to be found a match for in "emline_info.dat"
+
+    """
+    isclose = np.isclose(ref_emline_wave, find_emline_wave, atol=0, rtol=1e-6)
+    if isclose.sum() == 1:
+        return ref_emline_name[isclose].item()
+    else:
+        return ""
 
 
 def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
@@ -37,6 +70,9 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
 
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
+
+    ssp_emline_name (optional): ndarray of shape (n_lines, )
+        string Array of line names
 
     ssp_emline_wave (optional): ndarray of shape (n_lines, )
         Array of line wavelengths in Angstroms
@@ -89,16 +125,19 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
     if hasattr(sp, "emline_luminosity") is True:
         ssp_emline_wave = np.array(sp.emline_wavelengths)
         ssp_emline_luminosity = np.array(emline_luminosity_collector)
-
-    if hasattr(sp, "emline_luminosity") is True:
+        ref_emline_wave, ref_emline_name = get_fsps_emline_info()
+        ssp_emline_name = [
+            get_emline_name(ref_emline_wave, ref_emline_name, find_emline)
+            for find_emline in ssp_emline_wave
+        ]
         return SSPData(
             ssp_lgmet,
             ssp_lg_age_gyr,
             ssp_wave,
             ssp_flux,
+            ssp_emline_name,
             ssp_emline_wave,
             ssp_emline_luminosity,
         )
-
     else:
         return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)

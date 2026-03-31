@@ -8,7 +8,7 @@ DEFAULT_SSP_BNAME = "ssp_data_fsps_v3.2_lgmet_age.h5"
 
 
 class SSPData(typing.NamedTuple):
-    """NamedTuple with 4 (+2 optional) entries storing info about SSP templates
+    """NamedTuple with 4 (+3 optional) entries storing info about SSP templates
 
     ssp_lgmet : ndarray of shape (n_met, )
         Array of log10(Z) of the SSP templates
@@ -22,6 +22,9 @@ class SSPData(typing.NamedTuple):
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
+    ssp_emline_name (optional): ndarray of shape (n_lines, )
+        string Array of line names
+
     ssp_emline_wave (optional): ndarray of shape (n_lines, )
         Array of line wavelengths in Angstroms
 
@@ -34,11 +37,21 @@ class SSPData(typing.NamedTuple):
     ssp_lg_age_gyr: np.ndarray
     ssp_wave: np.ndarray
     ssp_flux: np.ndarray
+    ssp_emline_name: np.ndarray = None
     ssp_emline_wave: np.ndarray = None
     ssp_emline_luminosity: np.ndarray = None
 
 
 DEFAULT_SSP_KEYS = ("ssp_lgmet", "ssp_lg_age_gyr", "ssp_wave", "ssp_flux")
+EMLINE_SSP_KEYS = (
+    "ssp_lgmet",
+    "ssp_lg_age_gyr",
+    "ssp_wave",
+    "ssp_flux",
+    "ssp_emline_name",
+    "ssp_emline_wave",
+    "ssp_emline_luminosity",
+)
 
 
 class TransmissionCurve(typing.NamedTuple):

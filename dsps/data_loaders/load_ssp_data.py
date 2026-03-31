@@ -5,12 +5,17 @@ from collections import OrderedDict
 
 import h5py
 
-from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
+from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, EMLINE_SSP_KEYS, SSPData
 from .retrieve_fake_fsps_data import load_fake_ssp_data
 
 
 def load_ssp_templates(
-    fn=None, drn=None, bn=DEFAULT_SSP_BNAME, ssp_keys=DEFAULT_SSP_KEYS, dummy=False
+    fn=None,
+    drn=None,
+    bn=DEFAULT_SSP_BNAME,
+    default_ssp_keys=DEFAULT_SSP_KEYS,
+    emline_ssp_keys=EMLINE_SSP_KEYS,
+    dummy=False,
 ):
     """Load SSP templates from disk, defaulting to DSPS package data location
 
@@ -33,7 +38,7 @@ def load_ssp_templates(
 
     Returns
     -------
-    NamedTuple with 4 entries storing info about SSP templates
+    NamedTuple with 4(+3 optional) entries storing info about SSP templates
 
         ssp_lgmet : ndarray of shape (n_met, )
             Array of log10(Z) of the SSP templates
@@ -46,6 +51,15 @@ def load_ssp_templates(
 
         ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
             SED of the SSP in units of Lsun/Hz/Msun
+
+        ssp_emline_name (optional): ndarray of shape (n_lines, )
+            string Array of line names
+
+        ssp_emline_wave (optional): ndarray of shape (n_lines, )
+            Array of line wavelengths in Angstroms
+
+        ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_lines)
+            Array of emission line luminosities in units of Lsun/Msun
 
     """
     if dummy:
@@ -71,4 +85,7 @@ def load_ssp_templates(
         for key in hdf:
             ssp_data[key] = hdf[key][...]
 
-    return SSPData(*[ssp_data.get(key) for key in ssp_keys])
+    if "ssp_emline_names" in ssp_data.keys():
+        return SSPData(*[ssp_data[key] for key in emline_ssp_keys])
+    else:
+        return SSPData(*[ssp_data[key] for key in default_ssp_keys])
