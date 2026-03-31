@@ -13,7 +13,7 @@ from pathlib import Path
 from .load_ssp_data import SSPData
 
 BASE_PATH = Path(__file__).resolve().parent.parent
-EMLINES_INFO_PATH = BASE_PATH / "dsps/data/emlines_info.dat"
+EMLINES_INFO_PATH = BASE_PATH / "data/emlines_info.dat"
 
 
 def get_fsps_emline_info(fn=EMLINES_INFO_PATH):
