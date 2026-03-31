@@ -1,4 +1,5 @@
 """Globals storing defaults for various DSPS options"""
+
 import typing
 
 import numpy as np
@@ -37,7 +38,7 @@ class SSPData(typing.NamedTuple):
     ssp_emline_luminosity: np.ndarray = None
 
 
-DEFAULT_SSP_KEYS = SSPData._fields
+DEFAULT_SSP_KEYS = ("ssp_lgmet", "ssp_lg_age_gyr", "ssp_wave", "ssp_flux")
 
 
 class TransmissionCurve(typing.NamedTuple):
