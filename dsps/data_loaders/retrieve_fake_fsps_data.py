@@ -6,6 +6,7 @@ import numpy as np
 from jax.scipy.stats import norm
 
 from .defaults import SSPData
+from .retrieve_fsps_data import get_fsps_emline_info
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,13 +16,16 @@ def load_fake_ssp_data():
     ssp_lg_age_gyr = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
     ssp_flux = _get_spec_ssp()
-    ssp_emline_wave = _get_emline_wave()
-    ssp_emline_luminosity = _get_ssp_emline_luminosity()
+    _, ssp_emline_name = get_fsps_emline_info()
+    n_lines = ssp_emline_name.size
+    ssp_emline_wave = _get_emline_wave(n_lines)
+    ssp_emline_luminosity = _get_ssp_emline_luminosity(n_lines)
     return SSPData(
         ssp_lgmet,
         ssp_lg_age_gyr,
         ssp_wave,
         ssp_flux,
+        ssp_emline_name,
         ssp_emline_wave,
         ssp_emline_luminosity,
     )
@@ -71,19 +75,15 @@ def _get_spec_ssp():
     return spec_ssp
 
 
-def _get_emline_wave():
-    n_lines = 166
+def _get_emline_wave(n_lines):
     ssp_emline_wave = np.logspace(3, 6, n_lines)
     return ssp_emline_wave
 
 
-def _get_ssp_emline_luminosity():
+def _get_ssp_emline_luminosity(n_lines):
     drn = os.path.join(_THIS_DRNAME, "tests", "testing_data")
     ssp_plaw_data_c0 = np.loadtxt(os.path.join(drn, "ssp_plaw_data_c0.txt"))
     n_met, n_age = ssp_plaw_data_c0.shape
-
-    emline_wave = _get_emline_wave()
-    n_lines = emline_wave.size
 
     ssp_emline_luminosity = np.zeros((n_met, n_age, n_lines))
     for iz in range(n_met):
