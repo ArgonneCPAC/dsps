@@ -85,7 +85,7 @@ def load_ssp_templates(
         for key in hdf:
             ssp_data[key] = hdf[key][...]
 
-    if "ssp_emline_names" in ssp_data.keys():
+    if "ssp_emline_name" in ssp_data.keys():
         return SSPData(*[ssp_data[key] for key in emline_ssp_keys])
     else:
         return SSPData(*[ssp_data[key] for key in default_ssp_keys])
