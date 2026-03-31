@@ -126,12 +126,10 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
         ssp_emline_wave = np.array(sp.emline_wavelengths)
         ssp_emline_luminosity = np.array(emline_luminosity_collector)
         ref_emline_wave, ref_emline_name = get_fsps_emline_info()
-        ssp_emline_name = np.array(
-            [
-                get_emline_name(ref_emline_wave, ref_emline_name, find_emline)
-                for find_emline in ssp_emline_wave
-            ]
-        )
+        ssp_emline_name = [
+            get_emline_name(ref_emline_wave, ref_emline_name, find_emline)
+            for find_emline in ssp_emline_wave
+        ]
         return SSPData(
             ssp_lgmet,
             ssp_lg_age_gyr,
