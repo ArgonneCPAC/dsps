@@ -5,8 +5,9 @@ from collections import OrderedDict, namedtuple
 
 import h5py
 
-from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS
+from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
 from .retrieve_fake_fsps_data import load_fake_ssp_data
+from .retrieve_fsps_fsps_data import _get_emlines_nested_namedtuple
 
 
 def load_ssp_templates(
@@ -87,37 +88,19 @@ def load_ssp_templates(
         for key in default_ssp_keys:
             ssp_data_dict[key] = hdf[key][...]
 
-        if "ssp_emline_name" in hdf.keys():
-            ssp_emline_name = hdf["ssp_emline_name"][...]
-            ssp_emline_wave = hdf["ssp_emline_wave"][...]
-            ssp_emline_luminosity = hdf["ssp_emline_luminosity"][...]
+        if "ssp_emlines" in hdf.keys():
+            grp = hdf["ssp_emlines"]
+            ssp_emline_name = grp["ssp_emline_name"][...]
+            # ssp_emline_name = [
+            #     n if isinstance(n, str) else n.decode("utf-8") for n in ssp_emline_name
+            # ]
+            ssp_emline_wave = grp["ssp_emline_wave"][...]
+            ssp_emline_luminosity = grp["ssp_emline_luminosity"][...]
 
-            fields = [
-                name.decode("utf-8")
-                .replace(".", "p")
-                .replace("-", "_")
-                .replace(" ", "_")
-                .replace("[", "")
-                .replace("]", "")
-                for name in ssp_emline_name
-            ]
-
-            ssp_data_dict["ssp_emlines"] = _get_emlines(
-                fields, ssp_emline_wave, ssp_emline_luminosity
+            ssp_data_dict["ssp_emlines"] = _get_emlines_nested_namedtuple(
+                ssp_emline_name, ssp_emline_wave, ssp_emline_luminosity
             )
 
-        SSPData = namedtuple("SSPData", list(ssp_data_dict.keys()))
+        # SSPData = namedtuple("SSPData", list(ssp_data_dict.keys()))
 
         return SSPData(**ssp_data_dict)
-
-
-def _get_emlines(fields, emline_wave, emline_luminosity):
-    EmissionLine = namedtuple("EmissionLine", ["emline_wave", "emline_luminosity"])
-    values = [
-        EmissionLine(emline_wave[i].item(), emline_luminosity[:, :, i])
-        for i in range(len(fields))
-    ]
-
-    EmissionLines = namedtuple("EmissionLines", fields)
-    emlines = EmissionLines(*values)
-    return emlines
