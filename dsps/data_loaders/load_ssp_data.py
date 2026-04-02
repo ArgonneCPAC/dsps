@@ -38,7 +38,7 @@ def load_ssp_templates(
 
     Returns
     -------
-    NamedTuple with 4(+3 optional) entries storing info about SSP templates
+    NamedTuple with 4(+1 optional) entries storing info about SSP templates
 
         ssp_lgmet : ndarray of shape (n_met, )
             Array of log10(Z) of the SSP templates

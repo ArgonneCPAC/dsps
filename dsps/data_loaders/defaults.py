@@ -8,7 +8,7 @@ DEFAULT_SSP_BNAME = "ssp_data_fsps_v3.2_lgmet_age.h5"
 
 
 class SSPData(typing.NamedTuple):
-    """NamedTuple with 4 (+3 optional) entries storing info about SSP templates
+    """NamedTuple with 4 (+1 optional) entries storing info about SSP templates
 
     ssp_lgmet : ndarray of shape (n_met, )
         Array of log10(Z) of the SSP templates
@@ -22,14 +22,16 @@ class SSPData(typing.NamedTuple):
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
-    ssp_emline_name (optional): ndarray of shape (n_lines, )
-        string Array of line names
+    ssp_emlines (optional):
+        namedtuple with n_lines fields, one for each emission line
 
-    ssp_emline_wave (optional): ndarray of shape (n_lines, )
-        Array of line wavelengths in Angstroms
+        a further nested namedtuple which stores the following fields
+        on each emission line:
+            emline_wave: float
+                line wavelength in Angstroms
 
-    ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_lines)
-        Array of emission line luminosities in units of Lsun/Msun
+            emline_luminosity: ndarray of shape (n_met, n_age)
+                Array of emission line luminosities in units of Lsun/Msun
 
     """
 
