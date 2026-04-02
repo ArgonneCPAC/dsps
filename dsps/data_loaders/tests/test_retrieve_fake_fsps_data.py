@@ -22,8 +22,8 @@ def test_load_fake_ssp_data():
     assert np.all(np.isfinite(ssp_data.ssp_lg_age_gyr))
     assert np.all(np.isfinite(ssp_data.ssp_wave))
     assert np.all(np.isfinite(ssp_data.ssp_flux))
-    assert isinstance(ssp_data.ssp_emline_wave.xxx, float)
-    assert np.isfinite(ssp_data.ssp_emline_wave.xxx)
+    assert isinstance(ssp_data.ssp_emline_wave.XXX, float)
+    assert np.isfinite(ssp_data.ssp_emline_wave.XXX)
     assert np.all(np.isfinite(ssp_data.ssp_emline_luminosity))
 
 

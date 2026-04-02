@@ -76,9 +76,9 @@ def _get_spec_ssp():
 
 
 def _get_emline_wave_namedtuple(n_line):
-    ssp_emline_name = {"xxx"}
+    ssp_emline_name = {"XXX"}
     while len(ssp_emline_name) < n_line:
-        ssp_emline_name.add("".join(random.choices(string.ascii_lowercase, k=3)))
+        ssp_emline_name.add("".join(random.choices(string.ascii_uppercase, k=3)))
     ssp_emline_name = list(ssp_emline_name)
     ssp_emline_wave = np.logspace(3, 6, n_line)
 
