@@ -8,8 +8,7 @@ import h5py
 import numpy as np
 
 from dsps.data_loaders import retrieve_ssp_data_from_fsps
-
-from .defaults import DEFAULT_SSP_KEYS
+from dsps.data_loaders.defaults import DEFAULT_SSP_KEYS
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
