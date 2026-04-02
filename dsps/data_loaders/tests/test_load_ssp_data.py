@@ -23,7 +23,13 @@ def test_load_dummy_ssp_templates():
 
 
 def test_and_freeze_sspdata_field_names():
-    ssp_data = SSPData(None, None, None, None, None, None, None)
+    ssp_data = SSPData(
+        None,
+        None,
+        None,
+        None,
+        None,
+    )
     expected_names = (
         "ssp_lgmet",
         "ssp_lg_age_gyr",
