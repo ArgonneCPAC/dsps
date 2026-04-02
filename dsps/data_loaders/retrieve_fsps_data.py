@@ -29,7 +29,7 @@ def get_fsps_emline_info(fn=EMLINES_INFO_PATH):
     return ref_emline_wave, ref_emline_name
 
 
-def get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline_wave):
+def _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline_wave):
     """
     ref_emline_wave: ndarray of shape (n_lines, )
         Array of emission line wavelength in Angstroms from "emline_info.dat"
@@ -44,6 +44,18 @@ def get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline_wave):
         return ref_emline_name[isclose].item()
     else:
         return ""
+
+
+def _get_emlines_nested_namedtuple(fields, emline_wave, emline_luminosity):
+    EmissionLine = namedtuple("EmissionLine", ["emline_wave", "emline_luminosity"])
+    values = [
+        EmissionLine(emline_wave[i].item(), emline_luminosity[:, :, i])
+        for i in range(len(fields))
+    ]
+
+    EmissionLines = namedtuple("EmissionLines", fields)
+    emlines = EmissionLines(*values)
+    return emlines
 
 
 def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
@@ -129,7 +141,7 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
         ssp_emline_luminosity = np.array(emline_luminosity_collector)
         ref_emline_wave, ref_emline_name = get_fsps_emline_info()
         ssp_emline_name = [
-            get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline)
+            _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline)
             for find_emline in ssp_emline_wave
         ]
         emline_fields = [
@@ -152,15 +164,3 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
         )
     else:
         return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)
-
-
-def _get_emlines_nested_namedtuple(fields, emline_wave, emline_luminosity):
-    EmissionLine = namedtuple("EmissionLine", ["emline_wave", "emline_luminosity"])
-    values = [
-        EmissionLine(emline_wave[i].item(), emline_luminosity[:, :, i])
-        for i in range(len(fields))
-    ]
-
-    EmissionLines = namedtuple("EmissionLines", fields)
-    emlines = EmissionLines(*values)
-    return emlines

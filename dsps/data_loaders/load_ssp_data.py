@@ -1,7 +1,7 @@
 """
 """
 import os
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict
 
 import h5py
 
@@ -92,16 +92,10 @@ def load_ssp_templates(
             grp = hdf["ssp_emlines"]
             ssp_emline_name = grp["ssp_emline_name"][...]
             ssp_emline_name = [name.decode("utf-8") for name in ssp_emline_name]
-            # ssp_emline_name = [
-            #     n if isinstance(n, str) else n.decode("utf-8") for n in ssp_emline_name
-            # ]
             ssp_emline_wave = grp["ssp_emline_wave"][...]
             ssp_emline_luminosity = grp["ssp_emline_luminosity"][...]
-
             ssp_data_dict["ssp_emlines"] = _get_emlines_nested_namedtuple(
                 ssp_emline_name, ssp_emline_wave, ssp_emline_luminosity
             )
-
-        # SSPData = namedtuple("SSPData", list(ssp_data_dict.keys()))
 
         return SSPData(**ssp_data_dict)
