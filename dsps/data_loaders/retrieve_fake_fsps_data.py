@@ -3,39 +3,31 @@
 import os
 import random
 import string
+from collections import namedtuple
 
 import numpy as np
 from jax.scipy.stats import norm
 
 from .defaults import SSPData
-from .retrieve_fsps_data import _get_emlines_nested_namedtuple, get_fsps_emline_info
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_fake_ssp_data():
+def load_fake_ssp_data(n_line=166):
     ssp_lgmet = _get_lgzlegend()
     ssp_lg_age_gyr = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
     ssp_flux = _get_spec_ssp()
-
-    _, ssp_emline_name = get_fsps_emline_info()
-    n_lines = ssp_emline_name.size
-
-    ssp_emline_wave = _get_emline_wave(n_lines)
-    ssp_emline_luminosity = _get_ssp_emline_luminosity(n_lines)
-
-    emline_fields = _get_random_emline_names(n_lines)
-    ssp_emlines = _get_emlines_nested_namedtuple(
-        emline_fields, ssp_emline_wave, ssp_emline_luminosity
-    )
+    ssp_emline_wave = _get_emline_wave_namedtuple(n_line)
+    ssp_emline_luminosity = _get_ssp_emline_luminosity(n_line)
 
     return SSPData(
         ssp_lgmet,
         ssp_lg_age_gyr,
         ssp_wave,
         ssp_flux,
-        ssp_emlines,
+        ssp_emline_wave,
+        ssp_emline_luminosity,
     )
 
 
@@ -83,28 +75,29 @@ def _get_spec_ssp():
     return spec_ssp
 
 
-def _get_random_emline_names(n_lines):
-    rand_emline_names = {"xxx"}
-    while len(rand_emline_names) < n_lines:
-        rand_emline_names.add("".join(random.choices(string.ascii_lowercase, k=3)))
-    return list(rand_emline_names)
+def _get_emline_wave_namedtuple(n_line):
+    ssp_emline_name = {"xxx"}
+    while len(ssp_emline_name) < n_line:
+        ssp_emline_name.add("".join(random.choices(string.ascii_lowercase, k=3)))
+    ssp_emline_name = list(ssp_emline_name)
+    ssp_emline_wave = np.logspace(3, 6, n_line)
+
+    EmLineWave = namedtuple("EmLineWave", ssp_emline_name)
+    ssp_emline_wave = [float(wave) for wave in ssp_emline_wave]
+    ssp_emline_wave_namedtuple = EmLineWave(*ssp_emline_wave)
+    return ssp_emline_wave_namedtuple
 
 
-def _get_emline_wave(n_lines):
-    ssp_emline_wave = np.logspace(3, 6, n_lines)
-    return ssp_emline_wave
-
-
-def _get_ssp_emline_luminosity(n_lines):
+def _get_ssp_emline_luminosity(n_line):
     drn = os.path.join(_THIS_DRNAME, "tests", "testing_data")
     ssp_plaw_data_c0 = np.loadtxt(os.path.join(drn, "ssp_plaw_data_c0.txt"))
     n_met, n_age = ssp_plaw_data_c0.shape
 
-    ssp_emline_luminosity = np.zeros((n_met, n_age, n_lines))
+    ssp_emline_luminosity = np.zeros((n_met, n_age, n_line))
     for iz in range(n_met):
         for iage in range(n_age):
-            n_low = int(0.2 * n_lines)
-            n_high = n_lines - n_low
+            n_low = int(0.2 * n_line)
+            n_high = n_line - n_low
 
             low = 10 ** np.random.uniform(-70, -2, size=n_low)
             high = 10 ** np.random.uniform(-2, 3, size=n_high)

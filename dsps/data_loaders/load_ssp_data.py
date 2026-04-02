@@ -1,13 +1,12 @@
 """
 """
 import os
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 import h5py
 
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
 from .retrieve_fake_fsps_data import load_fake_ssp_data
-from .retrieve_fsps_data import _get_emlines_nested_namedtuple
 
 
 def load_ssp_templates(
@@ -38,7 +37,7 @@ def load_ssp_templates(
 
     Returns
     -------
-    NamedTuple with 4(+1 optional) entries storing info about SSP templates
+    NamedTuple with 4(+2 optional) entries storing info about SSP templates
 
         ssp_lgmet : ndarray of shape (n_met, )
             Array of log10(Z) of the SSP templates
@@ -52,16 +51,11 @@ def load_ssp_templates(
         ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
             SED of the SSP in units of Lsun/Hz/Msun
 
-        ssp_emlines (optional):
-            namedtuple with n_lines fields, one for each emission line
+       ssp_emline_wave (optional): namedtuple with n_line fields,
+            Emission line wavelengths in Angstroms
 
-            a further nested namedtuple which stores the following fields
-            on each emission line:
-                emline_wave: float
-                    line wavelength in Angstroms
-
-                emline_luminosity: ndarray of shape (n_met, n_age)
-                    Array of emission line luminosities in units of Lsun/Msun
+        ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_line)
+            Array of emission line luminosities in units of Lsun/Msun
 
     """
     if dummy:
@@ -83,19 +77,21 @@ def load_ssp_templates(
     assert os.path.isfile(fn), "{0} does not exist".format(fn)
 
     ssp_data_dict = OrderedDict()
-
     with h5py.File(fn, "r") as hdf:
         for key in default_ssp_keys:
             ssp_data_dict[key] = hdf[key][...]
 
-        if "ssp_emlines" in hdf.keys():
-            grp = hdf["ssp_emlines"]
-            ssp_emline_name = grp["ssp_emline_name"][...]
-            ssp_emline_name = [name.decode("utf-8") for name in ssp_emline_name]
-            ssp_emline_wave = grp["ssp_emline_wave"][...]
-            ssp_emline_luminosity = grp["ssp_emline_luminosity"][...]
-            ssp_data_dict["ssp_emlines"] = _get_emlines_nested_namedtuple(
-                ssp_emline_name, ssp_emline_wave, ssp_emline_luminosity
-            )
+        if "ssp_emline_name" in hdf.keys():
+            ssp_emline_name = [
+                name.decode("utf-8") for name in hdf["ssp_emline_name"][...]
+            ]
+            ssp_emline_wave = [float(wave) for wave in hdf["ssp_emline_wave"][...]]
+            ssp_emline_luminosity = hdf["ssp_emline_luminosity"][...]
 
-        return SSPData(**ssp_data_dict)
+            EmLineWave = namedtuple("EmLineWave", ssp_emline_name)
+            ssp_data_dict["ssp_emline_wave"] = EmLineWave(*ssp_emline_wave)
+            ssp_data_dict["ssp_emline_luminosity"] = ssp_emline_luminosity
+
+            return SSPData(**ssp_data_dict)
+        else:
+            return SSPData(**ssp_data_dict)

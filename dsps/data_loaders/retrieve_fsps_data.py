@@ -31,9 +31,9 @@ def get_fsps_emline_info(fn=EMLINES_INFO_PATH):
 
 def _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline_wave):
     """
-    ref_emline_wave: ndarray of shape (n_lines, )
+    ref_emline_wave: ndarray of shape (n_line, )
         Array of emission line wavelength in Angstroms from "emline_info.dat"
-    ref_emline_name: ndarray of shape (n_lines, )
+    ref_emline_name: ndarray of shape (n_line, )
         Array of emission line names from "emline_info.dat"
     find_emline_wave: float64
         emission line wavelength to be found a match for in "emline_info.dat"
@@ -46,16 +46,24 @@ def _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline_wave)
         return ""
 
 
-def _get_emlines_nested_namedtuple(fields, emline_wave, emline_luminosity):
-    EmissionLine = namedtuple("EmissionLine", ["emline_wave", "emline_luminosity"])
-    values = [
-        EmissionLine(emline_wave[i].item(), emline_luminosity[:, :, i])
-        for i in range(len(fields))
+def _get_emline_wave_namedtuple(emline_wave):
+    ref_emline_wave, ref_emline_name = get_fsps_emline_info()
+    emline_name = [
+        _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline)
+        for find_emline in emline_wave
     ]
-
-    EmissionLines = namedtuple("EmissionLines", fields)
-    emlines = EmissionLines(*values)
-    return emlines
+    emline_name = [
+        name.replace(".", "p")
+        .replace("-", "_")
+        .replace(" ", "_")
+        .replace("[", "")
+        .replace("]", "")
+        for name in emline_name
+    ]
+    EmLineWave = namedtuple("EmLineWave", emline_name)
+    emline_wave = [float(wave) for wave in emline_wave]
+    emline_wave_namedtuple = EmLineWave(*emline_wave)
+    return emline_wave_namedtuple
 
 
 def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
@@ -85,13 +93,10 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
-    ssp_emline_name (optional): ndarray of shape (n_lines, )
-        string Array of line names
+    ssp_emline_wave (optional): namedtuple with n_line fields,
+        Emission line wavelengths in Angstroms
 
-    ssp_emline_wave (optional): ndarray of shape (n_lines, )
-        Array of line wavelengths in Angstroms
-
-    ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_lines)
+    ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_line)
         Array of emission line luminosities in units of Lsun/Msun
 
     Notes
@@ -138,29 +143,16 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
 
     if hasattr(sp, "emline_luminosity") is True:
         ssp_emline_wave = np.array(sp.emline_wavelengths)
+        ssp_emline_wave = _get_emline_wave_namedtuple(ssp_emline_wave)
         ssp_emline_luminosity = np.array(emline_luminosity_collector)
-        ref_emline_wave, ref_emline_name = get_fsps_emline_info()
-        ssp_emline_name = [
-            _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline)
-            for find_emline in ssp_emline_wave
-        ]
-        emline_fields = [
-            name.replace(".", "p")
-            .replace("-", "_")
-            .replace(" ", "_")
-            .replace("[", "")
-            .replace("]", "")
-            for name in ssp_emline_name
-        ]
-        ssp_emlines = _get_emlines_nested_namedtuple(
-            emline_fields, ssp_emline_wave, ssp_emline_luminosity
-        )
+
         return SSPData(
             ssp_lgmet,
             ssp_lg_age_gyr,
             ssp_wave,
             ssp_flux,
-            ssp_emlines,
+            ssp_emline_wave,
+            ssp_emline_luminosity,
         )
     else:
         return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)
