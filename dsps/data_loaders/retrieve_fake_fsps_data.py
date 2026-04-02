@@ -84,9 +84,10 @@ def _get_spec_ssp():
 
 
 def _get_random_emline_names(n_lines):
-    return [
-        "".join(random.choices(string.ascii_lowercase, k=3)) for _ in range(n_lines)
-    ]
+    rand_emline_names = {"xxx"}
+    while len(rand_emline_names) < n_lines:
+        rand_emline_names.add("".join(random.choices(string.ascii_lowercase, k=3)))
+    return list(rand_emline_names)
 
 
 def _get_emline_wave(n_lines):
