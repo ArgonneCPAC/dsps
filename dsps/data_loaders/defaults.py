@@ -43,15 +43,6 @@ class SSPData(typing.NamedTuple):
 
 
 DEFAULT_SSP_KEYS = ("ssp_lgmet", "ssp_lg_age_gyr", "ssp_wave", "ssp_flux")
-EMLINE_SSP_KEYS = (
-    "ssp_lgmet",
-    "ssp_lg_age_gyr",
-    "ssp_wave",
-    "ssp_flux",
-    "ssp_emline_name",
-    "ssp_emline_wave",
-    "ssp_emline_luminosity",
-)
 
 
 class TransmissionCurve(typing.NamedTuple):

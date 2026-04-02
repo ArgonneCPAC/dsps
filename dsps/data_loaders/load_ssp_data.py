@@ -1,12 +1,11 @@
 """
 """
 import os
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 import h5py
-import numpy as np
 
-from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, EMLINE_SSP_KEYS, SSPData
+from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS
 from .retrieve_fake_fsps_data import load_fake_ssp_data
 
 
@@ -15,7 +14,6 @@ def load_ssp_templates(
     drn=None,
     bn=DEFAULT_SSP_BNAME,
     default_ssp_keys=DEFAULT_SSP_KEYS,
-    emline_ssp_keys=EMLINE_SSP_KEYS,
     dummy=False,
 ):
     """Load SSP templates from disk, defaulting to DSPS package data location
@@ -53,14 +51,16 @@ def load_ssp_templates(
         ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
             SED of the SSP in units of Lsun/Hz/Msun
 
-        ssp_emline_name (optional): ndarray of shape (n_lines, )
-            string Array of line names
+        ssp_emlines (optional):
+            namedtuple with n_lines fields, one for each emission line
 
-        ssp_emline_wave (optional): ndarray of shape (n_lines, )
-            Array of line wavelengths in Angstroms
+            a further nested namedtuple which stores the following fields
+            on each emission line:
+                emline_wave: float
+                    line wavelength in Angstroms
 
-        ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_lines)
-            Array of emission line luminosities in units of Lsun/Msun
+                emline_luminosity: ndarray of shape (n_met, n_age)
+                    Array of emission line luminosities in units of Lsun/Msun
 
     """
     if dummy:
@@ -81,14 +81,39 @@ def load_ssp_templates(
 
     assert os.path.isfile(fn), "{0} does not exist".format(fn)
 
-    ssp_data = OrderedDict()
-    with h5py.File(fn, "r") as hdf:
-        for key in hdf:
-            ssp_data[key] = hdf[key][...]
-            if ssp_data[key].dtype == object:
-                ssp_data[key] = np.array([x.decode("utf-8") for x in ssp_data[key]])
+    ssp_data_dict = OrderedDict()
 
-    if "ssp_emline_name" in ssp_data.keys():
-        return SSPData(*[ssp_data[key] for key in emline_ssp_keys])
-    else:
-        return SSPData(*[ssp_data[key] for key in default_ssp_keys])
+    with h5py.File(fn, "r") as hdf:
+        for key in default_ssp_keys:
+            ssp_data_dict[key] = hdf[key][...]
+
+        if "ssp_emline_name" in hdf.keys():
+            ssp_emline_name = hdf["ssp_emline_name"][...]
+            ssp_emline_wave = hdf["ssp_emline_wave"][...]
+            ssp_emline_luminosity = hdf["ssp_emline_luminosity"][...]
+
+            fields = [
+                name.decode("utf-8")
+                .replace(".", "p")
+                .replace("-", "_")
+                .replace(" ", "_")
+                .replace("[", "")
+                .replace("]", "")
+                for name in ssp_emline_name
+            ]
+
+            EmissionLine = namedtuple(
+                "EmissionLine", ["emline_wave", "emline_luminosity"]
+            )
+            values = [
+                EmissionLine(ssp_emline_wave[i].item(), ssp_emline_luminosity[:, :, i])
+                for i in range(len(fields))
+            ]
+
+            EmissionLines = namedtuple("EmissionLines", fields)
+            emlines = EmissionLines(*values)
+            ssp_data_dict["ssp_emlines"] = emlines
+
+        SSPData = namedtuple("SSPData", list(ssp_data_dict.keys()))
+
+        return SSPData(**ssp_data_dict)
