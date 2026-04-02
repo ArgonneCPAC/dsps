@@ -8,8 +8,7 @@ import numpy as np
 from jax.scipy.stats import norm
 
 from .defaults import SSPData
-from .load_ssp_data import _get_emlines
-from .retrieve_fsps_data import get_fsps_emline_info
+from .retrieve_fsps_data import _get_emlines_nested_namedtuple, get_fsps_emline_info
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -27,7 +26,9 @@ def load_fake_ssp_data():
     ssp_emline_luminosity = _get_ssp_emline_luminosity(n_lines)
 
     emline_fields = _get_random_emline_names(n_lines)
-    ssp_emlines = _get_emlines(emline_fields, ssp_emline_wave, ssp_emline_luminosity)
+    ssp_emlines = _get_emlines_nested_namedtuple(
+        emline_fields, ssp_emline_wave, ssp_emline_luminosity
+    )
 
     return SSPData(
         ssp_lgmet,
