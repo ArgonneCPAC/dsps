@@ -37,9 +37,7 @@ class SSPData(typing.NamedTuple):
     ssp_lg_age_gyr: np.ndarray
     ssp_wave: np.ndarray
     ssp_flux: np.ndarray
-    ssp_emline_name: np.ndarray = None
-    ssp_emline_wave: np.ndarray = None
-    ssp_emline_luminosity: np.ndarray = None
+    ssp_emlines: np.ndarray = None
 
 
 DEFAULT_SSP_KEYS = ("ssp_lgmet", "ssp_lg_age_gyr", "ssp_wave", "ssp_flux")

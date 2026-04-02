@@ -102,18 +102,22 @@ def load_ssp_templates(
                 for name in ssp_emline_name
             ]
 
-            EmissionLine = namedtuple(
-                "EmissionLine", ["emline_wave", "emline_luminosity"]
+            ssp_data_dict["ssp_emlines"] = _get_emlines(
+                fields, ssp_emline_wave, ssp_emline_luminosity
             )
-            values = [
-                EmissionLine(ssp_emline_wave[i].item(), ssp_emline_luminosity[:, :, i])
-                for i in range(len(fields))
-            ]
-
-            EmissionLines = namedtuple("EmissionLines", fields)
-            emlines = EmissionLines(*values)
-            ssp_data_dict["ssp_emlines"] = emlines
 
         SSPData = namedtuple("SSPData", list(ssp_data_dict.keys()))
 
         return SSPData(**ssp_data_dict)
+
+
+def _get_emlines(fields, emline_wave, emline_luminosity):
+    EmissionLine = namedtuple("EmissionLine", ["emline_wave", "emline_luminosity"])
+    values = [
+        EmissionLine(emline_wave[i].item(), emline_luminosity[:, :, i])
+        for i in range(len(fields))
+    ]
+
+    EmissionLines = namedtuple("EmissionLines", fields)
+    emlines = EmissionLines(*values)
+    return emlines

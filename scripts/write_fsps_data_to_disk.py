@@ -29,8 +29,4 @@ if __name__ == "__main__":
     ssp_data = retrieve_ssp_data_from_fsps(**kwargs)
     with h5py.File(args.outname, "w") as hdf:
         for key, arr in zip(ssp_data._fields, ssp_data):
-            if all(isinstance(x, str) for x in arr):
-                dt = h5py.string_dtype(encoding="utf-8")
-                hdf.create_dataset(key, data=arr, dtype=dt)
-            else:
-                hdf[key] = arr
+            hdf[key] = arr

@@ -1,11 +1,14 @@
 """
 """
 import os
+import random
+import string
 
 import numpy as np
 from jax.scipy.stats import norm
 
 from .defaults import SSPData
+from .load_ssp_data import _get_emlines
 from .retrieve_fsps_data import get_fsps_emline_info
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
@@ -16,18 +19,22 @@ def load_fake_ssp_data():
     ssp_lg_age_gyr = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
     ssp_flux = _get_spec_ssp()
+
     _, ssp_emline_name = get_fsps_emline_info()
     n_lines = ssp_emline_name.size
+
     ssp_emline_wave = _get_emline_wave(n_lines)
     ssp_emline_luminosity = _get_ssp_emline_luminosity(n_lines)
+
+    emline_fields = _get_random_emline_names(n_lines)
+    ssp_emlines = _get_emlines(emline_fields, ssp_emline_wave, ssp_emline_luminosity)
+
     return SSPData(
         ssp_lgmet,
         ssp_lg_age_gyr,
         ssp_wave,
         ssp_flux,
-        ssp_emline_name,
-        ssp_emline_wave,
-        ssp_emline_luminosity,
+        ssp_emlines,
     )
 
 
@@ -73,6 +80,12 @@ def _get_spec_ssp():
             c1 = ssp_plaw_data_c1[iz, iage]
             spec_ssp[iz, iage, :] = 10 ** (c0 + c1 * np.log10(ssp_wave))
     return spec_ssp
+
+
+def _get_random_emline_names(n_lines):
+    return [
+        "".join(random.choices(string.ascii_lowercase, k=3)) for _ in range(n_lines)
+    ]
 
 
 def _get_emline_wave(n_lines):
