@@ -7,7 +7,7 @@ import h5py
 
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
 from .retrieve_fake_fsps_data import load_fake_ssp_data
-from .retrieve_fsps_fsps_data import _get_emlines_nested_namedtuple
+from .retrieve_fsps_data import _get_emlines_nested_namedtuple
 
 
 def load_ssp_templates(
