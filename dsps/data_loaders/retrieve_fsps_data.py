@@ -133,8 +133,7 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
             for find_emline in ssp_emline_wave
         ]
         emline_fields = [
-            name.decode("utf-8")
-            .replace(".", "p")
+            name.replace(".", "p")
             .replace("-", "_")
             .replace(" ", "_")
             .replace("[", "")
