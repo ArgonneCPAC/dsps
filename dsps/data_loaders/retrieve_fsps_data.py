@@ -10,7 +10,7 @@ except (ImportError, RuntimeError):
 
 from pathlib import Path
 
-from .load_ssp_data import SSPData
+from .defaults import SSPData
 
 BASE_PATH = Path(__file__).resolve().parent.parent
 EMLINES_INFO_PATH = BASE_PATH / "data/emlines_info.dat"
