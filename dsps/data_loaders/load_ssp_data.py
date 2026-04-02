@@ -91,6 +91,7 @@ def load_ssp_templates(
         if "ssp_emlines" in hdf.keys():
             grp = hdf["ssp_emlines"]
             ssp_emline_name = grp["ssp_emline_name"][...]
+            ssp_emline_name = [name.decode("utf-8") for name in ssp_emline_name]
             # ssp_emline_name = [
             #     n if isinstance(n, str) else n.decode("utf-8") for n in ssp_emline_name
             # ]
