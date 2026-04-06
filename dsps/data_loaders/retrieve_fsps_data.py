@@ -1,4 +1,6 @@
 """Use python-fsps to retrieve a block of Simple Stellar Population (SSP) data"""
+from collections import namedtuple
+
 import numpy as np
 
 try:
@@ -8,7 +10,60 @@ try:
 except (ImportError, RuntimeError):
     HAS_FSPS = False
 
-from .load_ssp_data import SSPData
+from pathlib import Path
+
+from .defaults import SSPData
+
+BASE_PATH = Path(__file__).resolve().parent.parent
+EMLINES_INFO_PATH = BASE_PATH / "data/emlines_info.dat"
+
+
+def get_fsps_emline_info(fn=EMLINES_INFO_PATH):
+    with open(fn, "r") as f:
+        lines = f.readlines()
+        lines = [line.strip() for line in lines]
+        ref_emline_wave = np.array(
+            [line.split(",")[0] for line in lines], dtype="float64"
+        )
+        ref_emline_name = np.array([line.split(",")[1] for line in lines])
+    return ref_emline_wave, ref_emline_name
+
+
+def _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline_wave):
+    """
+    ref_emline_wave: ndarray of shape (n_line, )
+        Array of emission line wavelength in Angstroms from "emline_info.dat"
+    ref_emline_name: ndarray of shape (n_line, )
+        Array of emission line names from "emline_info.dat"
+    find_emline_wave: float64
+        emission line wavelength to be found a match for in "emline_info.dat"
+
+    """
+    isclose = np.isclose(ref_emline_wave, find_emline_wave, atol=0, rtol=1e-6)
+    if isclose.sum() == 1:
+        return ref_emline_name[isclose].item()
+    else:
+        return ""
+
+
+def _get_emline_wave_namedtuple(emline_wave):
+    ref_emline_wave, ref_emline_name = get_fsps_emline_info()
+    emline_name = [
+        _get_matched_emline_name(ref_emline_wave, ref_emline_name, find_emline)
+        for find_emline in emline_wave
+    ]
+    emline_name = [
+        name.replace(".", "p")
+        .replace("-", "_")
+        .replace(" ", "_")
+        .replace("[", "")
+        .replace("]", "")
+        for name in emline_name
+    ]
+    EmLineWave = namedtuple("EmLineWave", emline_name)
+    emline_wave = [float(wave) for wave in emline_wave]
+    emline_wave_namedtuple = EmLineWave(*emline_wave)
+    return emline_wave_namedtuple
 
 
 def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
@@ -38,10 +93,10 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
     ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
         SED of the SSP in units of Lsun/Hz/Msun
 
-    ssp_emline_wave (optional): ndarray of shape (n_lines, )
-        Array of line wavelengths in Angstroms
+    ssp_emline_wave (optional): namedtuple with n_line fields,
+        Emission line wavelengths in Angstroms
 
-    ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_lines)
+    ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_line)
         Array of emission line luminosities in units of Lsun/Msun
 
     Notes
@@ -88,9 +143,9 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
 
     if hasattr(sp, "emline_luminosity") is True:
         ssp_emline_wave = np.array(sp.emline_wavelengths)
+        ssp_emline_wave = _get_emline_wave_namedtuple(ssp_emline_wave)
         ssp_emline_luminosity = np.array(emline_luminosity_collector)
 
-    if hasattr(sp, "emline_luminosity") is True:
         return SSPData(
             ssp_lgmet,
             ssp_lg_age_gyr,
@@ -99,6 +154,5 @@ def retrieve_ssp_data_from_fsps(add_neb_emission=True, **kwargs):
             ssp_emline_wave,
             ssp_emline_luminosity,
         )
-
     else:
         return SSPData(ssp_lgmet, ssp_lg_age_gyr, ssp_wave, ssp_flux)
