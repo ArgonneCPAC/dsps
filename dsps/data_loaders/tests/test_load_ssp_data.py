@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pytest
 
-from ..defaults import DEFAULT_SSP_BNAME_EMLINES, SSPData
+from ..defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_BNAME_EMLINES, SSPData
 from ..load_ssp_data import load_ssp_templates
 
 DSPS_DATA_DRN = os.environ.get("DSPS_DRN", None)
@@ -44,9 +44,7 @@ def test_and_freeze_sspdata_field_names():
 
 @pytest.mark.skipif(HAS_EMLINE_DSPS_DATA is False, reason=NO_EMLINE_DSPS_DATA)
 def test_load_ssp_templates_emlines():
-    ssp_data = load_ssp_templates(
-        bn=DEFAULT_SSP_BNAME_EMLINES, ssp_keys=SSPData._fields
-    )
+    ssp_data = load_ssp_templates(bn=DEFAULT_SSP_BNAME_EMLINES)
     n_met = len(ssp_data.ssp_lgmet)
     n_age = len(ssp_data.ssp_lg_age_gyr)
     n_lines = len(ssp_data.ssp_emline_wave)
@@ -56,3 +54,22 @@ def test_load_ssp_templates_emlines():
     assert ssp_data.ssp_flux.shape == (n_met, n_age, n_wave)
     for x in ssp_data:
         assert np.all(np.isfinite(x))
+
+
+@pytest.mark.skipif(DSPS_DATA_DRN is None, reason=ENV_VAR_MSG)
+def test_load_ssp_templates_no_emlines():
+    """Enforce that the default SSP data does not have emission lines.
+    This test should be updated when we adopt emlines as default SSP data.
+
+    """
+    ssp_data = load_ssp_templates(bn=DEFAULT_SSP_BNAME)
+    n_met = len(ssp_data.ssp_lgmet)
+    n_age = len(ssp_data.ssp_lg_age_gyr)
+
+    assert ssp_data.ssp_emline_wave is None
+
+    n_wave = ssp_data.ssp_flux.shape[-1]
+    assert ssp_data.ssp_flux.shape == (n_met, n_age, n_wave)
+    for x in ssp_data:
+        if x is not None:
+            assert np.all(np.isfinite(x))
