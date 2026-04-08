@@ -1,5 +1,5 @@
-"""
-"""
+""" """
+
 import numpy as np
 
 from ..retrieve_fake_fsps_data import (
@@ -25,6 +25,10 @@ def test_load_fake_ssp_data():
     assert isinstance(ssp_data.ssp_emline_wave.XXX, float)
     assert np.isfinite(ssp_data.ssp_emline_wave.XXX)
     assert np.all(np.isfinite(ssp_data.ssp_emline_luminosity))
+
+    assert np.all(np.array(ssp_data.ssp_emline_luminosity) > 0)
+    assert np.all(np.array(ssp_data.ssp_emline_luminosity) < 1e40)
+    assert np.any(np.array(ssp_data.ssp_emline_luminosity) > 1e20)
 
 
 def test_load_fake_filter_transmission_curves():
