@@ -8,7 +8,7 @@ try:
 
     HAS_ASTROPY = True
 except ImportError:
-    HAS_ASTROPY = True
+    HAS_ASTROPY = False
 
 from .. import constants
 
