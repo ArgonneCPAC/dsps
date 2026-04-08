@@ -11,9 +11,8 @@ from ..load_ssp_data import load_ssp_templates
 DSPS_DATA_DRN = os.environ.get("DSPS_DRN", None)
 ENV_VAR_MSG = "load_ssp_templates can only be tested if DSPS_DRN is in the env"
 
-
 HAS_EMLINE_DSPS_DATA = False
-if os.path.isdir(DSPS_DATA_DRN):
+if DSPS_DATA_DRN is not None:
     if os.path.isfile(os.path.join(DSPS_DATA_DRN, DEFAULT_SSP_BNAME_EMLINES)):
         HAS_EMLINE_DSPS_DATA = True
 NO_EMLINE_DSPS_DATA = f"Must have {DEFAULT_SSP_BNAME_EMLINES} to run this test"
