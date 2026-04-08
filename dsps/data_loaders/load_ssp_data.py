@@ -10,11 +10,7 @@ from .retrieve_fake_fsps_data import load_fake_ssp_data
 
 
 def load_ssp_templates(
-    fn=None,
-    drn=None,
-    bn=DEFAULT_SSP_BNAME,
-    ssp_keys=DEFAULT_SSP_KEYS,
-    dummy=False,
+    fn=None, drn=None, bn=DEFAULT_SSP_BNAME, ssp_keys=DEFAULT_SSP_KEYS, dummy=False
 ):
     """Load SSP templates from disk, defaulting to DSPS package data location
 
