@@ -73,3 +73,14 @@ def test_load_ssp_templates_no_emlines():
     for x in ssp_data:
         if x is not None:
             assert np.all(np.isfinite(x))
+
+
+@pytest.mark.skipif(DSPS_DATA_DRN is None, reason=ENV_VAR_MSG)
+def test_emission_line_luminosity_units():
+    ssp_data = load_ssp_templates(bn=DEFAULT_SSP_BNAME_EMLINES)
+    assert len(ssp_data) == len(SSPData._fields)
+
+    # Enforce reasonable range of luminosity values for erg/s/Msun units
+    assert np.array(ssp_data.ssp_emline_luminosity).min() > 0
+    assert np.all(np.array(ssp_data.ssp_emline_luminosity) < 1e40)
+    assert np.any(np.array(ssp_data.ssp_emline_luminosity) > 1e20)

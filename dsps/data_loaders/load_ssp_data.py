@@ -5,6 +5,7 @@ from collections import OrderedDict, namedtuple
 
 import h5py
 
+from ..constants import L_SUN_CGS
 from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
 from .retrieve_fake_fsps_data import load_fake_ssp_data
 
@@ -49,7 +50,7 @@ def load_ssp_templates(fn=None, drn=None, bn=DEFAULT_SSP_BNAME, dummy=False):
             Emission line wavelengths in Angstroms
 
         ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_line)
-            Array of emission line luminosities in units of Lsun/Msun
+            Array of emission line luminosities in units of erg/s/Msun
 
     """
     if dummy:
@@ -81,7 +82,7 @@ def load_ssp_templates(fn=None, drn=None, bn=DEFAULT_SSP_BNAME, dummy=False):
                 name.decode("utf-8") for name in hdf["ssp_emline_name"][...]
             ]
             ssp_emline_wave = [float(wave) for wave in hdf["ssp_emline_wave"][...]]
-            ssp_emline_luminosity = hdf["ssp_emline_luminosity"][...]
+            ssp_emline_luminosity = hdf["ssp_emline_luminosity"][...] * L_SUN_CGS
 
             EmLineWave = namedtuple("EmLineWave", ssp_emline_name)
             ssp_data_dict["ssp_emline_wave"] = EmLineWave(*ssp_emline_wave)
