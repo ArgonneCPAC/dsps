@@ -46,7 +46,7 @@ def load_ssp_templates(fn=None, drn=None, bn=DEFAULT_SSP_BNAME, dummy=False):
         ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
             SED of the SSP in units of Lsun/Hz/Msun
 
-       ssp_emline_wave (optional): namedtuple with n_line fields,
+        ssp_emline_wave (optional): namedtuple with n_line fields,
             Emission line wavelengths in Angstroms
 
         ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_line)
