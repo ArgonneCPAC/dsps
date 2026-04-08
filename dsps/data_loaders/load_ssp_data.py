@@ -1,5 +1,5 @@
-"""
-"""
+""" """
+
 import os
 from collections import OrderedDict, namedtuple
 
@@ -9,13 +9,7 @@ from .defaults import DEFAULT_SSP_BNAME, DEFAULT_SSP_KEYS, SSPData
 from .retrieve_fake_fsps_data import load_fake_ssp_data
 
 
-def load_ssp_templates(
-    fn=None,
-    drn=None,
-    bn=DEFAULT_SSP_BNAME,
-    default_ssp_keys=DEFAULT_SSP_KEYS,
-    dummy=False,
-):
+def load_ssp_templates(fn=None, drn=None, bn=DEFAULT_SSP_BNAME, dummy=False):
     """Load SSP templates from disk, defaulting to DSPS package data location
 
     Parameters
@@ -78,10 +72,11 @@ def load_ssp_templates(
 
     ssp_data_dict = OrderedDict()
     with h5py.File(fn, "r") as hdf:
-        for key in default_ssp_keys:
+        for key in DEFAULT_SSP_KEYS:
             ssp_data_dict[key] = hdf[key][...]
 
         if "ssp_emline_name" in hdf.keys():
+            # If the SSP data have emission lines, include them
             ssp_emline_name = [
                 name.decode("utf-8") for name in hdf["ssp_emline_name"][...]
             ]
@@ -94,4 +89,5 @@ def load_ssp_templates(
 
             return SSPData(**ssp_data_dict)
         else:
+            # If no lines are in the SSP data, these fields will exist and store None
             return SSPData(**ssp_data_dict)
