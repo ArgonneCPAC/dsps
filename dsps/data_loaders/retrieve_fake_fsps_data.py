@@ -1,5 +1,5 @@
-"""
-"""
+""" """
+
 import os
 import random
 import string
@@ -8,12 +8,39 @@ from collections import namedtuple
 import numpy as np
 from jax.scipy.stats import norm
 
+from ..constants import L_SUN_CGS
 from .defaults import SSPData
 
 _THIS_DRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
 def load_fake_ssp_data(n_line=166):
+    """
+    Dummy SSP data generator to use in unit testing
+
+    Returns
+    -------
+    NamedTuple with 6 entries storing info about SSP templates
+
+        ssp_lgmet : ndarray of shape (n_met, )
+            Array of log10(Z) of the SSP templates
+            where dimensionless Z is the mass fraction of elements heavier than He
+
+        ssp_lg_age_gyr : ndarray of shape (n_ages, )
+            Array of log10(age/Gyr) of the SSP templates
+
+        ssp_wave : ndarray of shape (n_wave, )
+
+        ssp_flux : ndarray of shape (n_met, n_ages, n_wave)
+            SED of the SSP in units of Lsun/Hz/Msun
+
+        ssp_emline_wave (optional): namedtuple with n_line fields,
+            Emission line wavelengths in Angstroms
+
+        ssp_emline_luminosity (optional): ndarray of shape (n_met, n_age, n_line)
+            Array of emission line luminosities in units of erg/s/Msun
+
+    """
     ssp_lgmet = _get_lgzlegend()
     ssp_lg_age_gyr = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
@@ -105,7 +132,7 @@ def _get_ssp_emline_luminosity(n_line):
             ssp_emline_luminosity[iz][iage] = np.concatenate([low, high])
             np.random.shuffle(ssp_emline_luminosity[iz][iage])
 
-    return ssp_emline_luminosity
+    return ssp_emline_luminosity * L_SUN_CGS
 
 
 def _lsst_u_trans(x):
