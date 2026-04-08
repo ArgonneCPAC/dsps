@@ -1,5 +1,5 @@
-"""
-"""
+""" """
+
 import os
 from collections import OrderedDict, namedtuple
 
@@ -13,7 +13,7 @@ def load_ssp_templates(
     fn=None,
     drn=None,
     bn=DEFAULT_SSP_BNAME,
-    default_ssp_keys=DEFAULT_SSP_KEYS,
+    ssp_keys=DEFAULT_SSP_KEYS,
     dummy=False,
 ):
     """Load SSP templates from disk, defaulting to DSPS package data location
@@ -78,7 +78,7 @@ def load_ssp_templates(
 
     ssp_data_dict = OrderedDict()
     with h5py.File(fn, "r") as hdf:
-        for key in default_ssp_keys:
+        for key in ssp_keys:
             ssp_data_dict[key] = hdf[key][...]
 
         if "ssp_emline_name" in hdf.keys():
