@@ -1,5 +1,4 @@
-"""
-"""
+""" """
 
 # Constants related to SFH integrals
 SFR_MIN = 1e-14
@@ -9,3 +8,5 @@ N_T_LGSM_INTEGRATION = 100
 
 # Constants related to metallicity weights
 LGMET_LO, LGMET_HI = -10.0, 10.0
+
+L_SUN_CGS = 3.828e33  # Lsun in erg/s
