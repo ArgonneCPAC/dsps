@@ -45,8 +45,12 @@ def load_fake_ssp_data(n_line=166):
     ssp_lg_age_gyr = _get_log_age_gyr()
     ssp_wave = _get_ssp_wave()
     ssp_flux = _get_spec_ssp()
-    ssp_emline_wave = _get_emline_wave_namedtuple(n_line)
-    ssp_emline_luminosity = _get_ssp_emline_luminosity(n_line)
+    if n_line == 0:
+        ssp_emline_wave = None
+        ssp_emline_luminosity = None
+    else:
+        ssp_emline_wave = _get_emline_wave_namedtuple(n_line)
+        ssp_emline_luminosity = _get_ssp_emline_luminosity(n_line)
 
     return SSPData(
         ssp_lgmet,
