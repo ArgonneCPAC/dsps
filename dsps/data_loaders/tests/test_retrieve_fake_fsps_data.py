@@ -31,6 +31,16 @@ def test_load_fake_ssp_data():
     assert np.any(np.array(ssp_data.ssp_emline_luminosity) > 1e20)
 
 
+def test_load_fake_ssp_data_nolines():
+    ssp_data = load_fake_ssp_data(n_line=0)
+    assert ssp_data.ssp_emline_wave is None
+    assert ssp_data.ssp_emline_luminosity is None
+
+    ssp_data = load_fake_ssp_data(n_line=1)
+    assert ssp_data.ssp_emline_wave is not None
+    assert ssp_data.ssp_emline_luminosity is not None
+
+
 def test_load_fake_filter_transmission_curves():
     _res = load_fake_filter_transmission_curves()
 
