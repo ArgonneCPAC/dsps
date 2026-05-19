@@ -67,7 +67,7 @@ MZRParams = namedtuple("MZRParams", _MZR_PNAMES)
 MZRUParams = namedtuple("MZRUParams", _MZR_UPNAMES)
 
 DEFAULT_MZR_PARAMS = MZRParams(**DEFAULT_MZR_PDICT)
-BOUNDS_MZR_PARAMS = MZRParams(**MZR_PBDICT)
+MZR_PBOUNDS = MZRParams(**MZR_PBDICT)
 
 
 def get_ran_t0_params(ran_key, bounds_pdict=MZR_T0_PBDICT):
