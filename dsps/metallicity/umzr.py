@@ -1,5 +1,4 @@
-"""Mass-metallicity-redshift scaling relation with unbounding behavior
-"""
+"""Mass-metallicity-redshift scaling relation with unbounding behavior"""
 
 from collections import OrderedDict, namedtuple
 

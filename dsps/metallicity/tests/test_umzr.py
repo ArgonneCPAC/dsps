@@ -1,5 +1,4 @@
-"""
-"""
+""" """
 
 import numpy as np
 from jax import random as jran
@@ -101,3 +100,14 @@ def test_default_umzr_params():
     gen = zip(umzr.DEFAULT_MZR_U_PARAMS, umzr.DEFAULT_MZR_U_PARAMS._fields)
     for u_param, key in gen:
         assert np.all(np.isfinite(u_param)), f"Parameter `{key}` is NaN"
+
+
+def test_default_values_within_bounds():
+    values = umzr.DEFAULT_MZR_PARAMS._asdict()
+    bounds = umzr.MZR_PBOUNDS._asdict()
+
+    assert len(values) == len(bounds)
+
+    for param_name, val in values.items():
+        low, high = bounds[param_name]
+        assert low <= val <= high
