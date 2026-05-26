@@ -1,3 +1,8 @@
+0.4.8 (2026-05-26)
+-------------------
+- Add MZR_PBOUNDS to dsps/metallicity/umzr.py (https://github.com/ArgonneCPAC/dsps/pull/128)
+
+
 0.4.7 (2026-04-10)
 -------------------
 - Add emission lines to ssp_data (https://github.com/ArgonneCPAC/dsps/pull/118)
