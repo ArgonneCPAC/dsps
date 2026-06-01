@@ -3,8 +3,12 @@ name: Monthly test for warnings in diffstuff main branches
 on:
   workflow_dispatch: null
   schedule:
-    # Runs "First of every month at 3:15am Central"
-    - cron: '15 8 1 * *'
+    # Runs "every Monday & Thursday at 3:05am Central"
+    - cron: '5 8 * * 1,4'
+  push:
+    branches:
+      - main
+  pull_request: null
 
 jobs:
   tests:
