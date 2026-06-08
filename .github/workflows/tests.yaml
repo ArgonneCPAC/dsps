@@ -36,7 +36,6 @@ jobs:
             --file=requirements.txt
           conda install -y -q \
             matplotlib \
-            astropy>=7 \
             flake8 \
             pytest \
             pytest-xdist \
