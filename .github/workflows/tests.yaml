@@ -22,7 +22,7 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: 3.11
+          python-version: 3.12
           channels: conda-forge,defaults
           channel-priority: strict
           show-channel-urls: true
@@ -36,7 +36,7 @@ jobs:
             --file=requirements.txt
           conda install -y -q \
             matplotlib \
-            astropy \
+            astropy>=7 \
             flake8 \
             pytest \
             pytest-xdist \
