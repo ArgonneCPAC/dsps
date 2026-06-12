@@ -46,6 +46,10 @@ jobs:
             scipy \
             readme_renderer \
             python-build
+
+          # needed for test of README.md
+          python -m pip install "readme_renderer[md]"
+
           python -m pip install --no-build-isolation --no-deps -e .
 
       - name: download dsps data
